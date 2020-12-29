@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myclass/Colors.dart';
 import 'package:myclass/LoginPage.dart';
 
 void main() {
@@ -17,11 +18,11 @@ class MyApp extends StatelessWidget {
   ThemeData _buildThemeData() {
     return ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primarySwatch: Colors.grey,
+      primaryColor: Colors_myclass.main_color,
       fontFamily: "Roboto",
       textTheme: TextTheme(
-        headline1: TextStyle(fontSize: 86.0, fontWeight: FontWeight.bold,color: Colors.black87),
-        headline2: TextStyle(fontSize: 68.0,color: Colors.black87),
+        headline1: TextStyle(fontSize: 86.0, fontWeight: FontWeight.bold),
+        headline2: TextStyle(fontSize: 68.0),
         headline3: TextStyle(fontSize: 54.0),
         headline4: TextStyle(fontSize: 43.0),
         headline5: TextStyle(fontSize: 34.0),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:myclass/Button.dart';
+import 'package:myclass/RegisterPage.dart';
+import 'package:myclass/UserPage.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/nav.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         color: Colors.white,
         padding: EdgeInsets.all(32),
@@ -54,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Utils.spaceBigHeight,
-            Buttons_myclass.Button1(context, text: "Entrar", function: () {}),
+            Buttons_myclass.Button1(context, text: "Entrar", function: () => Nav.push(context, UserPage(),replace: true)),
             Utils.spaceSmallHeight,
             SignInButton(
               Buttons.Google,
@@ -63,9 +67,8 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Utils.spaceBigHeight,
             InkWell(
-              onTap: () {},
+              onTap: () => Nav.push(context,RegisterPage()),
               child: Container(
-                width: MediaQuery.of(context).size.width,
                 child: Text(
                   "Registre-se",
                   textAlign: TextAlign.center,
