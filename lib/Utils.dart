@@ -15,6 +15,23 @@ class Utils {
     height: 8.0,
   );
 
+  static text_style(text,{fontSize,color = Colors.white,fontWeight = FontWeight.normal}){
+    return Text(
+      text,
+      style: TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        shadows: [
+          Shadow(
+            blurRadius: 2.5,
+            color: Colors.black,
+            offset: Offset(2.0,1.0),
+          )
+        ]
+      ),
+    );
+  }
   /// Logo widget
   static Widget logo(context) {
     return Container(

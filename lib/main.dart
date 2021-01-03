@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   ThemeData _buildThemeData() {
     return ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primaryColor: Colors_myclass.main_color,
+      primaryColor: Colors_myclass.app_color,
       fontFamily: "Roboto",
       textTheme: TextTheme(
         headline1: TextStyle(fontSize: 86.0, fontWeight: FontWeight.bold),
