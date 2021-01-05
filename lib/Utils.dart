@@ -57,11 +57,15 @@ class Utils {
   }
 
   static Widget Text_input(
-      {@required hintmensage, @required labelmensage, show = false}) {
+      {@required hintmensage, @required labelmensage, show = false, TextInputType key_type = TextInputType.text,
+      onsaved}) {
     return TextFormField(
       obscureText: show,
+      onSaved: onsaved,
+      keyboardType: key_type,
+      maxLines: null,
       style: TextStyle(
-        fontSize: 24,
+        fontSize: 20,
       ),
       decoration: InputDecoration(
           hintText: hintmensage,
@@ -73,18 +77,4 @@ class Utils {
     );
   }
 
-  static Widget ShowAlertDialog(context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Bem-vindo",style: Theme.of(context).textTheme.headline5,),
-          content: Text("Sua conta foi criada com sucesso",style: Theme.of(context).textTheme.bodyText2,),
-          actions: [
-            FlatButton(onPressed: () => Nav..pop(context)..pop(context), child: Text("OK"),textColor: Colors.black87,)
-          ],
-        );
-      },
-    );
-  }
 }
