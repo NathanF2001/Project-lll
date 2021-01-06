@@ -44,6 +44,7 @@ class TurmasModel extends StatelessWidget {
         Container(
           color: Colors.grey[200],
           height: 150,
+            width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Text(info_turma["Info_turma"],

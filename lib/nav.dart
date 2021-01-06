@@ -12,6 +12,14 @@ class _Nav{
     return Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => page));
   }
 
+  void pushname(context, routeName, {arguments}) {
+    Navigator.pushNamed(context, routeName, arguments: arguments);
+  }
+
+  Object getRouteArgs(context){
+    return ModalRoute.of(context).settings.arguments;
+  }
+
   void pop(BuildContext context) {
     Navigator.pop(context);
   }

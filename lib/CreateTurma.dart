@@ -5,10 +5,6 @@ import 'package:myclass/Utils.dart';
 import 'package:myclass/nav.dart';
 
 class CreateTurma extends StatefulWidget {
-  List Turmas;
-
-
-  CreateTurma(this.Turmas);
 
 
   @override
@@ -17,11 +13,9 @@ class CreateTurma extends StatefulWidget {
 
 class _CreateTurmaState extends State<CreateTurma> {
 
-  List get Turmas => Turmas;
-
   final _formKey = GlobalKey<FormState>();
-  List<String> Modalidades = ["","Teste1","Teste2","Teste3"];
-  Map<String,String>turma_config = {};
+  List<String> Modalidades = ["", "Teste1", "Teste2", "Teste3"];
+  Map<String, String> turma_config = {"Nome_professor": "username"};
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +34,7 @@ class _CreateTurmaState extends State<CreateTurma> {
     );
   }
 
-  _formTurma(){
+  _formTurma() {
     return Padding(
       padding: EdgeInsets.all(16),
       child: Form(
@@ -49,16 +43,21 @@ class _CreateTurmaState extends State<CreateTurma> {
           children: [
             Utils.spaceSmallHeight,
             Utils.Text_input(
-                hintmensage: "Insira nome da turma *", labelmensage: "Nome da turma",
-              onsaved: (newValue)  {
-                turma_config["Nome"] = newValue;
-              },),
+              hintmensage: "Insira nome da turma *",
+              labelmensage: "Nome da turma",
+              onsaved: (newValue) {
+                turma_config["Nome_turma"] = newValue;
+              },
+            ),
             Utils.spaceSmallHeight,
             Utils.Text_input(
-                hintmensage: "Descrição", labelmensage: "Descrição da turma",key_type: TextInputType.multiline,
-              onsaved: (newValue)  {
-                turma_config["descrição"] = newValue;
-              },),
+              hintmensage: "Descrição",
+              labelmensage: "Descrição da turma",
+              key_type: TextInputType.multiline,
+              onsaved: (newValue) {
+                turma_config["Info_turma"] = newValue;
+              },
+            ),
             Utils.spaceSmallHeight,
             DropdownButtonFormField(
               decoration: const InputDecoration(labelText: 'Modalidade*'),
@@ -70,19 +69,16 @@ class _CreateTurmaState extends State<CreateTurma> {
               }).toList(),
               value: "",
               onChanged: (value) {},
-              onSaved: (newValue)  {
+              onSaved: (newValue) {
                 turma_config["modalidade"] = newValue;
               },
             ),
             Utils.spaceBigHeight,
-            Buttons_myclass.Button1(context,
-                text: "Criar",
-                function: (){
+            Buttons_myclass.Button1(context, text: "Criar", function: () {
               _formKey.currentState.save();
-              setState(() {
-                Turmas.add(turma_config);
-              });
-              Nav.pop(context);
+              List<dynamic> Turmas = Nav.getRouteArgs(context);
+              Turmas.add(turma_config);
+              Nav.pushname(context, "/home",arguments: Turmas);
             }),
             Utils.spaceBigHeight,
           ],

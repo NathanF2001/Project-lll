@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/CreateTurma.dart';
 import 'package:myclass/LoginPage.dart';
+import 'package:myclass/RegisterPage.dart';
+import 'package:myclass/TurmaPage.dart';
+import 'package:myclass/UserPage.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: _buildThemeData(),
-        home: LoginPage());
+    initialRoute: "/",
+    routes: _builderRoutes(),);
   }
 
   ThemeData _buildThemeData() {
@@ -45,6 +50,16 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _builderRoutes() {
+    return {
+      "/" : (context) => LoginPage(),
+      "/register": (context) => RegisterPage(),
+      "/home": (context) => UserPage(),
+      "/create-turma": (context) => CreateTurma(),
+      "/turma-page": (context) => TurmaPage(),
+    };
   }
 }
 

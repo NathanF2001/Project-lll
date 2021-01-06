@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                   Utils.Text_input(
                       hintmensage: "Insira sua senha",
                       labelmensage: "Senha",
-                      show: true),
+                      show: true,),
                 ],
               ),
             ),
@@ -58,7 +58,26 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Utils.spaceBigHeight,
-            Buttons_myclass.Button1(context, text: "Entrar", function: () => Nav.push(context, UserPage(),replace: true)),
+            Buttons_myclass.Button1(context, text: "Entrar", function: () {
+              List<dynamic> Turmas = [
+                {
+                  "Nome_turma": "Engenharia para sistemas de informação l",
+                  "Nome_professor": "Cleviton Monteiro",
+                  "Info_turma":
+                  "Nesse curso introdutório sobre engenharia de software (ES) para sistemas "
+                      "de informação serão discutidos conceitos gerais da área de ES com aplicação prática dos conteúdos."
+                },
+                {
+                  "Nome_turma": "Desenvolvimento de Sistemas de Informação",
+                  "Nome_professor": "Gabriel Junior",
+                  "Info_turma":
+                  "Proporcionar aos estudantes uma experiência próxima à encontrada em projetos de"
+                      "desenvolvimento de sistemas de informação comerciais com linguagens orientadas a objetos,"
+                      "com o embasamento teórico-prático das ferramentas e métodos utilizados."
+                },
+              ];
+              Nav.pushname(context, "/home",arguments: Turmas);
+            }),
             Utils.spaceSmallHeight,
             SignInButton(
               Buttons.Google,
@@ -67,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Utils.spaceBigHeight,
             InkWell(
-              onTap: () => Nav.push(context,RegisterPage()),
+              onTap: () => Nav.pushname(context, "/register"),
               child: Container(
                 child: Text(
                   "Registre-se",
