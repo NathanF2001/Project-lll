@@ -58,11 +58,13 @@ class Utils {
 
   static Widget Text_input(
       {@required hintmensage, @required labelmensage, bool show = false, TextInputType key_type = TextInputType.text,
-      onsaved}) {
+      onsaved,maxLength}) {
     return TextFormField(
       obscureText: show,
       onSaved: onsaved,
       keyboardType: key_type,
+      maxLength: maxLength,
+      maxLines: key_type == TextInputType.multiline ? null : 1,
       style: TextStyle(
         fontSize: 20,
       ),

@@ -26,7 +26,7 @@ class _UserPageState extends State<UserPage> {
         ),
         bottom: PreferredSize(
           child: _SearchView(),
-          preferredSize: Size(1,80),
+          preferredSize: Size(1, 80),
         ),
         title: Text(
           "MyClass",
@@ -45,7 +45,10 @@ class _UserPageState extends State<UserPage> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 title: Text(
                   "Digite o código da turma",
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline6,
                 ),
                 content: TextFormField(
                   style: TextStyle(
@@ -80,9 +83,12 @@ class _UserPageState extends State<UserPage> {
   }
 
   _SearchView() {
-    return  Container(
+    return Container(
       color: Colors_myclass.main_color,
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width,
       height: 80,
       padding: EdgeInsets.all(16),
       child: TextField(
@@ -117,7 +123,7 @@ class _UserPageState extends State<UserPage> {
           ),
           ListTile(
             title:
-                Text("Turmas", style: TextStyle(fontWeight: FontWeight.normal)),
+            Text("Turmas", style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.class__outlined),
             onTap: () {},
           ),
@@ -146,7 +152,7 @@ class _UserPageState extends State<UserPage> {
           ListTile(
             contentPadding: EdgeInsets.all(16),
             title:
-                Text("Logout", style: TextStyle(fontWeight: FontWeight.normal)),
+            Text("Logout", style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.logout),
             onTap: () {
               Nav.push(context, LoginPage());
@@ -170,7 +176,8 @@ class _UserPageState extends State<UserPage> {
                 padding: EdgeInsets.all(8),
                 child: InkWell(
                   child: TurmasModel(Turma),
-                  onTap: () => Nav.pushname(context, "/turma-page"),
+                  onTap: () =>
+                      Nav.pushname(context, "/turma-page"),
                 ));
           }),
     );

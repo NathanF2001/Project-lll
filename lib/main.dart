@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myclass/AddActivity.dart';
+import 'package:myclass/AddContent.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/CreateTurma.dart';
 import 'package:myclass/LoginPage.dart';
@@ -59,6 +61,8 @@ class MyApp extends StatelessWidget {
       "/home": (context) => UserPage(),
       "/create-turma": (context) => CreateTurma(),
       "/turma-page": (context) => TurmaPage(),
+      "/add-content": (context) => AddContent(),
+      "/add-activity": (context) => AddActivity(),
     };
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:myclass/ActivityPage.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/ContentPage.dart';
 
 class TurmaPage extends StatefulWidget {
   @override
@@ -7,6 +9,9 @@ class TurmaPage extends StatefulWidget {
 }
 
 class _TurmaPageState extends State<TurmaPage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -29,8 +34,8 @@ class _TurmaPageState extends State<TurmaPage> {
           ),
           body: TabBarView(
             children: [
-              Container(),
-              Container(color: Colors.blue),
+              ContentPage(true),
+              ActivityPage(true),
               Container(color: Colors.black),
             ],
           ),
