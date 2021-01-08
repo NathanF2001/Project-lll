@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/AddActivity.dart';
+import 'package:myclass/AddChat.dart';
 import 'package:myclass/AddContent.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/CreateTurma.dart';
 import 'package:myclass/LoginPage.dart';
 import 'package:myclass/RegisterPage.dart';
+import 'package:myclass/TalkPage.dart';
 import 'package:myclass/TurmaPage.dart';
 import 'package:myclass/UserPage.dart';
 
@@ -16,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: _buildThemeData(),
     initialRoute: "/",
@@ -63,6 +66,8 @@ class MyApp extends StatelessWidget {
       "/turma-page": (context) => TurmaPage(),
       "/add-content": (context) => AddContent(),
       "/add-activity": (context) => AddActivity(),
+      "/add-chat": (context) => AddChat(),
+      "mensage-page": (context) => MensagePage(),
     };
   }
 }

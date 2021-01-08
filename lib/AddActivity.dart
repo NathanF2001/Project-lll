@@ -48,7 +48,7 @@ class _AddActivityState extends State<AddActivity> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: 150,
+                    width: MediaQuery.of(context).size.width*0.4,
                     child: TextFormField(
                       style: TextStyle(
                         fontSize: 20,
@@ -56,15 +56,15 @@ class _AddActivityState extends State<AddActivity> {
                       decoration: InputDecoration(
                           hintText: "dd/mm/aaaa",
                           hintStyle: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                           ),
                           labelText: "Prazo",
                           labelStyle:
-                              TextStyle(fontSize: 24, color: Colors.black)),
+                              TextStyle(fontSize: 20, color: Colors.black)),
                     ),
                   ),
                   Container(
-                    width: 175,
+                    width:  MediaQuery.of(context).size.width*0.4,
                     child: TextFormField(
                       style: TextStyle(
                         fontSize: 20,
@@ -72,7 +72,7 @@ class _AddActivityState extends State<AddActivity> {
                       decoration: InputDecoration(
                           hintText: "horário hh:mm",
                           hintStyle: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                           ),
                           ),
                     ),

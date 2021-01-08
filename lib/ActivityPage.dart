@@ -79,18 +79,18 @@ class _ActivityPageState extends State<ActivityPage> {
                 children: [
                   Container(
                     color: Color(0xFFC0CCDA),
+                    width: MediaQuery.of(context).size.width-32,
                     height: 55,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 200,
-                          child: Text(info_content["Title"],
+                          child: Text("\t${info_content["Title"]}",
                             maxLines: null,softWrap: true,
                             style: TextStyle(color: Colors.white),)
                           ,
                         ),
-                        Text("Prazo: ${info_content["date"]}",style: TextStyle(color: Colors.white))
+                        Text("Prazo: ${info_content["date"]}\t",style: TextStyle(color: Colors.white,fontSize: 12))
                       ],
                     ),
                   ),

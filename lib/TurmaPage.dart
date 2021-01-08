@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/ActivityPage.dart';
+import 'package:myclass/ChatPage.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/ContentPage.dart';
 
@@ -17,7 +18,7 @@ class _TurmaPageState extends State<TurmaPage> {
     return DefaultTabController(
         length: 3,
         child: Scaffold(
-
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             iconTheme: IconThemeData(
               color: Colors.white,
@@ -36,7 +37,7 @@ class _TurmaPageState extends State<TurmaPage> {
             children: [
               ContentPage(true),
               ActivityPage(true),
-              Container(color: Colors.black),
+              ChatPage(true),
             ],
           ),
         ),);

@@ -89,7 +89,7 @@ class _UserPageState extends State<UserPage> {
           .of(context)
           .size
           .width,
-      height: 80,
+      height: MediaQuery.of(context).size.height*0.125,
       padding: EdgeInsets.all(16),
       child: TextField(
         decoration: InputDecoration(
@@ -166,7 +166,7 @@ class _UserPageState extends State<UserPage> {
   _listviewTurmas() {
     List<dynamic> Turmas = Nav.getRouteArgs(context);
     return Container(
-      height: 500,
+      height: MediaQuery.of(context).size.height*0.75,
       child: ListView.builder(
           shrinkWrap: true,
           itemCount: Turmas.length,

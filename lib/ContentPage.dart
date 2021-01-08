@@ -81,6 +81,7 @@ class _ContentPageState extends State<ContentPage> {
                 children: [
                   Container(
                     color: Color(0xFFC0CCDA),
+
                     height: 55,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
