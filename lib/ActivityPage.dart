@@ -85,7 +85,7 @@ class _ActivityPageState extends State<ActivityPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          child: Text("\t${info_content["Title"]}",
+                          child: Text("\t${info_content["Title"]  }",
                             maxLines: null,softWrap: true,
                             style: TextStyle(color: Colors.white),)
                           ,
