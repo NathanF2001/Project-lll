@@ -32,29 +32,6 @@ class Utils {
       ),
     );
   }
-  /// Logo widget
-  static Widget logo(context) {
-    return Container(
-      width: 280,
-      height: 90,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Color(0xFF13CE61),
-        border: Border.all(width: 2, color: Color(0xFF13CE61)),
-        borderRadius: BorderRadius.all(Radius.circular(16.0)),
-      ),
-      child: Text(
-        "MyClass",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            fontFamily: "Roboto",
-            fontSize: 50,
-            fontWeight: FontWeight.normal,
-            color: Colors.white,
-            decoration: TextDecoration.none),
-      ),
-    );
-  }
 
   static Widget Text_input(
       {@required hintmensage, @required labelmensage, bool show = false, TextInputType key_type = TextInputType.text,

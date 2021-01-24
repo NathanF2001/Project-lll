@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -16,48 +17,151 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text(
-          "MyClass - Registrar",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      backgroundColor: Colors_myclass.main_color,
       body: _formRegister(),
     );
   }
 
   _formRegister() {
-    return Padding(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
+    return Column(
+      children: [
+        Expanded(
+          flex: 1,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Utils.logo(context),
-              Utils.spaceBigHeight,
-              Utils.Text_input(
-                  hintmensage: "Insira seu nome", labelmensage: "Nome"),
-              Utils.spaceSmallHeight,
-              Utils.Text_input(
-                  hintmensage: "Insira seu E-mail", labelmensage: "E-mail"),
-              Utils.spaceSmallHeight,
-              Utils.Text_input(
-                  hintmensage: "Insira seu senha", labelmensage: "Senha"),
-              Utils.spaceSmallHeight,
-              Utils.Text_input(
-                  hintmensage: "Insira sua senha novamente",
-                  labelmensage: "Confirmar senha"),
-              Utils.spaceBigHeight,
-              Buttons_myclass.Button1(context,
-                  text: "Criar Conta",
-                  function: () => _showAlertDialog()),
-              Utils.spaceBigHeight,
+              IconButton(icon: Icon(Icons.arrow_back_ios_outlined),color: Colors.white, onPressed: () => Nav.pop(context)),
+              Container(
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.only(left: 40, bottom: 16),
+                child: Text(
+                  "Registrar",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: "Roboto",
+                      fontSize: 55,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
+                      decoration: TextDecoration.none),
+                ),
+              ),
             ],
+          )
+        ),
+        Expanded(
+          flex: 3,
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(200))),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Utils.spaceBigHeight,
+                  Container(
+                    padding: EdgeInsets.only(left: 70),
+                    child: TextFormField(
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        hintText: "Insira seu nome",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                        ),
+                        labelText: "Nome",
+                        labelStyle:
+                            TextStyle(fontSize: 24, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Utils.spaceSmallHeight,
+                  Container(
+                    padding: EdgeInsets.only(left: 35),
+                    child: TextFormField(
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        hintText: "Insira seu e-mail",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                        ),
+                        labelText: "E-mail",
+                        labelStyle:
+                            TextStyle(fontSize: 24, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Utils.spaceSmallHeight,
+                  Container(
+                    padding: EdgeInsets.only(left: 16),
+                    child: TextFormField(
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16),
+                          ),
+                        ),
+                        hintText: "Insira sua senha",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                        ),
+                        labelText: "Senha",
+                        labelStyle:
+                            TextStyle(fontSize: 24, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Utils.spaceSmallHeight,
+                  Container(
+                    padding: EdgeInsets.only(left: 16),
+                    child: TextFormField(
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        hintText: "Confirme sua senha",
+                        hintStyle: TextStyle(
+                          fontSize: 24,
+                        ),
+                        labelText: "Confirmar senha",
+                        labelStyle:
+                            TextStyle(fontSize: 24, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Utils.spaceBigHeight,
+                  Buttons_myclass.Button1(context,
+                      text: "Criar Conta", function: () => _showAlertDialog()),
+                  Utils.spaceBigHeight,
+                ],
+              ),
+            ),
           ),
-        ));
+        )
+      ],
+    );
   }
 
   _showAlertDialog() {
