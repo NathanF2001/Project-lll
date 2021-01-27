@@ -9,7 +9,6 @@ import 'package:myclass/pages/turma/AddContent.dart';
 import 'package:myclass/pages/turma/DetailActivityPage.dart';
 import 'package:myclass/pages/turma/TalkPage.dart';
 import 'package:myclass/pages/turma/TurmaPage.dart';
-
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 import 'package:myclass/pages/user_auth/RegisterPage.dart';
 

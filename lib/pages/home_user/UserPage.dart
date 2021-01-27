@@ -39,9 +39,7 @@ class _UserPageState extends State<UserPage> {
         backgroundColor: Colors_myclass.main_color,
         child: Icon(Icons.add),
       ),
-      body: Column(children: [
-        _listviewTurmas(),
-      ]),
+      body: _listviewTurmas(),
     );
   }
 
@@ -124,22 +122,19 @@ class _UserPageState extends State<UserPage> {
 
   _listviewTurmas() {
     List<dynamic> Turmas = Nav.getRouteArgs(context);
-    return Container(
-      height: MediaQuery.of(context).size.height*0.75,
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: Turmas.length,
-          itemBuilder: (context, index) {
-            final Turma = Turmas[index];
-            return Container(
-                padding: EdgeInsets.all(8),
-                child: InkWell(
-                  child: TurmasTemplate(Turma),
-                  onTap: () =>
-                      Nav.pushname(context, "/turma-page"),
-                ));
-          }),
-    );
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: Turmas.length,
+        itemBuilder: (context, index) {
+          final Turma = Turmas[index];
+          return Container(
+              padding: EdgeInsets.all(8),
+              child: InkWell(
+                child: TurmasTemplate(Turma),
+                onTap: () =>
+                    Nav.pushname(context, "/turma-page"),
+              ));
+        });
   }
 
    _showAlertDialog() {
