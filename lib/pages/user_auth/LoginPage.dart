@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
-import 'package:myclass/RegisterPage.dart';
-import 'package:myclass/UserPage.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/nav.dart';
 
@@ -51,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.all(32),
             decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(200))),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(300))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -61,44 +59,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        width: 320,
-                        child: TextFormField(
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(16))
-                                ),
-                                hintText: "Insira seu e-mail",
-                                hintStyle: TextStyle(
-                                  fontSize: 24,
-                                ),
-                                labelText: "E-mail",
-                                labelStyle: TextStyle(fontSize: 24, color: Colors.black))
-                        ),
-                      ),
+                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail"),
                       Utils.spaceMediumHeight,
-                      Container(
-                        width: 320,
-                        child: TextFormField(
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(16))
-                              ),
-                                hintText: "Insira sua senha",
-                                hintStyle: TextStyle(
-                                  fontSize: 24,
-                                ),
-                                labelText: "Senha",
-                                labelStyle: TextStyle(fontSize: 24, color: Colors.black))
-                        ),
-                      ),
+                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true),
                     ],
                   ),
                 ),
@@ -138,10 +101,13 @@ class _LoginPageState extends State<LoginPage> {
                   Nav.pushname(context, "/home", arguments: Turmas);
                 }),
                 Utils.spaceSmallHeight,
-                SignInButton(
-                  Buttons.Google,
-                  text: "Sign up with Google",
-                  onPressed: () {},
+                Container(
+                  width: 250,
+                  child: SignInButton(
+                    Buttons.Google,
+                    text: "Sign up with Google",
+                    onPressed: () {},
+                  ),
                 ),
                 Utils.spaceBigHeight,
                 InkWell(

@@ -37,13 +37,15 @@ class _AddContentState extends State<AddContent> {
           child: ListView(
             children: [
               Utils.Text_input(
-                  hintmensage: "Adicione um título",
-                  labelmensage: "Título *",
-                  maxLength: 45),
+                hintmensage: "Insira o título do conteúdo",
+                labelmensage: "Título *",
+                maxLength: 45
+              ),
               Utils.Text_input(
-                  hintmensage: "Adicione um assunto",
-                  labelmensage: "Assunto *",
-                  key_type: TextInputType.multiline),
+                hintmensage: "Insira o assunto",
+                labelmensage: "Assunto *",
+                key_type: TextInputType.multiline
+              ),
               Utils.spaceBigHeight,
               Wrap(
                 children: Wrap_widgets,
@@ -54,7 +56,7 @@ class _AddContentState extends State<AddContent> {
                 height: 75,
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                    borderRadius: BorderRadius.all(Radius.circular(32))),
                 child: InkWell(
                   child: Icon(
                     Icons.add,

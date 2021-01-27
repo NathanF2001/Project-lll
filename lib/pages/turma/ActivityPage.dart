@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
-import 'package:myclass/Utils.dart';
 import 'package:myclass/nav.dart';
 
 class ActivityPage extends StatefulWidget {
@@ -103,7 +102,7 @@ class _ActivityPageState extends State<ActivityPage> {
                       children: [
                         Text(info_content["descriçao"],style: Theme.of(context).textTheme.bodyText2,),
                         Spacer(),
-                        FlatButton(onPressed: (){}, child: Text("Ver mais >>",style: TextStyle(color: Colors.black),textAlign: TextAlign.right,))
+                        FlatButton(onPressed: () => Nav.pushname(context, "/detail-activity",arguments: true), child: Text("Ver mais >>",style: TextStyle(color: Colors.black),textAlign: TextAlign.right,))
                       ],
                     ),
                   )

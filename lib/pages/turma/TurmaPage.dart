@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myclass/ActivityPage.dart';
-import 'package:myclass/ChatPage.dart';
-import 'package:myclass/Colors.dart';
-import 'package:myclass/ContentPage.dart';
+import 'package:myclass/pages/turma/ActivityPage.dart';
+import 'package:myclass/pages/turma/ChatPage.dart';
+import 'package:myclass/pages/turma/ContentPage.dart';
+
+
 
 class TurmaPage extends StatefulWidget {
   @override

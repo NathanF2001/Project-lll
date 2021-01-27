@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Buttons_myclass {
-  static Button1(context,{@required text, function,textcolor = Colors.white,colorbackground}) {
+  static Button1(context,{@required text, function,textcolor = Colors.white,colorbackground, fontsize = 26.0}) {
     return RaisedButton(
       onPressed: function,
       textColor: textcolor,
@@ -19,7 +19,7 @@ class Buttons_myclass {
           text,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 26,
+            fontSize: fontsize,
             fontWeight: FontWeight.normal,
           ),
         ),

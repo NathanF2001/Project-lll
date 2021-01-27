@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:myclass/AddActivity.dart';
-import 'package:myclass/AddChat.dart';
-import 'package:myclass/AddContent.dart';
 import 'package:myclass/Colors.dart';
-import 'package:myclass/CreateTurma.dart';
-import 'package:myclass/LoginPage.dart';
-import 'package:myclass/RegisterPage.dart';
-import 'package:myclass/TalkPage.dart';
-import 'package:myclass/TurmaPage.dart';
-import 'package:myclass/UserPage.dart';
+import 'package:myclass/pages/home_user/CreateTurma.dart';
+import 'package:myclass/pages/home_user/ProfilePage.dart';
+import 'package:myclass/pages/home_user/UserPage.dart';
+import 'package:myclass/pages/turma/AddActivity.dart';
+import 'package:myclass/pages/turma/AddChat.dart';
+import 'package:myclass/pages/turma/AddContent.dart';
+import 'package:myclass/pages/turma/DetailActivityPage.dart';
+import 'package:myclass/pages/turma/TalkPage.dart';
+import 'package:myclass/pages/turma/TurmaPage.dart';
+
+import 'package:myclass/pages/user_auth/LoginPage.dart';
+import 'package:myclass/pages/user_auth/RegisterPage.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -21,6 +25,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: _buildThemeData(),
+    color: Colors.white,
     initialRoute: "/",
     routes: _builderRoutes(),);
   }
@@ -28,6 +33,8 @@ class MyApp extends StatelessWidget {
   ThemeData _buildThemeData() {
     return ThemeData(
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      backgroundColor: Colors_myclass.app_color,
+      scaffoldBackgroundColor: Colors.white,
       primaryColor: Colors_myclass.app_color,
       fontFamily: "Roboto",
       textTheme: TextTheme(
@@ -62,12 +69,14 @@ class MyApp extends StatelessWidget {
       "/" : (context) => LoginPage(),
       "/register": (context) => RegisterPage(),
       "/home": (context) => UserPage(),
+      "/profile": (context) => ProfilePage(),
       "/create-turma": (context) => CreateTurma(),
       "/turma-page": (context) => TurmaPage(),
       "/add-content": (context) => AddContent(),
       "/add-activity": (context) => AddActivity(),
       "/add-chat": (context) => AddChat(),
-      "mensage-page": (context) => MensagePage(),
+      "/mensage-page": (context) => MensagePage(),
+      "/detail-activity": (context) => DetailActivityPage(),
     };
   }
 }

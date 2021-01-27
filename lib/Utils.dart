@@ -1,8 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:myclass/LoginPage.dart';
-import 'package:myclass/nav.dart';
+
 
 class Utils {
   static const spaceBigHeight = SizedBox(
@@ -35,23 +34,32 @@ class Utils {
 
   static Widget Text_input(
       {@required hintmensage, @required labelmensage, bool show = false, TextInputType key_type = TextInputType.text,
-      onsaved,maxLength}) {
-    return TextFormField(
-      obscureText: show,
-      onSaved: onsaved,
-      keyboardType: key_type,
-      maxLength: maxLength,
-      maxLines: key_type == TextInputType.multiline ? null : 1,
-      style: TextStyle(
-        fontSize: 20,
-      ),
-      decoration: InputDecoration(
-          hintText: hintmensage,
-          hintStyle: TextStyle(
-            fontSize: 24,
+      onsaved,maxLength, double width}) {
+    return Container(
+      width: width,
+      constraints: BoxConstraints(maxHeight: 200),
+      child: TextFormField(
+          style: TextStyle(
+            fontSize: 20,
           ),
-          labelText: labelmensage,
-          labelStyle: TextStyle(fontSize: 24, color: Colors.black)),
+          obscureText: show,
+          keyboardType: key_type,
+          maxLines: (key_type == TextInputType.multiline) ? null : 1,
+          maxLength: maxLength,
+          onSaved: onsaved,
+          decoration: InputDecoration(
+              fillColor: Colors.white,
+              filled: true,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(16))
+              ),
+              hintText: hintmensage,
+              hintStyle: TextStyle(
+                fontSize: 24,
+              ),
+              labelText: labelmensage,
+              labelStyle: TextStyle(fontSize: 24, color: Colors.black))
+      ),
     );
   }
 

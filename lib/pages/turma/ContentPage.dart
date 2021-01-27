@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/nav.dart';
@@ -75,33 +74,57 @@ class _ContentPageState extends State<ContentPage> {
           itemCount: items.length,
           itemBuilder: (context, index) {
             Map<String,String> info_content = items[index];
-            return Padding(
-              padding: EdgeInsets.all(16),
+            return Container(
+              margin: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  border: Border.all(color: Colors.grey,width: 1),
+              ),
               child: Column(
                 children: [
                   Container(
-                    color: Color(0xFFC0CCDA),
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
 
-                    height: 55,
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(16),topLeft: Radius.circular(16))
+                    ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        SizedBox(width: 16,),
                         Container(
                           decoration: BoxDecoration(
                             color: Color(0xFFEFF2F7),
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          child: Icon(Icons.person,color: Color(0xFFC0CCDA),size: 40,),
+                          child: Icon(Icons.person,color: Colors.grey[500],size: 50,),
                         ),
-                        Text(info_content["Nome_professor"],style: TextStyle(color: Colors.white),),
-                        Text(info_content["date"],style: TextStyle(color: Colors.white))
+                        SizedBox(width: 16,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(info_content["Nome_professor"],style: TextStyle(color: Colors.black,fontSize: 20),),
+                            Text(info_content["date"],style: TextStyle(color: Colors.black))
+                          ],
+                        )
                       ],
                     ),
                   ),
+                  SizedBox(
+                    child: Container(
+                      height: 1,
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.grey,
+                    ),
+                  ),
                   Container(
-                    color: Color(0xFFEFF2F7),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(16),bottomLeft: Radius.circular(16))
+                    ),
                     padding: EdgeInsets.all(16),
-                    height: 200,
+                    height: 220,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 
-class TurmasModel extends StatelessWidget {
+class TurmasTemplate extends StatelessWidget {
   final info_turma;
 
-
-  TurmasModel(this.info_turma);
+  TurmasTemplate(this.info_turma);
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +12,15 @@ class TurmasModel extends StatelessWidget {
       children: [
         Container(
           height: 80,
-          color: Colors_myclass.dark_color,
+
+          decoration: BoxDecoration(
+              color: Colors_myclass.dark_color,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
+          ),
           child: ListTile(
             leading: Container(
               decoration: BoxDecoration(
-                  color: Colors.grey[200],
+                  color: Colors.grey[100],
                   borderRadius: BorderRadius.all(Radius.circular(100))),
               child: Icon(
                 Icons.person,
@@ -42,12 +45,17 @@ class TurmasModel extends StatelessWidget {
           ),
         ),
         Container(
-          color: Colors.grey[200],
+            decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16),bottomRight: Radius.circular(16))
+            ),
           height: 150,
             width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Text(info_turma["Info_turma"],
+              overflow: TextOverflow.ellipsis,
+              maxLines: 5,
               style: TextStyle(color: Colors.grey[600],),
               textAlign: TextAlign.justify,
               ),

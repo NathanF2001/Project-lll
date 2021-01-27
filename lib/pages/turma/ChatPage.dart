@@ -70,7 +70,7 @@ class _ChatPageState extends State<ChatPage> {
                 )
                     :
                 null,
-              onTap: () => Nav.pushname(context, "mensage-page",arguments: 1),
+              onTap: () => Nav.pushname(context, "/mensage-page",arguments: 1),
             ),
           );
     });

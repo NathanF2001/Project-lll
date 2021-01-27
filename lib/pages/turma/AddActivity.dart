@@ -36,47 +36,67 @@ class _AddActivityState extends State<AddActivity> {
           child: ListView(
             children: [
               Utils.Text_input(
-                  hintmensage: "Adicione um título",
+                  hintmensage: "Insira o título da atividade",
                   labelmensage: "Título *",
-                  maxLength: 45),
+                  maxLength: 45
+              ),
               Utils.Text_input(
-                  hintmensage: "Adicione um assunto",
+                  hintmensage: "Insira a orientação da atividade",
                   labelmensage: "Orientação *",
-                  key_type: TextInputType.multiline),
+                  key_type: TextInputType.multiline
+              ),
+              Utils.spaceMediumHeight,
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width*0.4,
-                    child: TextFormField(
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      decoration: InputDecoration(
+                    width: MediaQuery.of(context).size.width*0.45,
+                    height: 60,
+                    child: Container(
+                      child: TextFormField(
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
                           hintText: "dd/mm/aaaa",
                           hintStyle: TextStyle(
                             fontSize: 20,
                           ),
                           labelText: "Prazo",
                           labelStyle:
-                              TextStyle(fontSize: 20, color: Colors.black)),
+                          TextStyle(fontSize: 20, color: Colors.black),
+                        ),
+                      ),
                     ),
                   ),
                   Container(
-                    width:  MediaQuery.of(context).size.width*0.4,
-                    child: TextFormField(
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      decoration: InputDecoration(
-                          hintText: "horário hh:mm",
+                    width: MediaQuery.of(context).size.width*0.45,
+                    height: 60,
+                    child: Container(
+                      child: TextFormField(
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(16))),
+                          hintText: "horario hh:mm",
                           hintStyle: TextStyle(
                             fontSize: 20,
                           ),
-                          ),
+                          labelText: "Horário",
+                          labelStyle:
+                          TextStyle(fontSize: 20, color: Colors.black),
+                        ),
+                      ),
                     ),
-                  )
+
+                  ),
                 ],
               ),
               Utils.spaceBigHeight,
@@ -89,7 +109,7 @@ class _AddActivityState extends State<AddActivity> {
                 height: 75,
                 decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                    borderRadius: BorderRadius.all(Radius.circular(32))),
                 child: InkWell(
                   child: Icon(
                     Icons.add,
@@ -110,7 +130,7 @@ class _AddActivityState extends State<AddActivity> {
               ),
               Utils.spaceBigHeight,
               Buttons_myclass.Button1(context,
-                  text: "Adicionar conteúdo", function: () {})
+                  text: "Adicionar atividade", function: () {})
             ],
           ),
         ));

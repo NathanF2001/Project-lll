@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myclass/Colors.dart';
 import 'package:myclass/nav.dart';
 
 class MensagePage extends StatefulWidget {

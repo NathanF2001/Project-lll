@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:myclass/Colors.dart';
-import 'package:myclass/CreateTurma.dart';
-import 'package:myclass/LoginPage.dart';
-import 'package:myclass/TurmasModel.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/home_user/TurmasTemplate.dart';
+import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -36,42 +34,7 @@ class _UserPageState extends State<UserPage> {
       drawer: _DrawerUser(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                scrollable: true,
-                titlePadding: EdgeInsets.all(16),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                title: Text(
-                  "Digite o código da turma",
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline6,
-                ),
-                content: TextFormField(
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                  decoration: InputDecoration(
-                      hintText: "Insira código da turma",
-                      hintStyle: TextStyle(
-                        fontSize: 18,
-                      ),
-                      labelText: "Código da turma",
-                      labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
-                ),
-                actions: [
-                  FlatButton(
-                    onPressed: () => Nav.pop(context),
-                    child: Text("Entrar"),
-                    textColor: Colors.black87,
-                  )
-                ],
-              );
-            },
-          );
+          _showAlertDialog();
         },
         backgroundColor: Colors_myclass.main_color,
         child: Icon(Icons.add),
@@ -96,7 +59,9 @@ class _UserPageState extends State<UserPage> {
           prefixIcon: Icon(Icons.search),
           labelText: "Pesquisar turmas",
           labelStyle: TextStyle(color: Colors.grey,),
-          border: InputBorder.none,
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16))
+          ),
           filled: true,
           fillColor: Colors.white,
         ),
@@ -122,16 +87,10 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
           ListTile(
-            title:
-            Text("Turmas", style: TextStyle(fontWeight: FontWeight.normal)),
-            leading: Icon(Icons.class__outlined),
-            onTap: () {},
-          ),
-          ListTile(
             title: Text("Alterar Perfil",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.person),
-            onTap: () {},
+            onTap: () => Nav.pushname(context, "/profile"),
           ),
           ListTile(
             title: Text("Preencher dados socioeconômicos",
@@ -172,14 +131,53 @@ class _UserPageState extends State<UserPage> {
           itemCount: Turmas.length,
           itemBuilder: (context, index) {
             final Turma = Turmas[index];
-            return Padding(
+            return Container(
                 padding: EdgeInsets.all(8),
                 child: InkWell(
-                  child: TurmasModel(Turma),
+                  child: TurmasTemplate(Turma),
                   onTap: () =>
                       Nav.pushname(context, "/turma-page"),
                 ));
           }),
     );
   }
+
+   _showAlertDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          titlePadding: EdgeInsets.all(16),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          title: Text(
+            "Digite o código da turma",
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline6,
+          ),
+          content: TextFormField(
+            style: TextStyle(
+              fontSize: 18,
+            ),
+            decoration: InputDecoration(
+                hintText: "Insira código da turma",
+                hintStyle: TextStyle(
+                  fontSize: 18,
+                ),
+                labelText: "Código da turma",
+                labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Nav.pop(context),
+              child: Text("Entrar"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
+    );
+   }
 }

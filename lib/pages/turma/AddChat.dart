@@ -55,14 +55,20 @@ class _AddChatState extends State<AddChat> {
             Utils.Text_input(
                 hintmensage: "Digite nome do Bate-papo",
                 labelmensage: "Nome do bate-papo"),
+            Utils.spaceBigHeight,
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width * 0.75,
+
                   child: DropdownButtonFormField(
-                    decoration: const InputDecoration(labelText: 'Alunos*'),
+                    decoration: const InputDecoration(
+                      labelText: 'Alunos*',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                    ),
                     items: Alunos.map<DropdownMenuItem<String>>((aluno) {
                       return DropdownMenuItem<String>(
                         value: aluno,
