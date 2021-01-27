@@ -26,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Column(
       children: [
         Container(
-          height: 175,
+        height: MediaQuery.of(context).size.height*0.25,
             padding: EdgeInsets.only(top: 16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -51,8 +51,8 @@ class _RegisterPageState extends State<RegisterPage> {
             )
         ),
         Container(
-          height: MediaQuery.of(context).size.height - 175,
           child: Container(
+            height: MediaQuery.of(context).size.height*0.75,
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -74,12 +74,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   Utils.spaceBigHeight,
                   Buttons_myclass.Button1(context,
                       text: "Criar Conta", function: () => _showAlertDialog()),
-                  Utils.spaceBigHeight,
                 ],
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
