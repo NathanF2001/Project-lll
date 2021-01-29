@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
@@ -101,14 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   Nav.pushname(context, "/home", arguments: Turmas);
                 }),
                 Utils.spaceSmallHeight,
-                Container(
-                  width: 250,
-                  child: SignInButton(
-                    Buttons.Google,
-                    text: "Sign up with Google",
-                    onPressed: () {},
-                  ),
-                ),
+
                 Utils.spaceBigHeight,
                 InkWell(
                   onTap: () => Nav.pushname(context, "/register"),
