@@ -1,7 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/TurmaController.dart';
+import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/home_user/TurmasTemplate.dart';
 
 class CreateTurma extends StatefulWidget {
   @override
@@ -11,7 +17,7 @@ class CreateTurma extends StatefulWidget {
 class _CreateTurmaState extends State<CreateTurma> {
   final _formKey = GlobalKey<FormState>();
   List<String> Modalidades = ["", "Teste1", "Teste2", "Teste3"];
-  Map<String, String> turma_config = {"Nome_professor": "username"};
+  Map<String, dynamic> turma_config = {};
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +49,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   hintmensage: "Insira nome da Turma",
                   labelmensage: "Nome da turma",
                   onsaved: (newValue) {
-                    turma_config["Nome_turma"] = newValue;
+                    turma_config["Nome"] = newValue;
                   },
                 ),
                 Utils.spaceSmallHeight,
@@ -51,7 +57,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   hintmensage: "Descrição da turma",
                   labelmensage: "Descrição",
                   onsaved: (newValue) {
-                    turma_config["Info_turma"] = newValue;
+                    turma_config["Descricao"] = newValue;
                   },
                   key_type: TextInputType.multiline
                 ),
@@ -72,15 +78,19 @@ class _CreateTurmaState extends State<CreateTurma> {
                   value: "",
                   onChanged: (value) {},
                   onSaved: (newValue) {
-                    turma_config["modalidade"] = newValue;
+                    turma_config["Modalidade"] = newValue;
                   },
                 ),
                 Utils.spaceSmallHeight,
-                Buttons_myclass.Button1(context, text: "Criar", function: () {
+                Buttons_myclass.Button1(context, text: "Criar", function: () async{
+                  List<dynamic> values = Nav.getRouteArgs(context);
+                  Pessoa user = values[0];
+                  final id = values[1];
+
                   _formKey.currentState.save();
-                  List<dynamic> Turmas = Nav.getRouteArgs(context);
-                  Turmas.add(turma_config);
-                  Nav.pushname(context, "/home", arguments: Turmas);
+                  user = await TurmaController().create_turma(turma_config,user,id);
+
+                  Nav.pushname(context, "/home",arguments: [user,id]);
                 }),
                 Utils.spaceBigHeight,
               ],

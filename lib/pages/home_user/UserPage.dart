@@ -1,21 +1,42 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/LoginController.dart';
+import 'package:myclass/controller/TurmaController.dart';
+import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
-import 'package:myclass/pages/home_user/TurmasTemplate.dart';
+import 'package:myclass/pages/home_user/TurmasListview.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
+
+
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  final atual_tile = [true, false, false, false, false];
+  Pessoa user;
+  String id;
   int index_atual = 0;
+
+
+
 
   @override
   Widget build(BuildContext context) {
+    List<dynamic> values = Nav.getRouteArgs(context);
+    user = values[0];
+    id = values[1];
+
+
+
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -72,17 +93,11 @@ class _UserPageState extends State<UserPage> {
       child: Column(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Utils.text_style("Username"),
-            accountEmail: Utils.text_style("Username@anyemail.com"),
-            currentAccountPicture: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.all(Radius.circular(100))),
-              child: Icon(
-                Icons.person,
-                color: Colors.grey,
-              ),
-            ),
+            accountName: Utils.text_style(user.nome),
+            accountEmail: Utils.text_style(user.email),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(user.UrlFoto),
+            )
           ),
           ListTile(
             title: Text("Alterar Perfil",
@@ -101,8 +116,7 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.add_circle_outline),
             onTap: () {
-              List<dynamic> Turmas = Nav.getRouteArgs(context);
-              Nav.pushname(context, "/create-turma", arguments: Turmas);
+              Nav.pushname(context, "/create-turma", arguments: [user,id]);
             },
           ),
           Spacer(),
@@ -112,6 +126,7 @@ class _UserPageState extends State<UserPage> {
             Text("Logout", style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.logout),
             onTap: () {
+              AuthController().logout();
               Nav.push(context, LoginPage());
             },
           ),
@@ -121,20 +136,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   _listviewTurmas() {
-    List<dynamic> Turmas = Nav.getRouteArgs(context);
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: Turmas.length,
-        itemBuilder: (context, index) {
-          final Turma = Turmas[index];
-          return Container(
-              padding: EdgeInsets.all(8),
-              child: InkWell(
-                child: TurmasTemplate(Turma),
-                onTap: () =>
-                    Nav.pushname(context, "/turma-page"),
-              ));
-        });
+    return TurmasListView(user.Turmas_reference);
   }
 
    _showAlertDialog() {
