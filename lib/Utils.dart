@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +32,15 @@ class Utils {
         ]
       ),
     );
+  }
+
+  static generate_key(int number){
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+    String getRandomString(int value) => String.fromCharCodes(Iterable.generate(
+        value, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+    return getRandomString(7);
   }
 
   static Widget Text_input(

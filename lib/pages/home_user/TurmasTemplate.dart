@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/models/Pessoa.dart';
 
 class TurmasTemplate extends StatelessWidget {
   final info_turma;
@@ -8,60 +10,62 @@ class TurmasTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 80,
+    return FutureBuilder(
+        future: FirebaseFirestore.instance.collection("Users").doc(info_turma["Professor"]).get(),
+        builder: (context, snapshot){
 
-          decoration: BoxDecoration(
-              color: Colors_myclass.dark_color,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
-          ),
-          child: ListTile(
-            leading: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.all(Radius.circular(100))),
-              child: Icon(
-                Icons.person,
-                color: Colors.grey,
-                size: 50,
-              ),
-            ),
-            title: Text(
-              info_turma["Nome_turma"],
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20),
-            ),
-            subtitle: Text(
-              info_turma["Nome_professor"],
-              style: TextStyle(
-                  color: Colors.white,
-                  fontStyle: FontStyle.italic,
-                  fontSize: 16),
-            ),
-          ),
-        ),
-        Container(
-            decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16),bottomRight: Radius.circular(16))
-            ),
-          height: 150,
-            width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(info_turma["Info_turma"],
-              overflow: TextOverflow.ellipsis,
-              maxLines: 5,
-              style: TextStyle(color: Colors.grey[600],),
-              textAlign: TextAlign.justify,
-              ),
-          )
-        )
-      ],
-    );
+          if (snapshot.connectionState == ConnectionState.done){
+            Pessoa professor = Pessoa.fromJson(snapshot.data.data());
+            return Column(
+              children: [
+                Container(
+                  height: 80,
+
+                  decoration: BoxDecoration(
+                      color: Colors_myclass.dark_color,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(info_turma["UrlTurma"]),
+                    ),
+                    title: Text(
+                      info_turma["Nome"],
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                    subtitle: Text(
+                      professor.nome,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 16),
+                    ),
+                  ),
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16),bottomRight: Radius.circular(16))
+                    ),
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(info_turma["Descricao"],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 5,
+                        style: TextStyle(color: Colors.grey[600],),
+                        textAlign: TextAlign.justify,
+                      ),
+                    )
+                )
+              ],
+            );
+          }
+          return Container();
+    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/pages/home_user/CreateTurma.dart';
@@ -13,9 +14,12 @@ import 'package:myclass/pages/user_auth/LoginPage.dart';
 import 'package:myclass/pages/user_auth/RegisterPage.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   @override

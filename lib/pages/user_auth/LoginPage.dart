@@ -1,8 +1,11 @@
+import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/nav.dart';
 
 class LoginPage extends StatefulWidget {
@@ -100,7 +103,12 @@ class _LoginPageState extends State<LoginPage> {
                   Nav.pushname(context, "/home", arguments: Turmas);
                 }),
                 Utils.spaceSmallHeight,
-
+                Container(
+                  width: 300,
+                  child: GoogleAuthButton(
+                    onPressed: (){ AuthController().signWithGoogle(context);},
+                  )
+                ),
                 Utils.spaceBigHeight,
                 InkWell(
                   onTap: () => Nav.pushname(context, "/register"),
