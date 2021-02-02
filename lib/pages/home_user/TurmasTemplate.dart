@@ -20,13 +20,13 @@ class TurmasTemplate extends StatelessWidget {
               children: [
                 Container(
                   height: 80,
-
                   decoration: BoxDecoration(
-                      color: Colors_myclass.dark_color,
+                      color: Colors_myclass.app_color,
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(16),topRight: Radius.circular(16))
                   ),
                   child: ListTile(
                     leading: CircleAvatar(
+                      radius: 25,
                       backgroundImage: NetworkImage(info_turma["UrlTurma"]),
                     ),
                     title: Text(
@@ -47,7 +47,7 @@ class TurmasTemplate extends StatelessWidget {
                 ),
                 Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Colors_myclass.white,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16),bottomRight: Radius.circular(16))
                     ),
                     height: 150,

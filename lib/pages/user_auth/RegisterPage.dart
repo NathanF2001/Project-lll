@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/nav.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,6 +12,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+  String email;
+  String nome;
+  String senha;
+  String csenha;
 
   @override
   Widget build(BuildContext context) {
@@ -64,16 +69,22 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Utils.spaceBigHeight,
-                  Utils.Text_input(hintmensage: "Insira seu nome", labelmensage: "Nome"),
+                  Utils.Text_input(hintmensage: "Insira seu nome", labelmensage: "Nome",onsaved: (value) {nome = value;}),
                   Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail"),
+                  Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;}),
                   Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true),
+                  Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {senha = value;}),
                   Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Confirme sua senha", labelmensage: "Confirmar senha",show: true),
+                  Utils.Text_input(hintmensage: "Confirme sua senha", labelmensage: "Confirmar senha",show: true,onsaved: (value) {csenha = value;}),
                   Utils.spaceBigHeight,
                   Buttons_myclass.Button1(context,
-                      text: "Criar Conta", function: () => _showAlertDialog()),
+                      text: "Criar Conta", function: () async{
+                        _formKey.currentState.save();
+                        bool ok = await AuthController().cadastrar(context, nome, email, senha);
+                        if(ok){
+                          _showAlertDialog();
+                        }
+                      }),
                 ],
               ),
             ),
