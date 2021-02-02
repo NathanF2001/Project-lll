@@ -15,13 +15,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  String email;
+  String password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: _buildLoginPage(),
-      backgroundColor: Colors_myclass.main_color,
+      backgroundColor: Colors_myclass.app_color,
     );
   }
 
@@ -61,9 +63,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail"),
+                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;}),
                       Utils.spaceMediumHeight,
-                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true),
+                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {password = value;}),
                     ],
                   ),
                 ),
@@ -76,31 +78,15 @@ class _LoginPageState extends State<LoginPage> {
                       "Esqueci a senha",
                       textAlign: TextAlign.left,
                       style: TextStyle(
-                        color: Color(0xFF13CE61),
+                        color: Colors_myclass.app_color,
                       ),
                     ),
                   ),
                 ),
                 Utils.spaceBigHeight,
-                Buttons_myclass.Button1(context, text: "Entrar", function: () {
-                  List<dynamic> Turmas = [
-                    {
-                      "Nome_turma": "Engenharia para sistemas de informação l",
-                      "Nome_professor": "Cleviton Monteiro",
-                      "Info_turma":
-                          "Nesse curso introdutório sobre engenharia de software (ES) para sistemas "
-                              "de informação serão discutidos conceitos gerais da área de ES com aplicação prática dos conteúdos."
-                    },
-                    {
-                      "Nome_turma": "Desenvolvimento de Sistemas de Informação",
-                      "Nome_professor": "Gabriel Junior",
-                      "Info_turma":
-                          "Proporcionar aos estudantes uma experiência próxima à encontrada em projetos de"
-                              "desenvolvimento de sistemas de informação comerciais com linguagens orientadas a objetos,"
-                              "com o embasamento teórico-prático das ferramentas e métodos utilizados."
-                    },
-                  ];
-                  Nav.pushname(context, "/home", arguments: Turmas);
+                Buttons_myclass.Button1(context, text: "Entrar", colorbackground: Colors_myclass.black,function: () {
+                  _formKey.currentState.save();
+                  AuthController().signWithEmailAndPassword(context, email, password);
                 }),
                 Utils.spaceSmallHeight,
                 Container(
@@ -119,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontSize: 26.0,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF13CE61),
+                        color: Colors_myclass.app_color,
                       ),
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
+import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/TurmaController.dart';
 import 'package:myclass/models/Pessoa.dart';
@@ -82,7 +83,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   },
                 ),
                 Utils.spaceSmallHeight,
-                Buttons_myclass.Button1(context, text: "Criar", function: () async{
+                Buttons_myclass.Button1(context, text: "Criar", colorbackground: Colors_myclass.black,function: () async{
                   List<dynamic> values = Nav.getRouteArgs(context);
                   Pessoa user = values[0];
                   final id = values[1];

@@ -14,8 +14,6 @@ import 'package:myclass/pages/home_user/TurmasListview.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
-
-
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -24,18 +22,13 @@ class _UserPageState extends State<UserPage> {
   Pessoa user;
   String id;
   int index_atual = 0;
-
-
-
+  String code;
 
   @override
   Widget build(BuildContext context) {
     List<dynamic> values = Nav.getRouteArgs(context);
     user = values[0];
     id = values[1];
-
-
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -57,7 +50,7 @@ class _UserPageState extends State<UserPage> {
         onPressed: () {
           _showAlertDialog();
         },
-        backgroundColor: Colors_myclass.main_color,
+        backgroundColor: Colors_myclass.app_color,
         child: Icon(Icons.add),
       ),
       body: _listviewTurmas(),
@@ -66,21 +59,19 @@ class _UserPageState extends State<UserPage> {
 
   _SearchView() {
     return Container(
-      color: Colors_myclass.main_color,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
-      height: MediaQuery.of(context).size.height*0.125,
+      color: Colors_myclass.black,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.125,
       padding: EdgeInsets.all(16),
       child: TextField(
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search),
           labelText: "Pesquisar turmas",
-          labelStyle: TextStyle(color: Colors.grey,),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(16))
+          labelStyle: TextStyle(
+            color: Colors.grey,
           ),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16))),
           filled: true,
           fillColor: Colors.white,
         ),
@@ -93,12 +84,21 @@ class _UserPageState extends State<UserPage> {
       child: Column(
         children: [
           UserAccountsDrawerHeader(
-            accountName: Utils.text_style(user.nome),
-            accountEmail: Utils.text_style(user.email),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(user.UrlFoto),
-            )
-          ),
+              accountName: Utils.text_style(user.nome),
+              accountEmail: Utils.text_style(user.email),
+              currentAccountPicture: user.UrlFoto == ""
+                  ? Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.all(Radius.circular(100))),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey,
+                      ),
+                    )
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(user.UrlFoto),
+                    )),
           ListTile(
             title: Text("Alterar Perfil",
                 style: TextStyle(fontWeight: FontWeight.normal)),
@@ -116,14 +116,14 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.add_circle_outline),
             onTap: () {
-              Nav.pushname(context, "/create-turma", arguments: [user,id]);
+              Nav.pushname(context, "/create-turma", arguments: [user, id]);
             },
           ),
           Spacer(),
           ListTile(
             contentPadding: EdgeInsets.all(16),
             title:
-            Text("Logout", style: TextStyle(fontWeight: FontWeight.normal)),
+                Text("Logout", style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.logout),
             onTap: () {
               AuthController().logout();
@@ -136,10 +136,11 @@ class _UserPageState extends State<UserPage> {
   }
 
   _listviewTurmas() {
-    return TurmasListView(user.Turmas_reference);
+    return TurmasListView(user.Turmas_reference,id);
   }
 
-   _showAlertDialog() {
+  _showAlertDialog() {
+    final _formKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -149,26 +150,44 @@ class _UserPageState extends State<UserPage> {
           contentPadding: EdgeInsets.symmetric(horizontal: 16),
           title: Text(
             "Digite o código da turma",
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline6,
+            style: Theme.of(context).textTheme.headline6,
           ),
-          content: TextFormField(
-            style: TextStyle(
-              fontSize: 18,
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              decoration: InputDecoration(
+                  hintText: "Insira código da turma",
+                  hintStyle: TextStyle(
+                    fontSize: 18,
+                  ),
+                  labelText: "Código da turma",
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
+              onSaved: (String value) {
+                code = value;
+              },
             ),
-            decoration: InputDecoration(
-                hintText: "Insira código da turma",
-                hintStyle: TextStyle(
-                  fontSize: 18,
-                ),
-                labelText: "Código da turma",
-                labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
           ),
           actions: [
             FlatButton(
-              onPressed: () => Nav.pop(context),
+              onPressed: () async {
+                _formKey.currentState.save();
+                QuerySnapshot ref =
+                    await TurmaController().get_turmabycode(code);
+                DocumentReference id_turma = ref.docs.first.reference;
+
+                final json_turma = ref.docs.first.data();
+                Turma turma = Turma.fromJson(json_turma);
+                await TurmaController().update_Turma(id_turma, turma, id);
+                final info_user =
+                    await AuthController().update_Turmas(id_turma, id, user);
+                setState(() {
+                  user = info_user;
+                });
+                Nav.pop(context);
+              },
               child: Text("Entrar"),
               textColor: Colors.black87,
             )
@@ -176,5 +195,5 @@ class _UserPageState extends State<UserPage> {
         );
       },
     );
-   }
+  }
 }

@@ -9,6 +9,7 @@ class TurmaController {
 
     json["UrlTurma"] = pessoa.UrlFoto;
     json["Professor"] = id_professor;
+    json["Alunos"] = [];
 
     List<dynamic> turmas = pessoa.Turmas_reference;
 
@@ -25,6 +26,17 @@ class TurmaController {
         .update({"Turmas_reference": pessoa.Turmas_reference});
 
     return pessoa;
+  }
+
+  get_turmabycode(code)async{
+    return await _user.collection("Turmas").where("codigo",isEqualTo: code).get();
+  }
+
+  update_Turma(id_turma,Turma turma,id_pessoa) async{
+    print(id_turma);
+    print(id_pessoa);
+     await id_turma.collection("Alunos").doc(id_pessoa).set({"Atividades_entregues": 0});
+
   }
 
 

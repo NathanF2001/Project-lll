@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Turma{
   String Nome;
   String Descricao;
@@ -5,11 +7,10 @@ class Turma{
   String CodTurma;
   String UrlTurma;
   String Professor;
-  String id;
-  List<dynamic> Alunos;
+  DocumentReference id;
 
   Turma(this.Nome, this.Descricao, this.Modalidade, this.CodTurma,
-      this.UrlTurma, this.Professor, this.Alunos,this.id);
+      this.UrlTurma, this.Professor,this.id);
 
   Turma.fromJson(Map<String,dynamic> json){
     if (json == null) return;
@@ -20,7 +21,6 @@ class Turma{
     CodTurma = json["CodTurma"];
     UrlTurma = json["UrlTurma"];
     Professor = json["Professor"];
-    Alunos = json["Alunos"];
     id = json["id"];
   }
 
@@ -31,9 +31,9 @@ class Turma{
   "CodTurma": CodTurma,
   "UrlTurma": UrlTurma,
   "Professor": Professor,
-  "Alunos": Alunos,
     "id": id
   };
+
 
 
 }
