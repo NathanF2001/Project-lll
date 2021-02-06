@@ -1,19 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myclass/models/Alunos.dart';
+import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class ChatPage extends StatefulWidget {
-  bool IsProfessor;
+  DocumentReference user;
+  DocumentReference professor;
+  List<Future<Aluno>> alunos;
+  Turma turma;
 
 
-  ChatPage(this.IsProfessor);
+  ChatPage(this.user,this.professor,this.alunos,this.turma);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  bool get IsProfessor => widget.IsProfessor;
+  DocumentReference get user => widget.user;
+  DocumentReference get prof => widget.professor;
+  List<Future<Aluno>> get alunos => widget.alunos;
+  Turma get turma => widget.turma;
+
+  bool IsProfessor;
+
   List<Map<String,dynamic>> chats = [
     {
       "title": "Chat geral",
@@ -33,20 +45,33 @@ class _ChatPageState extends State<ChatPage> {
     {"type": "Add-button"}
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    IsProfessor = user.id == prof.id;
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
     return ListView.builder(
       itemCount: chats.length,
         itemBuilder: (BuildContext context,int index){
           Map<String,dynamic> chat = chats[index];
-          return index == (chats.length-1) ?
-              InkWell(
+          if (index == (chats.length-1) ){
+            if (IsProfessor){
+              return InkWell(
                 child: Text("Adicionar bate-papo",textAlign: TextAlign.center,style: TextStyle(color: Colors.grey),),
-                onTap: () => Nav.pushname(context, "/add-chat"),
-              )
-              :
-          Container(
+                onTap: () => Nav.pushname(context, "/add-chat",arguments: [turma,alunos]),
+              );
+            }else{
+              return Container();
+            }
+          }
+          return Container(
             margin: EdgeInsets.all(16),
 
             decoration: BoxDecoration(

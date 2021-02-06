@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myclass/models/Pessoa.dart';
 
 class Turma{
   String Nome;
@@ -6,7 +7,8 @@ class Turma{
   String Modalidade;
   String CodTurma;
   String UrlTurma;
-  String Professor;
+  Pessoa Professor;
+  int number_Aluno;
   DocumentReference id;
 
   Turma(this.Nome, this.Descricao, this.Modalidade, this.CodTurma,
@@ -20,7 +22,7 @@ class Turma{
     Modalidade = json["Modalidade"];
     CodTurma = json["CodTurma"];
     UrlTurma = json["UrlTurma"];
-    Professor = json["Professor"];
+    number_Aluno = json["number_Aluno"];
     id = json["id"];
   }
 
@@ -30,7 +32,7 @@ class Turma{
   "Modalidade": Modalidade,
   "CodTurma": CodTurma,
   "UrlTurma": UrlTurma,
-  "Professor": Professor,
+    "number_Aluno": number_Aluno,
     "id": id
   };
 

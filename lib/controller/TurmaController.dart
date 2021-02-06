@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 
@@ -10,6 +11,7 @@ class TurmaController {
     json["UrlTurma"] = pessoa.UrlFoto;
     json["Professor"] = id_professor;
     json["Alunos"] = [];
+    json["number_Aluno"] = 0;
 
     List<dynamic> turmas = pessoa.Turmas_reference;
 
@@ -32,10 +34,14 @@ class TurmaController {
     return await _user.collection("Turmas").where("codigo",isEqualTo: code).get();
   }
 
-  update_Turma(id_turma,Turma turma,id_pessoa) async{
+  update_Turma(DocumentReference id_turma,Turma turma,id_pessoa) async{
     print(id_turma);
     print(id_pessoa);
-     await id_turma.collection("Alunos").doc(id_pessoa).set({"Atividades_entregues": 0});
+    await id_turma.update({
+      "number_Aluno": FieldValue.increment(1),
+    });
+     await id_turma.collection("Alunos").add({"Atividades_entregues": 0,
+     "aluno": id_pessoa});
 
   }
 

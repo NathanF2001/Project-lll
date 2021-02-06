@@ -4,6 +4,7 @@ class Activity{
   List<dynamic> anexo;
   String prazo_dia;
   String prazo_hora;
+  int enviados;
 
   Activity.fromJson(Map<String,dynamic> json){
     if (json == null) return;
@@ -13,6 +14,7 @@ class Activity{
     anexo = json["anexo"];
     prazo_dia = json["prazo_dia"];
     prazo_hora = json["prazo_hora"];
+    enviados = json["enviados"];
   }
 
   Map<String, dynamic> ToJson() => {
@@ -20,6 +22,7 @@ class Activity{
     "orientacao": orientacao,
     "anexo": anexo,
     "prazo_dia": prazo_dia,
-    "prazo_hora": prazo_hora
+    "prazo_hora": prazo_hora,
+    "enviados": enviados,
   };
 }

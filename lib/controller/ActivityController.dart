@@ -13,8 +13,17 @@ class ActivityController{
       "anexo": anexo,
       "prazo_dia": prazo_dia,
       "prazo_hora": prazo_hora,
+      "enviados": 0,
     });
 
     return true;
   }
+
+  add_send(ref,number){
+    ref.update({
+      "enviados": FieldValue.increment(number)
+    });
+  }
+
+
 }

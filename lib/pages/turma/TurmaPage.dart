@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/controller/LoginController.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
@@ -16,18 +17,20 @@ class TurmaPage extends StatefulWidget {
 }
 
 class _TurmaPageState extends State<TurmaPage> {
-  String id_Professor;
+  DocumentReference id_user;
+  DocumentReference id_professor;
   Turma turma;
-  Pessoa professor;
+  List<Future<Aluno>> alunos;
 
 
 
   @override
   Widget build(BuildContext context) {
     List<dynamic> values = Nav.getRouteArgs(context);
-    id_Professor = values[0];
+    id_user = values[0];
     turma = values[1];
-    bool IsProfessor = id_Professor == turma.Professor;
+    id_professor = values[2];
+    alunos = values[3];
 
     return DefaultTabController(
         length: 3,
@@ -49,9 +52,9 @@ class _TurmaPageState extends State<TurmaPage> {
           ),
           body: TabBarView(
             children: [
-              ContentPage(IsProfessor,turma),
-              ActivityPage(IsProfessor,turma),
-              ChatPage(IsProfessor),
+              ContentPage(id_user,turma,id_professor),
+              ActivityPage(id_user,turma,id_professor),
+              ChatPage(id_user,id_professor,alunos,turma),
             ],
           ),
         ),);
