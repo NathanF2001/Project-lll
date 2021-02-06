@@ -24,12 +24,15 @@ class AuthController{
         idToken: googleAuth.idToken,
       );
 
+
       UserCredential result = await _auth.signInWithCredential(credential);
       final fuser = result.user;
 
-      Pessoa pessoa = await getInfo_user(fuser);
+      List<dynamic> result_firebase = await getInfo_user(fuser);
+      Pessoa pessoa = result_firebase[0]; // informações do usuario
+      DocumentReference id = result_firebase[1]; // referencia do usuario
 
-      return Nav.pushname(context, "/home",arguments: [pessoa,fuser.uid]);
+      return Nav.pushname(context, "/home",arguments: [pessoa,id]);
     }
     catch (error){
       print("Error que deu: ${error}");
@@ -46,9 +49,11 @@ class AuthController{
       print(fuser.photoURL);
       print(fuser.uid);
 
-      Pessoa pessoa = await getInfo_user(fuser);
+      List<dynamic> result_firebase = await getInfo_user(fuser);
+      Pessoa pessoa = result_firebase[0]; // informações do usuario
+      DocumentReference id = result_firebase[1]; // referencia do usuario
 
-      return Nav.pushname(context, "/home",arguments: [pessoa,fuser.uid]);
+      return Nav.pushname(context, "/home",arguments: [pessoa,id]);
     }catch(error){
       print("Error que deu: ${error}");
       return false;
@@ -76,8 +81,10 @@ class AuthController{
     final pessoa = Pessoa(email, nome, "", "", foto,[]);
 
     await _user.collection("Users").doc(id).set(pessoa.ToJson());
+    DocumentReference ref = _user.collection("Users").doc(id);
 
-    return pessoa;
+
+    return [pessoa,ref];
   }
 
   getInfo_user(fuser)async{
@@ -89,21 +96,21 @@ class AuthController{
       }
       else{
         final pessoa = Pessoa.fromJson(documentsnapshot.data());
-        return pessoa;
+        return [pessoa,documentsnapshot.reference];
       }
 
 
     });
   }
 
-  Future<DocumentSnapshot> get_user(id){
-    return _user.collection("Users").doc(id).get();
+  Future<DocumentSnapshot> get_user(ref) async {
+    return await ref.get();
   }
 
 
   update_Turmas(id_turma,id_pessoa,Pessoa pessoa){
     pessoa.add_turma(id_turma);
-    _user.collection("Users").doc(id_pessoa).update({
+    id_pessoa.update({
       "Turmas_reference": pessoa.Turmas_reference
     });
     return pessoa;

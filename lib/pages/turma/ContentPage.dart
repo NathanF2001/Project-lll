@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
@@ -9,39 +10,41 @@ import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class ContentPage extends StatefulWidget {
-  bool IsProfessor;
+  DocumentReference user;
+  DocumentReference professor;
   Turma turma;
 
-  ContentPage(this.IsProfessor, this.turma);
+  ContentPage(this.user, this.turma,this.professor);
 
   @override
   _ContentPageState createState() => _ContentPageState();
 }
 
 class _ContentPageState extends State<ContentPage> {
-  bool get IsProfessor => widget.IsProfessor;
+  DocumentReference get user => widget.user;
+  DocumentReference get prof => widget.professor;
 
   Turma get turma => widget.turma;
+
+  bool IsProfessor;
   Pessoa professor;
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: AuthController().get_user(turma.Professor),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    IsProfessor = user.id == prof.id;
+    professor = turma.Professor;
+  }
 
-          professor = Pessoa.fromJson(snapshot.data.data());
-          return Container(
-            child: Column(
-              children: [_addContent(), _ContentListview()],
-            ),
-          );
-        });
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      child: Column(
+        children: [_addContent(), _ContentListview()],
+      ),
+    );
   }
 
   _addContent() {
@@ -134,7 +137,7 @@ class _ContentPageState extends State<ContentPage> {
                                     width: 8,
                                   ),
                                   Container(
-                                    width: 200,
+                                    width: 150,
                                     child: Text(
                                       professor.nome,
                                       style: TextStyle(
@@ -185,7 +188,9 @@ class _ContentPageState extends State<ContentPage> {
                                 Container(
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
-                                    onPressed: (){},
+                                    onPressed: () async {
+                                      await AlunoController().getAllAlunos(turma.id);
+                                    },
                                     child: Text(
                                       "Ver mais >>",
                                       style:

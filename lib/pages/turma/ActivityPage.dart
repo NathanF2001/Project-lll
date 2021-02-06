@@ -8,41 +8,44 @@ import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/DetailActivityPageAluno.dart';
 
 class ActivityPage extends StatefulWidget {
-  bool IsProfessor;
+  DocumentReference user;
+  DocumentReference professor;
   Turma turma;
 
-  ActivityPage(this.IsProfessor, this.turma);
+  ActivityPage(this.user, this.turma, this.professor);
 
   @override
   _ActivityPageState createState() => _ActivityPageState();
 }
 
 class _ActivityPageState extends State<ActivityPage> {
-  bool get IsProfessor => widget.IsProfessor;
+  DocumentReference get user => widget.user;
+
+  DocumentReference get prof => widget.professor;
 
   Turma get turma => widget.turma;
+
+  bool IsProfessor;
   Pessoa professor;
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: AuthController().get_user(turma.Professor),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    IsProfessor = user.id == prof.id;
+    professor = turma.Professor;
+  }
 
-          professor = Pessoa.fromJson(snapshot.data.data());
-          return Container(
-            child: Column(
-              children: [_addContent(), _ContentListview()],
-            ),
-          );
-        });
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [_addContent(), _ContentListview()],
+      ),
+    );
   }
 
   _addContent() {
@@ -155,7 +158,9 @@ class _ActivityPageState extends State<ActivityPage> {
                           Container(
                             padding: EdgeInsets.only(left: 16),
                             child: Text("Prazo: ${atividade.prazo_dia}",
-                                style: TextStyle(color: Colors_myclass.white,fontStyle: FontStyle.italic)),
+                                style: TextStyle(
+                                    color: Colors_myclass.white,
+                                    fontStyle: FontStyle.italic)),
                           ),
                           Utils.spaceSmallHeight,
                           Container(
@@ -183,8 +188,22 @@ class _ActivityPageState extends State<ActivityPage> {
                                 Container(
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
-                                    onPressed: () {
-                                      Nav.pushname(context, "/detail-activity",arguments: [IsProfessor,atividade,turma]);
+                                    onPressed: () async {
+                                      if (IsProfessor) {
+                                        Nav.pushname(context,
+                                            "/detail-activity-professor",
+                                            arguments: [atividade, turma]);
+                                      } else {
+                                        final document = await turma.id
+                                            .collection("Alunos")
+                                            .where("aluno", isEqualTo: user)
+                                            .get();
+
+                                        Nav.push(
+                                            context,
+                                            DetailActivityPageAluno(turma, atividade, document,atividades[index].reference)
+                                        );
+                                      }
                                     },
                                     child: Text(
                                       "Ver mais >>",

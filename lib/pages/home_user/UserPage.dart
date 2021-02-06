@@ -20,7 +20,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   Pessoa user;
-  String id;
+  DocumentReference id;
   int index_atual = 0;
   String code;
 

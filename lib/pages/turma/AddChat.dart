@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
+import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/ChatController.dart';
+import 'package:myclass/models/Alunos.dart';
+import 'package:myclass/models/Turma.dart';
+
+import '../../nav.dart';
 
 class AddChat extends StatefulWidget {
   @override
@@ -9,23 +15,35 @@ class AddChat extends StatefulWidget {
 
 class _AddChatState extends State<AddChat> {
   final _formKey = GlobalKey<FormState>();
-  String current_aluno;
-  List<String> Alunos = [
-    "Todos os alunos",
-    "Aluno A",
-    "Aluno B",
-    "Aluno C",
-    "Aluno D",
-    "Aluno E",
-    "Aluno F",
-    "Aluno G",
-    "Aluno H",
-    "Aluno I",
-    "Aluno J",
-    "Aluno K"
-  ];
+  List<Future<Aluno>> alunos;
+  Turma turma;
+  Aluno current_aluno;
+  String nomeChat;
+  List<Aluno> alunos_da_turma = [];
 
-  List<Widget> Wrap_alunos = [];
+  List<Aluno> Wrap_alunos = [];
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Future.delayed(Duration.zero).then((value) async {
+      List<dynamic> values = Nav.getRouteArgs(context);
+      turma = values[0];
+      alunos = values[1];
+
+      await _transformFuture();
+      setState(() {});
+    });
+  }
+
+  void _transformFuture() async {
+    await alunos.forEach((element) {
+      element.then((value) => alunos_da_turma.add(value));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +53,7 @@ class _AddChatState extends State<AddChat> {
           color: Colors.white,
         ),
         title: Text(
-          "Nome da turma",
+          turma != null ? turma.Nome : "",
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -54,32 +72,40 @@ class _AddChatState extends State<AddChat> {
             Utils.spaceBigHeight,
             Utils.Text_input(
                 hintmensage: "Digite nome do Bate-papo",
-                labelmensage: "Nome do bate-papo"),
+                labelmensage: "Nome do bate-papo",
+            onsaved: (value){
+                  nomeChat = value;
+            }),
             Utils.spaceBigHeight,
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.75,
                   child: DropdownButtonFormField(
                     decoration: const InputDecoration(
                       labelText: 'Alunos*',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16))),
                     ),
-                    items: Alunos.map<DropdownMenuItem<String>>((aluno) {
-                      return DropdownMenuItem<String>(
+                    items:
+                    alunos_da_turma.map<DropdownMenuItem<Aluno>>((aluno) {
+                      return DropdownMenuItem<Aluno>(
                         value: aluno,
-                        child: Text(aluno),
+                        child: Text(aluno.info.nome),
                       );
                     }).toList(),
-                    value: "Todos os alunos",
+                    value: current_aluno,
                     onChanged: (value) {
                       current_aluno = value;
                     },
-                    onSaved: (newValue) {},
+                    onSaved: (newValue) {
+
+                    },
                   ),
                 ),
                 Container(
@@ -90,24 +116,56 @@ class _AddChatState extends State<AddChat> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        Wrap_alunos.add(Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              current_aluno,
-                              textAlign: TextAlign.center,
-                            ),
-                            color: Colors.grey[100]));
+                        print(current_aluno);
+                        Wrap_alunos.add(current_aluno);
                       });
                     },
                   ),
                 )
               ],
             ),
+            Utils.spaceMediumHeight,
             Wrap(
-              children: Wrap_alunos,
+                children: Wrap_alunos.map((element) {
+                  return Dismissible(
+                    key: UniqueKey(),
+                    onDismissed: (direction) {
+                      Wrap_alunos.remove(element);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors_myclass.black,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        element.info.nome,
+                        style: TextStyle(
+                            color: Colors_myclass.white,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ),
+                    background: Container(
+                      color: Colors.red,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(Icons.delete, color: Colors.white),
+                          Spacer(),
+                          Icon(Icons.delete, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              alignment: WrapAlignment.center,
             ),
             Utils.spaceBigHeight,
-            Buttons_myclass.Button1(context, text: "Criar bate-papo",function: (){})
+            Buttons_myclass.Button1(context,
+                text: "Criar bate-papo",
+                function: () {
+                  _formKey.currentState.save();
+                  ChatController().add(turma.id,nomeChat,Wrap_alunos);
+                },
+                colorbackground: Colors_myclass.black)
           ],
         ),
       ),
