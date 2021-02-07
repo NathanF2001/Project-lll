@@ -24,18 +24,23 @@ class AlunoController{
     ref.set({"${data}_links": links},SetOptions(merge: true));
   }
 
-  set_nota(ref,name_activity,nota) async {
-    await ref.update({
-      "${name_activity}_nota": nota
+  set_nota(Query ref,name_activity,nota) async {
+    await ref.get().then((value) {
+      value.docs.first.reference.update({
+        "${name_activity}_nota": nota
+      });
     });
     return true;
+  }
+  
+  getbyref(DocumentReference ref_turma,DocumentReference ref_pessoa) async{
+    return ref_turma.collection("Alunos").where("aluno",isEqualTo: ref_pessoa).get().then((value) => value.docs.first.data());
   }
 
   getAllAlunos(DocumentReference ref)async{
     List<Future<Aluno>> alunos = await ref.collection("Alunos").get()
         .then((document)async => await document.docs.map((element) async {
           final data = element.data();
-          print(data);
           Aluno aluno = Aluno.fromJson({
             "atividades": data,
           });
@@ -48,6 +53,12 @@ class AlunoController{
           return aluno;
     }).toList());
 
-    return alunos;
+    List<Aluno> alunos_da_turma = [];
+
+    await alunos.forEach((element) {
+      element.then((value) => alunos_da_turma.add(value));
+    });
+
+    return alunos_da_turma;
   }
 }

@@ -8,23 +8,26 @@ import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class ListAlunos extends StatefulWidget {
   Activity atividade;
-  final alunos;
+  final map_alunos;
+  Turma turma;
 
-  ListAlunos(this.atividade, this.alunos);
+  ListAlunos(this.atividade, this.map_alunos, this.turma);
 
   @override
   _ListAlunosState createState() => _ListAlunosState();
 }
 
 class _ListAlunosState extends State<ListAlunos> {
-  get atividade => widget.atividade;
+  Activity get atividade => widget.atividade;
 
-  QuerySnapshot get alunos => widget.alunos;
+  Map<dynamic, dynamic> get map_alunos => widget.map_alunos;
 
+  Turma get turma => widget.turma;
 
   @override
   Widget build(BuildContext context) {
@@ -38,122 +41,127 @@ class _ListAlunosState extends State<ListAlunos> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: ListView.builder(
-            itemCount: alunos.docs.length,
-            itemBuilder: (context, index) {
-              final info = alunos.docs[index].data();
-              Aluno aluno = Aluno.fromJson({"atividades":info});
-              List<dynamic> links =
-                  aluno.atividades["${atividade.titulo}_links"];
+        body: StreamBuilder(
+          stream: turma.id.collection("Alunos").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container();
+            }
 
-              return FutureBuilder(
-                  future: info["aluno"].get(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container();
-                    }
+            final alunos = snapshot.data.docs;
 
-                    final data = snapshot.data.data();
-                    Pessoa info_aluno = Pessoa.fromJson(data);
-                    aluno.info = info_aluno;
-                    return Container(
-                        margin: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                            color: Colors_myclass.black,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child: Row(
-                                children: [
-                                  aluno.info.UrlFoto == ""
-                                      ? Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey[200],
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(100))),
-                                          child: Icon(
-                                            Icons.person,
-                                            color: Colors.grey,
-                                            size: 50.0,
-                                          ),
-                                        )
-                                      : CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(aluno.info.UrlFoto),
+            return ListView.builder(
+                itemCount: alunos.length,
+                itemBuilder: (context, index) {
+                  final data = alunos[index].data();
+                  Aluno aluno = Aluno.fromJson({
+                    "atividades": data,
+                  });
+                  aluno.info = map_alunos[data["aluno"].id];
+
+                  List<dynamic> links =
+                      aluno.atividades["${atividade.titulo}_links"];
+
+                  return Container(
+                      margin: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          color: Colors_myclass.black,
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                aluno.info.UrlFoto == ""
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(100))),
+                                        child: Icon(
+                                          Icons.person,
+                                          color: Colors.grey,
+                                          size: 50.0,
                                         ),
-                                  SizedBox(
-                                    width: 16,
-                                  ),
-                                  Container(
-                                    width: 180,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          aluno.info.nome,
-                                          style: TextStyle(
-                                            color: Colors_myclass.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 24,
-                                          ),
+                                      )
+                                    : CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(aluno.info.UrlFoto),
+                                      ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Container(
+                                  width: 180,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        aluno.info.nome,
+                                        style: TextStyle(
+                                          color: Colors_myclass.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 24,
                                         ),
-                                        Text(
-                                          aluno.info.email,
-                                          style: TextStyle(
-                                            color: Colors_myclass.white,
-                                          ),
+                                      ),
+                                      Text(
+                                        aluno.info.email,
+                                        style: TextStyle(
+                                          color: Colors_myclass.white,
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    aluno.atividades["${atividade.titulo}_nota"] == ""
-                                        ? "Nota: "
-                                        : "Nota: ${aluno.atividades["${atividade.titulo}_nota"]}/10",
-                                    style: TextStyle(
-                                      color: Colors_myclass.white,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.only(left: 16),
+                            child: Text(
+                              aluno.atividades["${atividade.titulo}_nota"] == ""
+                                  ? "Nota: Não definido"
+                                  : "Nota: ${aluno.atividades["${atividade.titulo}_nota"]}/10",
+                              style: TextStyle(
+                                color: Colors_myclass.white,
                               ),
                             ),
-                            Utils.spaceMediumHeight,
-                            Wrap(
-                              children: links
-                                  .map((e) => Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 4),
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 4),
-                                        width: 300,
-                                        decoration: BoxDecoration(
-                                            color: Colors_myclass.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(8))),
-                                        child: Text(e),
-                                      ))
-                                  .toList(),
-                            ),
-                            Utils.spaceMediumHeight,
-                            Buttons_myclass.Button1(context,
-                                text: "Dar nota",
-                                function: () {
-                              _showAlertDialog();
-                                },
-                                colorbackground: Colors_myclass.white,
-                                textcolor: Colors_myclass.black),
-                            Utils.spaceMediumHeight
-                          ],
-                        ));
-                  });
-            }));
+                          ),
+                          Utils.spaceMediumHeight,
+                          Wrap(
+                            children: links
+                                .map((e) => Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 4),
+                                      margin: EdgeInsets.symmetric(vertical: 4),
+                                      width: 300,
+                                      decoration: BoxDecoration(
+                                          color: Colors_myclass.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8))),
+                                      child: Text(e),
+                                    ))
+                                .toList(),
+                          ),
+                          Utils.spaceMediumHeight,
+                          Buttons_myclass.Button1(context, text: "Dar nota",
+                              function: () {
+                            _showAlertDialog(aluno);
+                          },
+                              colorbackground: Colors_myclass.white,
+                              textcolor: Colors_myclass.black),
+                          Utils.spaceMediumHeight
+                        ],
+                      ));
+                });
+          },
+        ));
   }
 
-  _showAlertDialog() {
+  _showAlertDialog(aluno) {
     final _formKeyLink = GlobalKey<FormState>();
     String nota = "";
     return showDialog(
@@ -168,48 +176,44 @@ class _ListAlunosState extends State<ListAlunos> {
             style: Theme.of(context).textTheme.headline6,
           ),
           content: Form(
-            key: _formKeyLink,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextFormField(
-                    style: TextStyle(
-                      fontSize: 18,
+              key: _formKeyLink,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: TextFormField(
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                      decoration: InputDecoration(
+                          hintText: "Insira nota",
+                          hintStyle: TextStyle(
+                            fontSize: 18,
+                          ),
+                          labelText: "Nota",
+                          labelStyle:
+                              TextStyle(fontSize: 18, color: Colors.black)),
+                      onSaved: (String value) {
+                        nota = value;
+                      },
                     ),
-                    decoration: InputDecoration(
-                        hintText: "Insira nota",
-                        hintStyle: TextStyle(
-                          fontSize: 18,
-                        ),
-                        labelText: "Nota",
-                        labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
-                    onSaved: (String value) {
-                      nota = value;
-                    },
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                    child: Text(
-                  "/"
-                )
-                ),
-                Expanded(
-                  flex: 1,
-                    child: Text(
-                    "10"
-                )
-                ),
-              ],
-            )
-          ),
+                  Expanded(flex: 1, child: Text("/")),
+                  Expanded(flex: 1, child: Text("10")),
+                ],
+              )),
           actions: [
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
-                await AlunoController().set_nota(alunos.docs.first.reference, atividade.titulo, nota);
+                await AlunoController().set_nota(
+                    turma.id
+                        .collection("Alunos")
+                        .where("aluno", isEqualTo: aluno.atividades["aluno"]),
+                    atividade.titulo,
+                    nota);
+                setState(() {});
                 Nav.pop(context);
               },
               child: Text("Dar nota"),

@@ -10,28 +10,28 @@ import 'package:myclass/nav.dart';
 import 'package:myclass/pages/home_user/TurmasTemplate.dart';
 
 class TurmasListView extends StatefulWidget {
-  List<dynamic> Turmas;
+  Pessoa user;
   DocumentReference id_user;
 
-  TurmasListView(this.Turmas, this.id_user);
+  TurmasListView(this.user, this.id_user);
 
   @override
   _TurmasListViewState createState() => _TurmasListViewState();
 }
 
 class _TurmasListViewState extends State<TurmasListView> {
-  List<dynamic> get Turmas => widget.Turmas;
+  Pessoa get user => widget.user;
 
   DocumentReference get id_user => widget.id_user;
 
   @override
   Widget build(BuildContext context) {
-    return Turmas.isEmpty
+    return user.Turmas_reference.isEmpty
         ? Container()
         : StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("Turmas")
-            .where("id", whereIn: Turmas)
+            .where("id", whereIn: user.Turmas_reference)
             .snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -81,8 +81,9 @@ class _TurmasListViewState extends State<TurmasListView> {
                                 child: TurmasTemplate(turma),
                                 onTap: () async {
                                   final alunos = await AlunoController().getAllAlunos(turma.id);
+
                                   Nav.pushname(context, "/turma-page",
-                                      arguments: [id_user, turma,info_turma["Professor"],alunos]);
+                                      arguments: [id_user, turma,info_turma["Professor"],alunos,user]);
                                 },
                               ));
                         });

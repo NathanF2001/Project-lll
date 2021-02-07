@@ -1,14 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
-import 'package:myclass/controller/AlunoController.dart';
-import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Alunos.dart';
-import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/turma/listviewAlunos.dart';
@@ -22,12 +18,14 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
   Turma turma;
   Activity atividade;
   bool send;
+  List<Aluno> alunos;
 
   @override
   Widget build(BuildContext context) {
     List values = Nav.getRouteArgs(context);
     atividade = values[0];
     turma = values[1];
+    alunos = values[2];
 
     return Scaffold(
       appBar: AppBar(
@@ -44,12 +42,11 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
   }
 
   _buildActivityInfo(context) {
-    Query dados = turma.id.collection("Alunos").where(atividade.titulo, isEqualTo: true);
-    return _WidgetDetail(atividade.enviados,dados.snapshots());
+    return _WidgetDetail(atividade.enviados);
   }
 
 
-  _WidgetDetail(int done,alunos) {
+  _WidgetDetail(int done) {
 
     return SingleChildScrollView(
       child: Container(
@@ -111,7 +108,14 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                 context, colorbackground: Colors_myclass.black,
                 text: "Ver atividades dos alunos",
                 function: () {
-                  Nav.push(context, ListAlunos(atividade,alunos));
+                  final map_aluno = {};
+                  print(alunos);
+                  alunos.forEach((e) {
+                    print(e.atividades);
+                    map_aluno[e.atividades["aluno"].id]= e.info;
+                  });
+
+                  Nav.push(context, ListAlunos(atividade,map_aluno,turma));
                 },
                 fontsize: 20.0),
           ],

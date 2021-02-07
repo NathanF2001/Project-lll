@@ -4,6 +4,7 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
@@ -14,8 +15,9 @@ class ActivityPage extends StatefulWidget {
   DocumentReference user;
   DocumentReference professor;
   Turma turma;
+  List<Aluno> alunos;
 
-  ActivityPage(this.user, this.turma, this.professor);
+  ActivityPage(this.user, this.turma, this.professor,this.alunos);
 
   @override
   _ActivityPageState createState() => _ActivityPageState();
@@ -27,6 +29,8 @@ class _ActivityPageState extends State<ActivityPage> {
   DocumentReference get prof => widget.professor;
 
   Turma get turma => widget.turma;
+
+  List<Aluno> get alunos => widget.alunos;
 
   bool IsProfessor;
   Pessoa professor;
@@ -192,7 +196,7 @@ class _ActivityPageState extends State<ActivityPage> {
                                       if (IsProfessor) {
                                         Nav.pushname(context,
                                             "/detail-activity-professor",
-                                            arguments: [atividade, turma]);
+                                            arguments: [atividade, turma, alunos]);
                                       } else {
                                         final document = await turma.id
                                             .collection("Alunos")

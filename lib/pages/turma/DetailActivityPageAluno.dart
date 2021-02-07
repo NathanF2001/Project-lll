@@ -79,14 +79,18 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
                 style: TextStyle(color: Colors.grey[600]),
               ),
               Text(
-                send ? "Status: Enviado": "Status: Pendente",
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              Text(
                 atividade.prazo_hora,
                 style: TextStyle(color: Colors.grey[600]),
               )
             ],
+          ),
+          Utils.spaceSmallHeight,
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: Text(
+              send ? "Status: Enviado": "Status: Pendente",
+              style: TextStyle(color: Colors.grey[600]),
+            ),
           ),
           Utils.spaceBigHeight,
           Text(

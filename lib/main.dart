@@ -10,6 +10,7 @@ import 'package:myclass/pages/turma/AddContent.dart';
 import 'package:myclass/pages/turma/DetailActivityPage.dart';
 import 'package:myclass/pages/turma/DetailActivityPageAluno.dart';
 import 'package:myclass/pages/turma/TalkPage.dart';
+import 'package:myclass/pages/turma/TalkPageProf.dart';
 import 'package:myclass/pages/turma/TurmaPage.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 import 'package:myclass/pages/user_auth/RegisterPage.dart';
@@ -73,13 +74,13 @@ class MyApp extends StatelessWidget {
       "/" : (context) => LoginPage(),
       "/register": (context) => RegisterPage(),
       "/home": (context) => UserPage(),
-      "/profile": (context) => ProfilePage(),
       "/create-turma": (context) => CreateTurma(),
       "/turma-page": (context) => TurmaPage(),
       "/add-content": (context) => AddContent(),
       "/add-activity": (context) => AddActivity(),
       "/add-chat": (context) => AddChat(),
       "/mensage-page": (context) => MensagePage(),
+      "/mensage-prof-page": (context) => MensageProfPage(),
       "/detail-activity-professor": (context) => DetailActivityPage(),
     };
   }

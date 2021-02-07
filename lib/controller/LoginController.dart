@@ -27,6 +27,8 @@ class AuthController{
 
       UserCredential result = await _auth.signInWithCredential(credential);
       final fuser = result.user;
+      print(fuser.email);
+      print(fuser.displayName);
 
       List<dynamic> result_firebase = await getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario

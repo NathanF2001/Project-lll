@@ -1,0 +1,100 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:myclass/Colors.dart';
+import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/Alunos.dart';
+import 'package:myclass/models/Turma.dart';
+
+class NotasAluno extends StatelessWidget {
+  Turma turma;
+  List<QueryDocumentSnapshot> ref_atividades;
+  Aluno aluno;
+  List<Activity> atividades;
+
+  NotasAluno(this.turma, this.ref_atividades, this.aluno);
+
+  @override
+  Widget build(BuildContext context) {
+    atividades = ref_atividades.map((e) => Activity.fromJson(e.data())).toList();
+
+    return Scaffold(
+        appBar: AppBar(
+      iconTheme: IconThemeData(
+        color: Colors.white,
+      ),
+      title: Text(
+        turma.Nome,
+        style: TextStyle(color: Colors.white),
+      ),
+    ),
+    body: _buildNotaAluno(context),);
+  }
+
+  _buildNotaAluno(context) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(16),
+
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              color: Colors_myclass.black,
+              child: Row(
+                children: [
+                  aluno.info.UrlFoto == ""
+                      ? Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.all(Radius.circular(100))),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.grey,
+                      size: 50.0,
+                    ),
+                  )
+                      : CircleAvatar(
+                    backgroundImage: NetworkImage(aluno.info.UrlFoto),
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(aluno.info.nome,
+                        style: TextStyle(fontWeight: FontWeight.w800,fontSize: 24,color: Colors_myclass.white),),
+                      Text(aluno.info.email,
+                        style: TextStyle(color: Colors_myclass.white),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Container(
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text(
+                      'Atividade',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
+                  ),),
+                  DataColumn(label: Text(
+                      'Nota',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
+                  )),
+                ],
+                rows: atividades.map((e) => DataRow(
+                  cells: [
+                    DataCell(Text(e.titulo)),
+                    DataCell(Text(aluno.atividades["${e.titulo}_nota"] == "" ? "Sem nota" : aluno.atividades["${e.titulo}_nota"],))
+                  ]
+                )).toList(),
+              )
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
