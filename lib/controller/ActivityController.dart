@@ -25,5 +25,9 @@ class ActivityController{
     });
   }
 
+  getAllActivities()async{
+    return _content.get().then((value) => value.docs);
+  }
+
 
 }

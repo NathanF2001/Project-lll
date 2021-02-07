@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "775465729798-6gunc59t21gimdag89tja9i0s0ei2m5v.apps.googleusercontent.com",
+          "client_id": "775465729798-3173lpaq97cfjfntp5qk407dmm0uoi7r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "dsi.project.com.myclass",
-            "certificate_hash": "a13799fe1650419ed3aa10220bd7caf9c57cecb0"
+            "certificate_hash": "0e97474d1b06c8b6507a8bf9948a7c76097d935e"
           }
         },
         {

@@ -5,11 +5,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/ActivityController.dart';
+import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/controller/TurmaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/home_user/ProfilePage.dart';
 import 'package:myclass/pages/home_user/TurmasListview.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 
@@ -103,7 +106,7 @@ class _UserPageState extends State<UserPage> {
             title: Text("Alterar Perfil",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.person),
-            onTap: () => Nav.pushname(context, "/profile"),
+            onTap: () => Nav.push(context, ProfilePage(user)),
           ),
           ListTile(
             title: Text("Preencher dados socioeconômicos",
@@ -136,7 +139,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   _listviewTurmas() {
-    return TurmasListView(user.Turmas_reference,id);
+    return TurmasListView(user,id);
   }
 
   _showAlertDialog() {
@@ -173,6 +176,7 @@ class _UserPageState extends State<UserPage> {
           actions: [
             FlatButton(
               onPressed: () async {
+
                 _formKey.currentState.save();
                 QuerySnapshot ref =
                     await TurmaController().get_turmabycode(code);
@@ -180,9 +184,18 @@ class _UserPageState extends State<UserPage> {
 
                 final json_turma = ref.docs.first.data();
                 Turma turma = Turma.fromJson(json_turma);
+
                 await TurmaController().update_Turma(id_turma, turma, id);
                 final info_user =
                     await AuthController().update_Turmas(id_turma, id, user);
+
+                ActivityController atividade = ActivityController(turma.id.collection("Activity"));
+
+                List<dynamic> atividades = await atividade.getAllActivities();
+                print(atividades.first.data());
+                atividades.forEach((element) {
+                  AlunoController().addActivitytoAlunos(turma.id.collection("Alunos"),element["titulo"]); });
+
                 setState(() {
                   user = info_user;
                 });

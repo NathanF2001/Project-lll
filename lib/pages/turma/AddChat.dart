@@ -15,38 +15,21 @@ class AddChat extends StatefulWidget {
 
 class _AddChatState extends State<AddChat> {
   final _formKey = GlobalKey<FormState>();
-  List<Future<Aluno>> alunos;
+  List<Aluno> alunos;
   Turma turma;
   Aluno current_aluno;
   String nomeChat;
-  List<Aluno> alunos_da_turma = [];
 
   List<Aluno> Wrap_alunos = [];
 
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
 
-    Future.delayed(Duration.zero).then((value) async {
-      List<dynamic> values = Nav.getRouteArgs(context);
-      turma = values[0];
-      alunos = values[1];
-
-      await _transformFuture();
-      setState(() {});
-    });
-  }
-
-  void _transformFuture() async {
-    await alunos.forEach((element) {
-      element.then((value) => alunos_da_turma.add(value));
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    List<dynamic> values = Nav.getRouteArgs(context);
+    turma = values[0];
+    alunos = values[1];
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -93,7 +76,7 @@ class _AddChatState extends State<AddChat> {
                           borderRadius: BorderRadius.all(Radius.circular(16))),
                     ),
                     items:
-                    alunos_da_turma.map<DropdownMenuItem<Aluno>>((aluno) {
+                    alunos.map<DropdownMenuItem<Aluno>>((aluno) {
                       return DropdownMenuItem<Aluno>(
                         value: aluno,
                         child: Text(aluno.info.nome),
@@ -164,6 +147,7 @@ class _AddChatState extends State<AddChat> {
                 function: () {
                   _formKey.currentState.save();
                   ChatController().add(turma.id,nomeChat,Wrap_alunos);
+                  Nav.pop(context);
                 },
                 colorbackground: Colors_myclass.black)
           ],
