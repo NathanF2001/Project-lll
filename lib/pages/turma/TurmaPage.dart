@@ -14,6 +14,7 @@ import 'package:myclass/pages/turma/ContentPage.dart';
 import 'package:myclass/pages/turma/InfoTurma.dart';
 import 'package:myclass/pages/turma/ListPessoa.dart';
 import 'package:myclass/pages/turma/NotaAluno.dart';
+import 'package:myclass/pages/turma/ProfessorNotasAlunos.dart';
 
 class TurmaPage extends StatefulWidget {
   @override
@@ -74,11 +75,12 @@ class _TurmaPageState extends State<TurmaPage> {
                   PopupMenuItem(
                       child: InkWell(
                     onTap: () async {
+                      ActivityController controller = ActivityController(turma.id.collection("Activity"));
+                      List<QueryDocumentSnapshot> atividades = await controller.getAllActivities();
                       if (id_professor == id_user) {
-                        return null;
+                        Nav.push(context, ProfessorNotasAlunos(turma, atividades, alunos));
                       } else {
-                        ActivityController controller = ActivityController(turma.id.collection("Activity"));
-                        List<QueryDocumentSnapshot> atividades = await controller.getAllActivities();
+                        
                         final info_aluno = await AlunoController().getbyref(turma.id, id_user);
                         Aluno aluno = Aluno.fromJson({"atividades": info_aluno});
                         aluno.info = user;
