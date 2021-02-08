@@ -189,7 +189,7 @@ class _ContentPageState extends State<ContentPage> {
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
-                                      await AlunoController().getAllAlunos(turma.id);
+
                                     },
                                     child: Text(
                                       "Ver mais >>",
