@@ -8,6 +8,9 @@ class TurmaController {
 
   create_turma(json,Pessoa pessoa,id_professor) async {
 
+    /**
+      Método para criar turma
+     **/
     json["UrlTurma"] = pessoa.UrlFoto;
     json["Professor"] = id_professor;
     json["Alunos"] = [];
@@ -31,18 +34,35 @@ class TurmaController {
   }
 
   get_turmabycode(code)async{
+    /**
+      Método de um aluno recuperar referencia da turma que ele colocou codigo
+    **/
     return await _user.collection("Turmas").where("codigo",isEqualTo: code).get();
   }
 
-  update_Turma(DocumentReference id_turma,Turma turma,id_pessoa) async{
-    print(id_turma);
-    print(id_pessoa);
+  addAlunoTurma(DocumentReference id_turma,Turma turma,id_pessoa) async{
+    /**
+      Método para adicionar um aluno na turma
+     **/
+    await _updateNumberAlunos(id_turma);
+    return await _addAluno(id_turma,id_pessoa);
+  }
+
+  _updateNumberAlunos(id_turma) async {
+    /**
+      Método para atualizar o número de alunos da turma
+     **/
     await id_turma.update({
       "number_Aluno": FieldValue.increment(1),
     });
-     await id_turma.collection("Alunos").add({"Atividades_entregues": 0,
-     "aluno": id_pessoa});
+  }
 
+  _addAluno(DocumentReference id_turma,id_pessoa) async{
+    /**
+      Método para adicionar informações do aluno na turma
+     **/
+   return await id_turma.collection("Alunos").add({"Atividades_entregues": 0,
+      "aluno": id_pessoa});
   }
 
 

@@ -7,6 +7,9 @@ class ContentController{
   ContentController(this._content);
 
   add_content(titulo,descricao,anexo) async{
+    /**
+     * Método para criar conteúdo
+     */
     await _content.add({
       "titulo": titulo,
       "orientacao": descricao,

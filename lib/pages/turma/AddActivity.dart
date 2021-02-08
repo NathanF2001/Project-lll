@@ -167,7 +167,8 @@ class _AddActivityState extends State<AddActivity> {
                     _formKey.currentState.save();
                     ActivityController atividade = ActivityController(turma.id.collection("Activity"));
                     atividade.add_activity(titulo, orientacao, links,prazo_dia,prazo_hora);
-                    AlunoController().addActivitytoAlunos(turma.id.collection("Alunos"),titulo);
+
+                    atividade.addActivitiestoAlunos(turma.id.collection("Alunos"),titulo);
                     Nav.pop(context);
                   })
             ],

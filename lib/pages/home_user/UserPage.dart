@@ -8,6 +8,7 @@ import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
+import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/controller/TurmaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
@@ -50,7 +51,7 @@ class _UserPageState extends State<UserPage> {
       ),
       drawer: _DrawerUser(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async{
           _showAlertDialog();
         },
         backgroundColor: Colors_myclass.app_color,
@@ -185,16 +186,12 @@ class _UserPageState extends State<UserPage> {
                 final json_turma = ref.docs.first.data();
                 Turma turma = Turma.fromJson(json_turma);
 
-                await TurmaController().update_Turma(id_turma, turma, id);
+                DocumentReference ref_aluno = await TurmaController().addAlunoTurma(id_turma, turma, id);
                 final info_user =
-                    await AuthController().update_Turmas(id_turma, id, user);
+                    await PessoaController().update_Turmas(id_turma, id, user);
 
                 ActivityController atividade = ActivityController(turma.id.collection("Activity"));
-
-                List<dynamic> atividades = await atividade.getAllActivities();
-                print(atividades.first.data());
-                atividades.forEach((element) {
-                  AlunoController().addActivitytoAlunos(turma.id.collection("Alunos"),element["titulo"]); });
+                atividade.addAllActitiviesAluno(ref_aluno);
 
                 setState(() {
                   user = info_user;
