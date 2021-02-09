@@ -4,27 +4,34 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
+import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'file:///D:/Faculdade/Projeto%20lll/myclass/lib/pages/turma/Atividade/DetailActivityPageAluno.dart';
 
-class ContentPage extends StatefulWidget {
-  DocumentReference user;
-  DocumentReference professor;
+class ActivityPage extends StatefulWidget {
+  DocumentReference id_user;
+  DocumentReference id_professor;
   Turma turma;
+  List<Aluno> alunos;
 
-  ContentPage(this.user, this.turma,this.professor);
+  ActivityPage(this.id_user, this.turma, this.id_professor,this.alunos);
 
   @override
-  _ContentPageState createState() => _ContentPageState();
+  _ActivityPageState createState() => _ActivityPageState();
 }
 
-class _ContentPageState extends State<ContentPage> {
-  DocumentReference get user => widget.user;
-  DocumentReference get prof => widget.professor;
+class _ActivityPageState extends State<ActivityPage> {
+  DocumentReference get id_user => widget.id_user;
+
+  DocumentReference get id_prof => widget.id_professor;
 
   Turma get turma => widget.turma;
+
+  List<Aluno> get alunos => widget.alunos;
 
   bool IsProfessor;
   Pessoa professor;
@@ -33,13 +40,12 @@ class _ContentPageState extends State<ContentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    IsProfessor = user.id == prof.id;
+    IsProfessor = id_user.id == id_prof.id;
     professor = turma.Professor;
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       child: Column(
         children: [_addContent(), _ContentListview()],
@@ -55,7 +61,7 @@ class _ContentPageState extends State<ContentPage> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           onPressed: () =>
-              Nav.pushname(context, "/add-content", arguments: turma),
+              Nav.pushname(context, "/add-activity", arguments: turma),
           textColor: Colors.grey,
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -66,7 +72,7 @@ class _ContentPageState extends State<ContentPage> {
             height: 50,
             alignment: Alignment.center,
             child: Text(
-              "Adicionar um conteúdo",
+              "Adicionar uma atividade",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -87,7 +93,7 @@ class _ContentPageState extends State<ContentPage> {
             ? MediaQuery.of(context).size.height - 200
             : MediaQuery.of(context).size.height - 150,
         child: StreamBuilder(
-            stream: turma.id.collection("Content").snapshots(),
+            stream: turma.id.collection("Activity").snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {
@@ -96,13 +102,15 @@ class _ContentPageState extends State<ContentPage> {
                 );
               }
 
-              final conteudos = snapshot.data.docs;
+              final atividades = snapshot.data.docs;
 
               return ListView.builder(
-                  itemCount: conteudos.length,
+                  itemCount: atividades.length,
                   itemBuilder: (context, index) {
-                    Content conteudo =
-                        Content.fromJson(conteudos[index].data());
+
+                    final snapshot_atividade = atividades[index];
+                    Activity atividade =
+                        Activity.fromJson(snapshot_atividade.data());
                     return Container(
                       margin: EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -121,14 +129,18 @@ class _ContentPageState extends State<ContentPage> {
                         ],
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Utils.spaceSmallHeight,
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
+                                  SizedBox(
+                                    width: 8,
+                                  ),
                                   CircleAvatar(
                                     backgroundImage:
                                         NetworkImage(professor.UrlFoto),
@@ -137,7 +149,7 @@ class _ContentPageState extends State<ContentPage> {
                                     width: 8,
                                   ),
                                   Container(
-                                    width: 150,
+                                    width: 200,
                                     child: Text(
                                       professor.nome,
                                       style: TextStyle(
@@ -147,22 +159,17 @@ class _ContentPageState extends State<ContentPage> {
                                   )
                                 ],
                               ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(conteudo.data,
-                                      style: TextStyle(
-                                          color: Colors_myclass.white))
-                                ],
-                              )
                             ],
                           ),
-                          SizedBox(
-                            child: Container(
-                              height: 10,
-                            ),
+                          Utils.spaceSmallHeight,
+                          Container(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Text("Prazo: ${atividade.prazo_dia}",
+                                style: TextStyle(
+                                    color: Colors_myclass.white,
+                                    fontStyle: FontStyle.italic)),
                           ),
+                          Utils.spaceSmallHeight,
                           Container(
                             decoration: BoxDecoration(
                                 color: Colors_myclass.white,
@@ -176,12 +183,12 @@ class _ContentPageState extends State<ContentPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  conteudo.titulo,
+                                  atividade.titulo,
                                   style: Theme.of(context).textTheme.headline6,
                                 ),
                                 Utils.spaceBigHeight,
                                 Text(
-                                  conteudo.orientacao,
+                                  atividade.orientacao,
                                   style: Theme.of(context).textTheme.bodyText2,
                                 ),
                                 Spacer(),
@@ -189,7 +196,17 @@ class _ContentPageState extends State<ContentPage> {
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
+                                      if (IsProfessor) {
+                                        Nav.pushname(context, "/detail-activity-professor",
+                                            arguments: [atividade, turma, alunos]);
+                                      } else {
+                                        QueryDocumentSnapshot document = await AlunoController().get_ref(turma.id, id_user);
 
+                                        Nav.push(
+                                            context,
+                                            DetailActivityPageAluno(turma, atividade, document,snapshot_atividade.reference)
+                                        );
+                                      }
                                     },
                                     child: Text(
                                       "Ver mais >>",

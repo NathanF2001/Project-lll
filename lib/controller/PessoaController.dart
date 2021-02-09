@@ -5,7 +5,7 @@ class PessoaController{
 
   final _user = FirebaseFirestore.instance;
 
-  addUser(email,nome,foto,id) async {
+  Future<List<dynamic>> addUser(email,nome,foto,id) async {
     /**
      * Método que adiciona usuário no Firestore
      */
@@ -36,8 +36,8 @@ class PessoaController{
     });
   }
 
-  Future<DocumentSnapshot> get_user(ref) async {
-    return await ref.get();
+  Future<Pessoa> get_user(DocumentReference ref) async {
+    return await ref.get().then((value) => Pessoa.fromJson(value.data()));
   }
 
   update_Turmas(id_turma,id_pessoa,Pessoa pessoa){

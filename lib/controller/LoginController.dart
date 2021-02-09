@@ -31,6 +31,7 @@ class AuthController{
 
       UserCredential result = await _auth.signInWithCredential(credential);
       final fuser = result.user;
+
       print(fuser.email);
       print(fuser.displayName);
 
@@ -39,10 +40,27 @@ class AuthController{
       DocumentReference id = result_firebase[1]; // referencia do usuario
 
       return Nav.pushname(context, "/home",arguments: [pessoa,id]);
-    }
-    catch (error){
-      print("Error que deu: ${error}");
-      return false;
+    }on FirebaseAuthException catch(error){
+      switch (error.code){
+        case "wrong-password":
+          return "Senha incorreta";
+          break;
+        case "user-not-found":
+          return "Email não cadastrado";
+          break;
+        case "email-already-in-use":
+          return "Conta está logada";
+          break;
+        case "invalid-email":
+          return "Insira um email válido";
+          break;
+        case "too-many-requests":
+
+        default:
+          return "Login falhou, tente novamente";
+          break;
+      }
+
     }
   }
 
@@ -58,11 +76,30 @@ class AuthController{
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
+      Nav.pushname(context, "/home",arguments: [pessoa,id],replace: true);
 
-      return Nav.pushname(context, "/home",arguments: [pessoa,id]);
-    }catch(error){
-      print("Error que deu: ${error}");
-      return false;
+      return "Ok";
+    }on FirebaseAuthException catch(error){
+      switch (error.code){
+        case "wrong-password":
+          return "Senha incorreta";
+          break;
+        case "user-not-found":
+          return "Email não cadastrado";
+          break;
+        case "email-already-in-use":
+          return "Conta está logada";
+          break;
+        case "invalid-email":
+          return "Insira um email válido";
+          break;
+        case "too-many-requests":
+
+        default:
+          return "Login falhou, tente novamente";
+          break;
+      }
+
     }
   }
 
@@ -81,8 +118,26 @@ class AuthController{
       return true;
 
     }on FirebaseAuthException catch(error){
-      print("Error que deu: ${error}");
-      return false;
+      switch (error.code){
+        case "wrong-password":
+          return "Senha incorreta";
+          break;
+        case "user-not-found":
+          return "Email não cadastrado";
+          break;
+        case "email-already-in-use":
+          return "Conta está logada";
+          break;
+        case "invalid-email":
+          return "Insira um email válido";
+          break;
+        case "too-many-requests":
+
+        default:
+          return "Login falhou, tente novamente";
+          break;
+      }
+
     }
   }
 

@@ -119,9 +119,13 @@ class _AddContentState extends State<AddContent> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: (){
+
                   _formKey.currentState.save();
+
                   ContentController conteudo = ContentController(turma.id.collection("Content"));
+                  // Adicionar conteudo na turma
                   conteudo.add_content(titulo, orientacao, links);
+
                   Nav.pop(context);
                 }),
               )

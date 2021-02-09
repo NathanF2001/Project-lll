@@ -12,8 +12,15 @@ class _Nav{
     return Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => page));
   }
 
-  void pushname(context, routeName, {arguments}) {
-    Navigator.pushNamed(context, routeName, arguments: arguments);
+  Object pushname(context, routeName, {arguments,bool replace = false}) {
+
+    if (replace){
+      return Navigator.pushReplacementNamed(context, routeName, arguments: arguments);
+    }
+
+    return Navigator.pushNamed(context, routeName, arguments: arguments);
+
+
   }
 
   Object getRouteArgs(context){

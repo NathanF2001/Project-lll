@@ -24,6 +24,7 @@ class TurmasTemplate extends StatelessWidget {
               radius: 25,
               backgroundImage: NetworkImage(turma.UrlTurma),
             ),
+
             title: Text(
               turma.Nome,
               style: TextStyle(
@@ -31,6 +32,7 @@ class TurmasTemplate extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 20),
             ),
+
             subtitle: Text(
               turma.Professor.nome,
               style: TextStyle(

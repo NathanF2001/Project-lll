@@ -11,7 +11,7 @@ class ChatController{
       {
         "nome": name,
         "alunos": students.map((e) => e.atividades["aluno"]).toList(),
-        "last_mensage": null
+        "last_mensage": []
       }
     );
   }
@@ -19,12 +19,21 @@ class ChatController{
     /**
      * Método que adiciona uma mensagem a um Chat
      */
-    await ref.collection("Log_mensage").add({
+    final ref_mensage = await ref.collection("Log_mensage").add({
       "data": Timestamp.now(),
       "mensagem": mensage,
       "pessoa": pessoa,
       "destaque": false,
       "priority": (priority+1)
+    });
+
+    await updateLastMensage(ref, mensage,pessoa);
+
+  }
+
+  updateLastMensage(ref_chat, mensage,pessoa) async{
+    await ref_chat.update({
+      "last_mensage": [mensage,pessoa],
     });
   }
 

@@ -16,6 +16,10 @@ class Utils {
     height: 8.0,
   );
 
+  static showSnackbar(context,text) {
+    Scaffold.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+
   static text_style(text,{fontSize,color = Colors.white,fontWeight = FontWeight.normal}){
     return Text(
       text,

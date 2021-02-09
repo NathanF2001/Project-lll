@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 
@@ -33,14 +34,14 @@ class TurmaController {
     return pessoa;
   }
 
-  get_turmabycode(code)async{
+  Future<QueryDocumentSnapshot> get_turmabycode(code) async{
     /**
       Método de um aluno recuperar referencia da turma que ele colocou codigo
     **/
-    return await _user.collection("Turmas").where("codigo",isEqualTo: code).get();
+    return await _user.collection("Turmas").where("codigo",isEqualTo: code).get().then((value) => value.docs.first);
   }
 
-  addAlunoTurma(DocumentReference id_turma,Turma turma,id_pessoa) async{
+  addAlunoTurma(DocumentReference id_turma,id_pessoa) async{
     /**
       Método para adicionar um aluno na turma
      **/
@@ -65,5 +66,32 @@ class TurmaController {
       "aluno": id_pessoa});
   }
 
+  Future<Turma> get_turma(DocumentSnapshot snapshot) async {
+
+    Map<String,dynamic> json_turma = snapshot.data();
+    Turma turma = Turma.fromJson(json_turma);
+
+    Pessoa dados_professor = await PessoaController().get_user(json_turma["Professor"]);
+
+    turma.Professor = dados_professor;
+
+    return turma;
+
+  }
+
+  Turma fromJson(json_turma, json_user){
+
+    /**
+     * Método que tranforma o Json de turma e professro em um objeto turma
+     */
+
+    Turma turma = Turma.fromJson(json_turma);
+    Pessoa professor = Pessoa.fromJson(json_user);
+
+    turma.Professor = professor;
+
+    return turma;
+
+  }
 
 }

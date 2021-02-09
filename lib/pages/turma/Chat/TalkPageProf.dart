@@ -26,7 +26,6 @@ class _MensageProfPageState extends State<MensageProfPage> {
     chat = values[0];
     ref_chat = values[1];
     user = values[2];
-    print(chat.alunos);
 
     return Scaffold(
       appBar: AppBar(
@@ -121,43 +120,46 @@ class _MensageProfPageState extends State<MensageProfPage> {
                               Expanded(
                                 flex: 5,
                                 child: Container(
-                                  alignment: Alignment.centerLeft,
-
-                                  padding: EdgeInsets.only(left: 8,bottom: 16,right: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors_myclass.black,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(16),
-                                      bottomRight: Radius.circular(16),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            mensage.pessoa.nome,
-                                            style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
-                                          ),
-                                          Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
-                                            style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
-                                        ],
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.only(left: 8,bottom: 16,right: 8),
+                                    margin: EdgeInsets.only(top: 8, bottom: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors_myclass.black,
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(16),
+                                        bottomRight: Radius.circular(16),
                                       ),
-                                      Text(mensage.mensagem,
-                                        style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
-                                    ],
-                                  )),),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              mensage.pessoa.nome,
+                                              style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
+                                            ),
+                                            Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
+                                              style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
+                                          ],
+                                        ),
+                                        Text(mensage.mensagem,
+                                          style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
+                                      ],
+                                    )),),
                               Expanded(
                                   flex: 2,
-                                  child: IconButton(icon: Icon(Icons.star,color: mensage.destaque ? Colors.yellow : Colors.black,), onPressed: (){
-                                ChatController().set_destaque(log_mensage[index].reference,mensage.destaque);
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top:16),
+                                    child: IconButton(icon: Icon(Icons.star,color: mensage.destaque ? Colors.yellow : Colors.black,), onPressed: (){
+                                      ChatController().set_destaque(log_mensage[index].reference,mensage.destaque);
 
-                              }))
+                                    }),
+                                  ))
                             ],
-                          )
-                      );;
+                          ),
+                      );
                     }),
               ),
               Container(
@@ -194,7 +196,7 @@ class _MensageProfPageState extends State<MensageProfPage> {
                           _formKey.currentState.save();
 
                           ChatController().add_mensage(ref_chat, send_mensage, "professor",
-                              log_mensage == [] ? 0 : priority);
+                              log_mensage.isEmpty ? 0 : priority);
                           _formKey.currentState.reset();
                         }))
                   ],

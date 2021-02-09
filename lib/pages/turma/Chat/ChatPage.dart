@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Chat.dart';
-import 'package:myclass/models/Mensage.dart';
-import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
@@ -71,12 +69,13 @@ class _ChatPageState extends State<ChatPage> {
               Container();
           }
 
-
+          // Opção para adicionar botão de adicionar bate-papo
           chats.add(chats.last);
 
           return ListView.builder(
               itemCount: chats.length,
               itemBuilder: (BuildContext context, int index) {
+                // Botão do professor de adicionar turma
                 if (index == (chats.length - 1)) {
                   if (IsProfessor) {
                     return InkWell(
@@ -96,20 +95,26 @@ class _ChatPageState extends State<ChatPage> {
                 Map<String, dynamic> chat = chats[index].data();
                 ref_alunos = chat["alunos"];
 
-                Map<String,Pessoa> alunos_chat = {};
+                // Caso o aluno não pertence a turma
+                if (!IsProfessor & !ref_alunos.contains(user)){
+                  return null;
+                }
+
+                // Fazer um ponteiro para um objeto Pessoa para cada referencia de Aluno (Refatorar)
+                final alunos_chat = {};
                 alunos.forEach((e) {
                   if (ref_alunos.contains(e.atividades["aluno"])){
                     alunos_chat[e.atividades["aluno"].id] = e.info;
                   };
                 });
-
                 alunos_chat["professor"] = turma.Professor;
 
-                Mensage mensage = null;
-                if (chat["last_mensage"] != null) {
-                  mensage = Mensage.fromJson(chat["last_mensage"]);
-                }
 
+                // Ultima mensagem
+                List<dynamic> mensage = chat["last_mensage"];
+                if (mensage.isNotEmpty){
+                  mensage[1] = alunos_chat[mensage[1]].nome;
+                }
 
                 Chat chat_config = Chat.fromJson({
                   "alunos": alunos_chat,
@@ -129,9 +134,10 @@ class _ChatPageState extends State<ChatPage> {
                     title: Text(chat_config.nome,
                     style: TextStyle(color: Colors_myclass.white,fontSize: 24),),
                     dense: true,
-                    subtitle: chat_config.last_mensage != null ?
+                    subtitle: chat_config.last_mensage.isNotEmpty ?
                     Text(
-                      "${chat_config.last_mensage.pessoa.nome}: ${chat_config.last_mensage.mensagem}",
+                      "${chat_config.last_mensage[1]}: ${chat_config.last_mensage[0]}",
+                      style: TextStyle(color: Colors_myclass.white,fontSize: 16),
                       overflow: TextOverflow.ellipsis,
                     ): Text("New chat",
                       style: TextStyle(color: Colors_myclass.white,fontSize: 16),),
