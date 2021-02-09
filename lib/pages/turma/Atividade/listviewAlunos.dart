@@ -54,6 +54,7 @@ class _ListAlunosState extends State<ListAlunos> {
                 itemCount: alunos.length,
                 itemBuilder: (context, index) {
                   final data = alunos[index].data();
+
                   Aluno aluno = Aluno.fromJson({
                     "atividades": data,
                   });
@@ -207,12 +208,9 @@ class _ListAlunosState extends State<ListAlunos> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
-                await AlunoController().set_nota(
-                    turma.id
-                        .collection("Alunos")
-                        .where("aluno", isEqualTo: aluno.atividades["aluno"]),
-                    atividade.titulo,
-                    nota);
+                // Mudar o valor da nota
+                await AlunoController().set_nota(turma.id,aluno.atividades["aluno"], atividade.titulo, nota);
+
                 setState(() {});
                 Nav.pop(context);
               },

@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
-import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/controller/TurmaController.dart';
@@ -177,25 +173,31 @@ class _UserPageState extends State<UserPage> {
           actions: [
             FlatButton(
               onPressed: () async {
-
                 _formKey.currentState.save();
-                QuerySnapshot ref =
+
+                // Get referencia da turma
+                QueryDocumentSnapshot pointer_turma =
                     await TurmaController().get_turmabycode(code);
-                DocumentReference id_turma = ref.docs.first.reference;
+                DocumentReference id_turma = pointer_turma.reference;
 
-                final json_turma = ref.docs.first.data();
-                Turma turma = Turma.fromJson(json_turma);
+                // Pegar dados da turma
+                Turma turma = await TurmaController().get_turma(pointer_turma);
 
-                DocumentReference ref_aluno = await TurmaController().addAlunoTurma(id_turma, turma, id);
+                // Adicionar aluno na Turma
+                DocumentReference ref_aluno = await TurmaController().addAlunoTurma(id_turma, id);
+
+                // Atualizar a lista de turma do aluno
                 final info_user =
                     await PessoaController().update_Turmas(id_turma, id, user);
 
-                ActivityController atividade = ActivityController(turma.id.collection("Activity"));
+                // Adicionar todas as atividades existentes na turma como pendente ao aluno
+                ActivityController atividade = ActivityController(id_turma.collection("Activity"));
                 atividade.addAllActitiviesAluno(ref_aluno);
 
                 setState(() {
                   user = info_user;
                 });
+
                 Nav.pop(context);
               },
               child: Text("Entrar"),

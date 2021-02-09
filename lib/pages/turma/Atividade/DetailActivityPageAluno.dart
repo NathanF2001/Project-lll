@@ -13,12 +13,11 @@ import 'package:myclass/nav.dart';
 class DetailActivityPageAluno extends StatefulWidget {
   Turma turma;
   Activity atividade;
-  QuerySnapshot aluno;
+  QueryDocumentSnapshot aluno;
   DocumentReference ref_atividade;
 
-
   DetailActivityPageAluno(
-      this.turma, this.atividade, this.aluno,this.ref_atividade);
+      this.turma, this.atividade, this.aluno, this.ref_atividade);
 
   @override
   _DetailActivityAlunoPageState createState() =>
@@ -27,8 +26,11 @@ class DetailActivityPageAluno extends StatefulWidget {
 
 class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   Turma get turma => widget.turma;
+
   Activity get atividade => widget.atividade;
-  QuerySnapshot get aluno => widget.aluno;
+
+  QueryDocumentSnapshot get aluno => widget.aluno;
+
   DocumentReference get ref_atividade => widget.ref_atividade;
   bool send;
   List<dynamic> links;
@@ -37,14 +39,12 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    send = aluno.docs.first.data()["${atividade.titulo}"];
-    links = aluno.docs.first.data()["${atividade.titulo}_links"];
+    send = aluno.data()["${atividade.titulo}"];
+    links = aluno.data()["${atividade.titulo}_links"];
   }
-
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -88,7 +88,7 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
           Container(
             width: MediaQuery.of(context).size.width,
             child: Text(
-              send ? "Status: Enviado": "Status: Pendente",
+              send ? "Status: Enviado" : "Status: Pendente",
               style: TextStyle(color: Colors.grey[600]),
             ),
           ),
@@ -158,22 +158,23 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
               Utils.spaceSmallHeight,
               Buttons_myclass.Button1(context,
                   colorbackground: Colors_myclass.black,
-                  text: send ? "Cancelar envio" : "Enviar",
-                  function: () {
-                //print(aluno);
+                  text: send ? "Cancelar envio" : "Enviar", function: () {
+
+                ActivityController controller =
+                    ActivityController(turma.id.collection("Activity"));
+
+                if (!send) {
+                  controller.add_send(ref_atividade, 1);
+                  // Mandar as informações
+                  AlunoController()
+                      .send(aluno.reference, atividade.titulo, !send, links);
+                } else {
+                  controller.add_send(ref_atividade, -1);
+                }
                 setState(() {
-                  ActivityController controller = ActivityController(turma.id.collection("Activity"));
-
-                  if(!send){
-                    controller.add_send(ref_atividade, 1);
-                    AlunoController().send(aluno.docs.first.reference,atividade.titulo,!send,links);
-                  }else{
-                    controller.add_send(ref_atividade, -1);
-                  }
-
                   send = !send;
                 });
-                  })
+              })
             ],
           )
         ],
@@ -219,7 +220,6 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
                 _formKeyLink.currentState.save();
                 setState(() {
                   links.add(link);
-                  print(links);
                 });
 
                 Nav.pop(context);

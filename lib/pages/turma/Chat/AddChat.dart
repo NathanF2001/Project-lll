@@ -6,7 +6,7 @@ import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 
-import '../../nav.dart';
+import '../../../nav.dart';
 
 class AddChat extends StatefulWidget {
   @override

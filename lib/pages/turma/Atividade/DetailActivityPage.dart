@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Alunos.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
-import 'package:myclass/pages/turma/listviewAlunos.dart';
+import 'file:///D:/Faculdade/Projeto%20lll/myclass/lib/pages/turma/Atividade/listviewAlunos.dart';
 
 class DetailActivityPage extends StatefulWidget {
   @override
@@ -108,12 +110,8 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                 context, colorbackground: Colors_myclass.black,
                 text: "Ver atividades dos alunos",
                 function: () {
-                  final map_aluno = {};
-                  print(alunos);
-                  alunos.forEach((e) {
-                    print(e.atividades);
-                    map_aluno[e.atividades["aluno"].id]= e.info;
-                  });
+
+                  Map<String,Pessoa> map_aluno = AlunoController().MappingAlunos(alunos);
 
                   Nav.push(context, ListAlunos(atividade,map_aluno,turma));
                 },

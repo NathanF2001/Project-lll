@@ -84,10 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Utils.spaceBigHeight,
-                Buttons_myclass.Button1(context, text: "Entrar", colorbackground: Colors_myclass.black,function: () {
-                  _formKey.currentState.save();
-                  AuthController().signWithEmailAndPassword(context, email, password);
-                }),
+                Button_Login(_formKey, email, password),
                 Utils.spaceSmallHeight,
                 Container(
                   width: 300,
@@ -118,3 +115,26 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+class Button_Login extends StatelessWidget {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  String email;
+  String password;
+
+  Button_Login(this.formKey, this.email, this.password);
+
+  @override
+  Widget build(BuildContext context) {
+    return Buttons_myclass.Button1(context, text: "Entrar", colorbackground: Colors_myclass.black,function: () async{
+
+      formKey.currentState.save();
+
+      final error = await AuthController().signWithEmailAndPassword(context, email, password);
+
+      Utils.showSnackbar(context,error);
+
+    });
+  }
+}
+
+

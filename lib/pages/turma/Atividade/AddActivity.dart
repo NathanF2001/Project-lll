@@ -165,9 +165,12 @@ class _AddActivityState extends State<AddActivity> {
               Buttons_myclass.Button1(context, colorbackground: Colors_myclass.black,
                   text: "Adicionar atividade", function: () {
                     _formKey.currentState.save();
+
+                    // Adicionar atividade na turma
                     ActivityController atividade = ActivityController(turma.id.collection("Activity"));
                     atividade.add_activity(titulo, orientacao, links,prazo_dia,prazo_hora);
 
+                    // Adiciona atividade para cada aluno
                     atividade.addActivitiestoAlunos(turma.id.collection("Alunos"),titulo);
                     Nav.pop(context);
                   })
@@ -212,9 +215,9 @@ class _AddActivityState extends State<AddActivity> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
+
                 setState(() {
                   links.add(link);
-                  print(links);
                 });
 
                 Nav.pop(context);

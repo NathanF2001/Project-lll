@@ -96,12 +96,12 @@ class ProfessorNotasAlunos extends StatelessWidget {
                                 fontSize: 24, fontWeight: FontWeight.bold))),
                   ],
                   rows: atividades
-                      .map((e) => DataRow(cells: [
-                            DataCell(Text(e.titulo)),
+                      .map((atividade) => DataRow(cells: [
+                            DataCell(Text(atividade.titulo)),
                             DataCell(Text(
-                              aluno.atividades["${e.titulo}_nota"] == ""
+                              aluno.atividades["${atividade.titulo}_nota"] == ""
                                   ? "Sem nota"
-                                  : aluno.atividades["${e.titulo}_nota"],
+                                  : aluno.atividades["${atividade.titulo}_nota"],
                             ))
                           ]))
                       .toList(),
