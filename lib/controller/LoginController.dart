@@ -32,14 +32,11 @@ class AuthController{
       UserCredential result = await _auth.signInWithCredential(credential);
       final fuser = result.user;
 
-      print(fuser.email);
-      print(fuser.displayName);
-
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
 
-      return Nav.pushname(context, "/home",arguments: [pessoa,id]);
+      Nav.pushname(context, "/home",arguments: [pessoa,id],replace: true);
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "wrong-password":
@@ -115,7 +112,7 @@ class AuthController{
       PessoaController().addUser(email, nome, "", fuser.uid);
 
 
-      return true;
+      return "ok";
 
     }on FirebaseAuthException catch(error){
       switch (error.code){

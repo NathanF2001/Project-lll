@@ -23,6 +23,8 @@ class _UserPageState extends State<UserPage> {
   DocumentReference id;
   int index_atual = 0;
   String code;
+  String search_string = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,12 +66,14 @@ class _UserPageState extends State<UserPage> {
       height: MediaQuery.of(context).size.height * 0.125,
       padding: EdgeInsets.all(16),
       child: TextField(
+        onChanged: (value) {
+          setState(() {
+            search_string = value;
+          });
+        },
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.search),
-          labelText: "Pesquisar turmas",
-          labelStyle: TextStyle(
-            color: Colors.grey,
-          ),
+          hintText: "Pesquisar por turmas",
           border: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(16))),
           filled: true,
@@ -127,7 +131,7 @@ class _UserPageState extends State<UserPage> {
             leading: Icon(Icons.logout),
             onTap: () {
               AuthController().logout();
-              Nav.push(context, LoginPage());
+              Nav.push(context, LoginPage(),replace: true);
             },
           ),
         ],
@@ -136,7 +140,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   _listviewTurmas() {
-    return TurmasListView(user,id);
+    return TurmasListView(user,id,search_string);
   }
 
   _showAlertDialog() {
@@ -168,16 +172,25 @@ class _UserPageState extends State<UserPage> {
               onSaved: (String value) {
                 code = value;
               },
+              validator: (value) => value.length != 6 ? "Código inválido (6 caracteres)" : null,
             ),
           ),
           actions: [
             FlatButton(
               onPressed: () async {
                 _formKey.currentState.save();
+                bool validate = _formKey.currentState.validate();
+                if (!validate){
+                  return ;
+                }
 
                 // Get referencia da turma
                 QueryDocumentSnapshot pointer_turma =
                     await TurmaController().get_turmabycode(code);
+                if (pointer_turma == null){
+                  print("PIU");
+                  return _ErrorAlertDialog();
+                }
                 DocumentReference id_turma = pointer_turma.reference;
 
                 // Pegar dados da turma
@@ -201,6 +214,31 @@ class _UserPageState extends State<UserPage> {
                 Nav.pop(context);
               },
               child: Text("Entrar"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  _ErrorAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            "Não foi possível acessar Turma",
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(
+            "Não existe uma turma com esse código",
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Nav.pop(context),
+              child: Text("OK"),
               textColor: Colors.black87,
             )
           ],

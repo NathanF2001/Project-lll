@@ -8,6 +8,7 @@ class Turma{
   String CodTurma;
   String UrlTurma;
   Pessoa Professor;
+  String codigo;
   int number_Aluno;
   DocumentReference id;
 
@@ -23,6 +24,7 @@ class Turma{
     CodTurma = json["CodTurma"];
     UrlTurma = json["UrlTurma"];
     number_Aluno = json["number_Aluno"];
+    codigo = json["codigo"];
     id = json["id"];
   }
 
@@ -33,7 +35,8 @@ class Turma{
   "CodTurma": CodTurma,
   "UrlTurma": UrlTurma,
     "number_Aluno": number_Aluno,
-    "id": id
+    "id": id,
+    "codigo": codigo,
   };
 
 

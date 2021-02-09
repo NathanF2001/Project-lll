@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
@@ -23,13 +24,11 @@ class TurmaController {
     pessoa.add_turma(ref);
 
     json["id"] = ref;
+    json["codigo"] = Utils.generate_key(6);
 
     _user.collection("Turmas").doc(ref.id).set(json);
 
-    _user
-        .collection("Users")
-        .doc(id_professor)
-        .update({"Turmas_reference": pessoa.Turmas_reference});
+    id_professor.update({"Turmas_reference": pessoa.Turmas_reference});
 
     return pessoa;
   }
@@ -38,7 +37,14 @@ class TurmaController {
     /**
       Método de um aluno recuperar referencia da turma que ele colocou codigo
     **/
-    return await _user.collection("Turmas").where("codigo",isEqualTo: code).get().then((value) => value.docs.first);
+     QuerySnapshot doc = await _user.collection("Turmas").where("codigo",isEqualTo: code).get();
+
+    if (doc.docs.isNotEmpty){
+      return doc.docs.first;
+
+    }
+
+    return null;
   }
 
   addAlunoTurma(DocumentReference id_turma,id_pessoa) async{

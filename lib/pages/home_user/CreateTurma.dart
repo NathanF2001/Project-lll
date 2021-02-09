@@ -49,6 +49,10 @@ class _CreateTurmaState extends State<CreateTurma> {
                 Utils.Text_input(
                   hintmensage: "Insira nome da Turma",
                   labelmensage: "Nome da turma",
+                  maxLength: 60,
+                  validator: (String value) {
+                    (value == null) | (value.length > 60) ? "Nome inválido" : null;
+                  },
                   onsaved: (newValue) {
                     turma_config["Nome"] = newValue;
                   },
@@ -60,6 +64,8 @@ class _CreateTurmaState extends State<CreateTurma> {
                   onsaved: (newValue) {
                     turma_config["Descricao"] = newValue;
                   },
+                    validator: (String value) => value.isEmpty ? "Descrição inválida" : null,
+
                   key_type: TextInputType.multiline
                 ),
                 Utils.spaceSmallHeight,
@@ -89,6 +95,10 @@ class _CreateTurmaState extends State<CreateTurma> {
                   final id = values[1];
 
                   _formKey.currentState.save();
+                  bool valido = _formKey.currentState.validate();
+                  if (!valido){
+                    return ;
+                  }
                   user = await TurmaController().create_turma(turma_config,user,id);
 
                   Nav.pushname(context, "/home",arguments: [user,id]);

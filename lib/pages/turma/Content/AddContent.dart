@@ -51,13 +51,17 @@ class _AddContentState extends State<AddContent> {
                     Utils.Text_input(
                       hintmensage: "Insira o título do conteúdo",
                       labelmensage: "Título *",
-                      maxLength: 45,
+                      maxLength: 60,
+                      validator: (String value) {
+                        (value.isEmpty) | (value.length > 60) ? "Título inválido" : null;
+                      },
                       onsaved: (value) => titulo = value,
                     ),
                     Utils.Text_input(
                       hintmensage: "Insira o assunto",
                       labelmensage: "Assunto *",
                       key_type: TextInputType.multiline,
+                      validator: (String value) => value.isEmpty ? "Descrição inválida" : null,
                       onsaved: (value) => orientacao = value,
                     ),
                   ],
@@ -121,6 +125,10 @@ class _AddContentState extends State<AddContent> {
                 child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: (){
 
                   _formKey.currentState.save();
+                  bool valido = _formKey.currentState.validate();
+                  if (!valido) {
+                    return ;
+                  }
 
                   ContentController conteudo = ContentController(turma.id.collection("Content"));
                   // Adicionar conteudo na turma
@@ -151,6 +159,7 @@ class _AddContentState extends State<AddContent> {
           content: Form(
             key: _formKeyLink,
             child: TextFormField(
+              validator: (value) => value.isEmpty ? "Link inválido" : null,
               style: TextStyle(
                 fontSize: 18,
               ),
@@ -170,6 +179,11 @@ class _AddContentState extends State<AddContent> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
+
+                bool Linkvalido = _formKeyLink.currentState.validate();
+                if (!Linkvalido) {
+                  return ;
+                }
                 setState(() {
                   links.add(link);
                   print(links);

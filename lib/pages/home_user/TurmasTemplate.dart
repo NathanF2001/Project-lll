@@ -20,11 +20,21 @@ class TurmasTemplate extends StatelessWidget {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16), topRight: Radius.circular(16))),
           child: ListTile(
-            leading: CircleAvatar(
-              radius: 25,
+            leading:
+            turma.UrlTurma == ""
+                ? Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.all(Radius.circular(100))),
+              child: Icon(
+                Icons.person,
+                color: Colors.grey,
+                size: 40,
+              ),
+            )
+                : CircleAvatar(
               backgroundImage: NetworkImage(turma.UrlTurma),
             ),
-
             title: Text(
               turma.Nome,
               style: TextStyle(

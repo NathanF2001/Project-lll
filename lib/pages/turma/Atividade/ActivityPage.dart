@@ -141,9 +141,19 @@ class _ActivityPageState extends State<ActivityPage> {
                                   SizedBox(
                                     width: 8,
                                   ),
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(professor.UrlFoto),
+                                  professor.UrlFoto == ""
+                                      ? Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.all(Radius.circular(100))),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                      size: 40,
+                                    ),
+                                  )
+                                      : CircleAvatar(
+                                    backgroundImage: NetworkImage(professor.UrlFoto),
                                   ),
                                   SizedBox(
                                     width: 8,

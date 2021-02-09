@@ -91,7 +91,7 @@ class _TurmaPageState extends State<TurmaPage> {
                   itemBuilder: (context) =>
                   [
                     PopupMenuItem(
-                      value: "Pessoas",
+                      value: "Pessoa",
                         child: Text("Pessoas")),
                     PopupMenuItem(
                       value: "Notas",

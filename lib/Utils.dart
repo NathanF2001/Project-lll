@@ -44,11 +44,11 @@ class Utils {
     String getRandomString(int value) => String.fromCharCodes(Iterable.generate(
         value, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
-    return getRandomString(7);
+    return getRandomString(number);
   }
 
   static Widget Text_input(
-      {@required hintmensage, @required labelmensage, bool show = false, TextInputType key_type = TextInputType.text,
+      {@required hintmensage, @required labelmensage, bool show = false,validator, TextInputType key_type = TextInputType.text,
       onsaved,maxLength, double width}) {
     return Container(
       width: width,
@@ -62,7 +62,9 @@ class Utils {
           maxLines: (key_type == TextInputType.multiline) ? null : 1,
           maxLength: maxLength,
           onSaved: onsaved,
+          validator: validator,
           decoration: InputDecoration(
+            errorStyle: TextStyle(fontSize: 18,),
               fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(
