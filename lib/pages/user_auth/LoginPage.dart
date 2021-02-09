@@ -30,8 +30,8 @@ class _LoginPageState extends State<LoginPage> {
   _buildLoginPage() {
     return Column(
       children: [
-        Expanded(
-          flex: 1,
+        Container(
+          height: 150,
           child: Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 40),
@@ -48,12 +48,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         Expanded(
-          flex: 3,
           child: Container(
             padding: EdgeInsets.all(32),
             decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(300))),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(150))),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,9 +62,25 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;}),
+                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;},
+                          validator: (String value) {
+                            bool validemail = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value);
+
+                            if (!validemail){
+                              return "Email inválido";
+                            }
+                          }),
                       Utils.spaceMediumHeight,
-                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {password = value;}),
+                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {password = value;},
+                          validator: (String value) {
+                            if (value.isEmpty){
+                              return "Senha inválida (vazio)";
+                            }
+                            if (value.length < 6){
+                              return "Senha com pouco caracteres (Min.6)";
+                            }}),
+
                     ],
                   ),
                 ),
@@ -128,6 +143,10 @@ class Button_Login extends StatelessWidget {
     return Buttons_myclass.Button1(context, text: "Entrar", colorbackground: Colors_myclass.black,function: () async{
 
       formKey.currentState.save();
+      final valido = formKey.currentState.validate();
+      if (!valido) {
+        return false;
+      }
 
       final error = await AuthController().signWithEmailAndPassword(context, email, password);
 

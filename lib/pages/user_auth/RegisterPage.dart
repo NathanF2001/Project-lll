@@ -20,27 +20,24 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors_myclass.main_color,
-      body: SingleChildScrollView(
-        child: _formRegister(),
-      )
-    );
+        backgroundColor: Colors_myclass.app_color, body: _formRegister());
   }
 
   _formRegister() {
-    return Column(
+    return ListView(
       children: [
         Container(
-        height: MediaQuery.of(context).size.height*0.25,
+          child: Container(
             padding: EdgeInsets.only(top: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            height: 150,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                IconButton(icon: Icon(Icons.arrow_back_ios_outlined),color: Colors.white, onPressed: () => Nav.pop(context)),
+                IconButton(
+                    icon: Icon(Icons.arrow_back_ios_outlined),
+                    color: Colors.white,
+                    onPressed: () => Nav.pop(context)),
                 Container(
-                  alignment: Alignment.bottomLeft,
-                  padding: EdgeInsets.only(left: 40, bottom: 16),
                   child: Text(
                     "Registrar",
                     textAlign: TextAlign.center,
@@ -53,15 +50,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ],
-            )
+            ),
+          ),
         ),
         Container(
+          height: MediaQuery.of(context).size.height * 0.75,
           child: Container(
-            height: MediaQuery.of(context).size.height*0.75,
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.symmetric(horizontal: 32),
             decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(300))),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(150))),
             child: Form(
               key: _formKey,
               child: Column(
@@ -69,22 +67,70 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Utils.spaceBigHeight,
-                  Utils.Text_input(hintmensage: "Insira seu nome", labelmensage: "Nome",onsaved: (value) {nome = value;}),
+                  Utils.Text_input(
+                      hintmensage: "Insira seu nome",
+                      labelmensage: "Nome",
+                      onsaved: (value) {
+                        nome = value;
+                      },
+                      validator: (String value) =>
+                          value.isEmpty ? "Nome inválido (vazio)" : null),
                   Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;}),
-                  Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {senha = value;}),
-                  Utils.spaceSmallHeight,
-                  Utils.Text_input(hintmensage: "Confirme sua senha", labelmensage: "Confirmar senha",show: true,onsaved: (value) {csenha = value;}),
-                  Utils.spaceBigHeight,
-                  Buttons_myclass.Button1(context,
-                      text: "Criar Conta", function: () async{
-                        _formKey.currentState.save();
-                        bool ok = await AuthController().cadastrar(context, nome, email, senha);
-                        if(ok){
-                          _showAlertDialog();
+                  Utils.Text_input(
+                      hintmensage: "Insira seu e-mail",
+                      labelmensage: "E-mail",
+                      onsaved: (value) {
+                        email = value;
+                      },
+                      validator: (String value) {
+                        bool validemail = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value);
+
+                        if (!validemail){
+                          return "Email inválido";
                         }
                       }),
+                  Utils.spaceSmallHeight,
+                  Utils.Text_input(
+                      hintmensage: "Insira sua senha",
+                      labelmensage: "Senha",
+                      show: true,
+                      onsaved: (value) {
+                        senha = value;
+                      },
+                      validator: (String value) {
+                        if (value.isEmpty){
+                          return "Senha inválida (vazio)";
+                        }
+                        if (value.length < 6){
+                          return "Senha com pouco caracteres (Min.6)";
+                        }}),
+                  Utils.spaceSmallHeight,
+                  Utils.Text_input(
+                      hintmensage: "Confirme sua senha",
+                      labelmensage: "Confirmar senha",
+                      show: true,
+                      onsaved: (value) {
+                        csenha = value;
+                      },
+                      validator: (String value) =>
+                          senha != value ? "Senhas não batem" : null),
+                  Utils.spaceBigHeight,
+                  Buttons_myclass.Button1(context,
+                      colorbackground: Colors_myclass.black,
+                      text: "Criar Conta", function: () async {
+                    _formKey.currentState.save();
+
+                    final valido = _formKey.currentState.validate();
+                    if (!valido) {
+                      return false;
+                    }
+                    String ok = await AuthController()
+                        .cadastrar(context, nome, email, senha);
+                    if (ok == "ok") {
+                      _showAlertDialog();
+                    }
+                  }),
                 ],
               ),
             ),

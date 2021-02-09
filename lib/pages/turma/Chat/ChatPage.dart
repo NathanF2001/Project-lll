@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Chat.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
@@ -38,6 +39,7 @@ class _ChatPageState extends State<ChatPage> {
     // TODO: implement initState
     super.initState();
     IsProfessor = user.id == prof.id;
+    print(IsProfessor);
   }
 
   @override
@@ -50,7 +52,9 @@ class _ChatPageState extends State<ChatPage> {
               child: CircularProgressIndicator(),
             );
           }
+
           List<dynamic> chats = snapshot.data.docs;
+
 
           if (chats.isEmpty){
             return IsProfessor ?
@@ -66,11 +70,12 @@ class _ChatPageState extends State<ChatPage> {
                     arguments: [turma, alunos]),
               ),
             ) :
-              Container();
+            Container();
           }
 
           // Opção para adicionar botão de adicionar bate-papo
           chats.add(chats.last);
+
 
           return ListView.builder(
               itemCount: chats.length,
@@ -101,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
                 }
 
                 // Fazer um ponteiro para um objeto Pessoa para cada referencia de Aluno (Refatorar)
-                final alunos_chat = {};
+                Map<String,Pessoa> alunos_chat = {};
                 alunos.forEach((e) {
                   if (ref_alunos.contains(e.atividades["aluno"])){
                     alunos_chat[e.atividades["aluno"].id] = e.info;
@@ -115,6 +120,7 @@ class _ChatPageState extends State<ChatPage> {
                 if (mensage.isNotEmpty){
                   mensage[1] = alunos_chat[mensage[1]].nome;
                 }
+
 
                 Chat chat_config = Chat.fromJson({
                   "alunos": alunos_chat,
@@ -132,7 +138,7 @@ class _ChatPageState extends State<ChatPage> {
                       borderRadius: BorderRadius.circular(20)),
                   child: ListTile(
                     title: Text(chat_config.nome,
-                    style: TextStyle(color: Colors_myclass.white,fontSize: 24),),
+                      style: TextStyle(color: Colors_myclass.white,fontSize: 24),),
                     dense: true,
                     subtitle: chat_config.last_mensage.isNotEmpty ?
                     Text(
@@ -142,10 +148,10 @@ class _ChatPageState extends State<ChatPage> {
                     ): Text("New chat",
                       style: TextStyle(color: Colors_myclass.white,fontSize: 16),),
                     onTap: () =>
-                        IsProfessor ?
-                        Nav.pushname(context, "/mensage-prof-page", arguments: [chat_config,chats[index].reference,user])
-                    :
-                        Nav.pushname(context, "/mensage-page", arguments: [chat_config,chats[index].reference,user]),
+                    IsProfessor ?
+                    Nav.pushname(context, "/mensage-prof-page", arguments: [chat_config,chats[index].reference,user])
+                        :
+                    Nav.pushname(context, "/mensage-page", arguments: [chat_config,chats[index].reference,user]),
                   ),
                 );
               });

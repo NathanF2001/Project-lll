@@ -15,8 +15,10 @@ import 'package:myclass/pages/home_user/TurmasTemplate.dart';
 class TurmasListView extends StatefulWidget {
   Pessoa user;
   DocumentReference id_user;
+  String search_string;
 
-  TurmasListView(this.user, this.id_user);
+  TurmasListView(this.user, this.id_user, this.search_string);
+
 
   @override
   _TurmasListViewState createState() => _TurmasListViewState();
@@ -24,12 +26,13 @@ class TurmasListView extends StatefulWidget {
 
 class _TurmasListViewState extends State<TurmasListView> {
   Pessoa get user => widget.user;
-
+  String get search_string => widget.search_string;
   DocumentReference get id_user => widget.id_user;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return user.Turmas_reference.isEmpty ? Container() :
+    StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("Turmas")
             .where("id", whereIn: user.Turmas_reference)
@@ -52,20 +55,23 @@ class _TurmasListViewState extends State<TurmasListView> {
 
           List<QueryDocumentSnapshot> turmas_snapshot = snapshot.data.docs;
 
-          if (turmas_snapshot.isEmpty) {
-            return Container();
-          } else {
-            return ListView.builder(
+
+          return ListView.builder(
                 shrinkWrap: true,
                 itemCount: turmas_snapshot.length,
                 itemBuilder: (context, index){
 
                   Map<String,dynamic> json_turma = turmas_snapshot[index].data();
 
-                  return _buildTurmainfo(json_turma);
+                  if (json_turma["Nome"].contains(search_string)){
+                    return _buildTurmainfo(json_turma);
+                  }
+                  else{
+                    return Container();
+                  }
                 });
           }
-        });
+        );
   }
 
   Widget _buildTurmainfo(json_turma) {

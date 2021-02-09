@@ -33,7 +33,7 @@ class _ContentPageState extends State<ContentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    IsProfessor = user.id == ref_professor;
+    IsProfessor = (user.id == ref_professor.id);
     professor = turma.Professor;
   }
 
@@ -133,9 +133,19 @@ class _ContentPageState extends State<ContentPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(professor.UrlFoto),
+                                  professor.UrlFoto == ""
+                                      ? Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.all(Radius.circular(100))),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                      size: 40,
+                                    ),
+                                  )
+                                      : CircleAvatar(
+                                    backgroundImage: NetworkImage(professor.UrlFoto),
                                   ),
                                   SizedBox(
                                     width: 8,

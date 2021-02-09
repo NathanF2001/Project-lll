@@ -28,6 +28,7 @@ class InfoTurma extends StatelessWidget {
               Utils.spaceBigHeight,
               Container(
                 alignment: Alignment.center,
+
                 child: turma.UrlTurma == ""
                     ? Container(
                   decoration: BoxDecoration(
@@ -46,6 +47,7 @@ class InfoTurma extends StatelessWidget {
               ),
               Utils.spaceMediumHeight,
               Container(
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(16),
                 color: Colors_myclass.app_color,
                 child: Text(
@@ -102,6 +104,25 @@ class InfoTurma extends StatelessWidget {
                       padding: EdgeInsets.all(8),
                       child: Text(
                         turma.Professor.email,
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    Utils.spaceSmallHeight,
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width*0.75,
+                      decoration: BoxDecoration(
+                          color: Colors_myclass.black,
+                          borderRadius: BorderRadius.only(topRight: Radius.circular(32),bottomRight: Radius.circular(32))
+
+                      ),
+                      child: Text("Código da turma",
+                        style: TextStyle(fontSize: 24,fontWeight: FontWeight.w400,color: Colors_myclass.white),),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      child: Text(
+                        turma.codigo,
                         style: TextStyle(fontSize: 24),
                       ),
                     ),
