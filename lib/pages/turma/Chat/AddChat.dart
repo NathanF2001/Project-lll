@@ -56,6 +56,10 @@ class _AddChatState extends State<AddChat> {
             Utils.Text_input(
                 hintmensage: "Digite nome do Bate-papo",
                 labelmensage: "Nome do bate-papo",
+                maxLength: 60,
+                validator: (String value) {
+                  return (value == "") | (value.length > 60) ? "Nome inválido" : null;
+                },
             onsaved: (value){
                   nomeChat = value;
             }),
@@ -146,6 +150,11 @@ class _AddChatState extends State<AddChat> {
                 text: "Criar bate-papo",
                 function: () {
                   _formKey.currentState.save();
+                  bool valido = _formKey.currentState.validate();
+                  if (!valido) {
+                    return ;
+                  }
+
                   ChatController().add(turma.id,nomeChat,Wrap_alunos);
                   Nav.pop(context);
                 },

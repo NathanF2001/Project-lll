@@ -51,7 +51,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   labelmensage: "Nome da turma",
                   maxLength: 60,
                   validator: (String value) {
-                    (value == null) | (value.length > 60) ? "Nome inválido" : null;
+                    return (value.isEmpty) | (value.length > 60) ? "Nome inválido" : null;
                   },
                   onsaved: (newValue) {
                     turma_config["Nome"] = newValue;
@@ -64,7 +64,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   onsaved: (newValue) {
                     turma_config["Descricao"] = newValue;
                   },
-                    validator: (String value) => value.isEmpty ? "Descrição inválida" : null,
+                    validator: (String value) => (value == "") ? "Descrição inválida" : null,
 
                   key_type: TextInputType.multiline
                 ),
