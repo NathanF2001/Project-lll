@@ -202,6 +202,7 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
               style: TextStyle(
                 fontSize: 18,
               ),
+              validator: (value) => value.isEmpty ? "Link inválido" : null,
               decoration: InputDecoration(
                   hintText: "Insira link para anexar",
                   hintStyle: TextStyle(
@@ -218,6 +219,10 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
+                bool Linkvalido = _formKeyLink.currentState.validate();
+                if (!Linkvalido) {
+                  return ;
+                }
                 setState(() {
                   links.add(link);
                 });

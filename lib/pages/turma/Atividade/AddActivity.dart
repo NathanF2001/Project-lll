@@ -29,7 +29,7 @@ class _AddActivityState extends State<AddActivity> {
           color: Colors.white,
         ),
         title: Text(
-          "Nome da turma",
+          turma.Nome,
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -49,12 +49,16 @@ class _AddActivityState extends State<AddActivity> {
               Utils.Text_input(
                 hintmensage: "Insira o título da atividade",
                 labelmensage: "Título *",
-                maxLength: 45,
+                maxLength: 60,
+                validator: (String value) {
+                  return (value == "") | (value.length > 60) ? "Título inválido" : null;
+                },
                 onsaved: (value) => titulo = value,
               ),
               Utils.Text_input(
                 hintmensage: "Insira a orientação da atividade",
                 labelmensage: "Orientação *",
+                validator: (String value) => value.isEmpty ? "Orientação inválida" : null,
                 key_type: TextInputType.multiline,
                 onsaved: (value) => orientacao = value,
               ),
@@ -65,13 +69,17 @@ class _AddActivityState extends State<AddActivity> {
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width * 0.45,
-                    height: 60,
+                    height: 80,
                     child: Container(
                       child: TextFormField(
                         onSaved: (value) => prazo_dia = value,
                         style: TextStyle(
                           fontSize: 20,
                         ),
+                        maxLength: 11,
+                        validator: (value) {
+                          return value.isEmpty ? "Prazo inválido" : null;
+                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius:
@@ -89,14 +97,19 @@ class _AddActivityState extends State<AddActivity> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.45,
-                    height: 60,
+                    height: 80,
                     child: Container(
                       child: TextFormField(
                         onSaved: (value) => prazo_hora = value,
                         style: TextStyle(
                           fontSize: 20,
                         ),
+                        maxLength: 5,
+                        validator: (value) {
+                          return value.isEmpty ? "Horario invalido" : null;
+                        },
                         decoration: InputDecoration(
+
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(16))),
@@ -165,6 +178,11 @@ class _AddActivityState extends State<AddActivity> {
               Buttons_myclass.Button1(context, colorbackground: Colors_myclass.black,
                   text: "Adicionar atividade", function: () {
                     _formKey.currentState.save();
+                    _formKey.currentState.save();
+                    bool valido = _formKey.currentState.validate();
+                    if (!valido) {
+                      return ;
+                    }
 
                     // Adicionar atividade na turma
                     ActivityController atividade = ActivityController(turma.id.collection("Activity"));
@@ -199,11 +217,13 @@ class _AddActivityState extends State<AddActivity> {
               style: TextStyle(
                 fontSize: 18,
               ),
+              validator: (value) => value.isEmpty ? "Link inválido" : null,
               decoration: InputDecoration(
                   hintText: "Insira link para anexar",
                   hintStyle: TextStyle(
                     fontSize: 18,
                   ),
+
                   labelText: "Link",
                   labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
               onSaved: (String value) {
@@ -215,6 +235,10 @@ class _AddActivityState extends State<AddActivity> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
+                bool Linkvalido = _formKeyLink.currentState.validate();
+                if (!Linkvalido) {
+                  return ;
+                }
 
                 setState(() {
                   links.add(link);

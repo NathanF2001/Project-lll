@@ -8,6 +8,7 @@ import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Content/ContentDetail.dart';
 
 class ContentPage extends StatefulWidget {
   DocumentReference user;
@@ -185,7 +186,7 @@ class _ContentPageState extends State<ContentPage> {
                                     bottomLeft: Radius.circular(16))),
                             padding: EdgeInsets.all(16),
                             alignment: Alignment.topLeft,
-                            height: 220,
+                            height: 250,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -194,16 +195,19 @@ class _ContentPageState extends State<ContentPage> {
                                   style: Theme.of(context).textTheme.headline6,
                                 ),
                                 Utils.spaceBigHeight,
-                                Text(
-                                  conteudo.orientacao,
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                Container(
+                                  height: 100,
+                                  child: Text(
+                                    conteudo.orientacao,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
                                 ),
                                 Spacer(),
                                 Container(
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
-
+                                      Nav.push(context, ContentDetail(turma,conteudo));
                                     },
                                     child: Text(
                                       "Ver mais >>",

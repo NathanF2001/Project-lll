@@ -10,7 +10,7 @@ import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
-import 'file:///D:/Faculdade/Projeto%20lll/myclass/lib/pages/turma/Atividade/DetailActivityPageAluno.dart';
+import 'package:myclass/pages/turma/Atividade/DetailActivityPageAluno.dart';
 
 class ActivityPage extends StatefulWidget {
   DocumentReference id_user;

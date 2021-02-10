@@ -9,7 +9,8 @@ import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
-import 'file:///D:/Faculdade/Projeto%20lll/myclass/lib/pages/turma/Atividade/listviewAlunos.dart';
+import 'package:myclass/pages/turma/Atividade/listviewAlunos.dart';
+
 
 class DetailActivityPage extends StatefulWidget {
   @override
