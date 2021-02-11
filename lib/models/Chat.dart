@@ -1,9 +1,10 @@
 
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Mensage.dart';
 import 'package:myclass/models/Pessoa.dart';
 
 class Chat{
-  Map<String,Pessoa> alunos;
+  List<Pessoa> alunos;
   String nome;
   List<dynamic> last_mensage;
 

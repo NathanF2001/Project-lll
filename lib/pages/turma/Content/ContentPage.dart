@@ -11,20 +11,17 @@ import 'package:myclass/nav.dart';
 import 'package:myclass/pages/turma/Content/ContentDetail.dart';
 
 class ContentPage extends StatefulWidget {
-  DocumentReference user;
-  DocumentReference ref_professor;
+  Pessoa user;
   Turma turma;
 
-  ContentPage(this.user, this.turma,this.ref_professor);
+  ContentPage(this.user, this.turma);
 
   @override
   _ContentPageState createState() => _ContentPageState();
 }
 
 class _ContentPageState extends State<ContentPage> {
-  DocumentReference get user => widget.user;
-  DocumentReference get ref_professor => widget.ref_professor;
-
+  Pessoa get user => widget.user;
   Turma get turma => widget.turma;
 
   bool IsProfessor;
@@ -34,7 +31,7 @@ class _ContentPageState extends State<ContentPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    IsProfessor = (user.id == ref_professor.id);
+    IsProfessor = (user.email == turma.Professor.email);
     professor = turma.Professor;
   }
 

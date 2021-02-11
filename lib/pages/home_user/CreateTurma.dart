@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -9,13 +10,27 @@ import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/home_user/TurmasTemplate.dart';
+import 'package:myclass/pages/home_user/UserPage.dart';
 
 class CreateTurma extends StatefulWidget {
+  Pessoa user;
+  DocumentReference id;
+
+  CreateTurma(this.user, this.id);
+
   @override
   _CreateTurmaState createState() => _CreateTurmaState();
 }
 
 class _CreateTurmaState extends State<CreateTurma> {
+
+  Pessoa get user => widget.user;
+
+  set user(value){
+    user=  value;
+  }
+
+  DocumentReference get id => widget.id;
   final _formKey = GlobalKey<FormState>();
   List<String> Modalidades = ["", "Teste1", "Teste2", "Teste3"];
   Map<String, dynamic> turma_config = {};
@@ -90,9 +105,6 @@ class _CreateTurmaState extends State<CreateTurma> {
                 ),
                 Utils.spaceSmallHeight,
                 Buttons_myclass.Button1(context, text: "Criar", colorbackground: Colors_myclass.black,function: () async{
-                  List<dynamic> values = Nav.getRouteArgs(context);
-                  Pessoa user = values[0];
-                  final id = values[1];
 
                   _formKey.currentState.save();
                   bool valido = _formKey.currentState.validate();
@@ -101,7 +113,7 @@ class _CreateTurmaState extends State<CreateTurma> {
                   }
                   user = await TurmaController().create_turma(turma_config,user,id);
 
-                  Nav.pushname(context, "/home",arguments: [user,id]);
+                  Nav.push(context, UserPage(user,id));
                 }),
                 Utils.spaceBigHeight,
               ],

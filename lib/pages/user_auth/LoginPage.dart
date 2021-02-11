@@ -14,6 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String email;
   String password;
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       body: _buildLoginPage(),
       backgroundColor: Colors_myclass.app_color,
@@ -62,24 +64,35 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Utils.Text_input(hintmensage: "Insira seu e-mail", labelmensage: "E-mail",onsaved: (value) {email = value;},
+                      Utils.Text_input(hintmensage: "Insira seu e-mail",
+                          labelmensage: "E-mail",
+                          onsaved: (value) {
+                            email = value;
+                          },
                           validator: (String value) {
-                            bool validemail = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            bool validemail = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                 .hasMatch(value);
 
-                            if (!validemail){
+                            if (!validemail) {
                               return "Email inválido";
                             }
                           }),
                       Utils.spaceMediumHeight,
-                      Utils.Text_input(hintmensage: "Insira sua senha", labelmensage: "Senha",show: true,onsaved: (value) {password = value;},
+                      Utils.Text_input(hintmensage: "Insira sua senha",
+                          labelmensage: "Senha",
+                          show: true,
+                          onsaved: (value) {
+                            password = value;
+                          },
                           validator: (String value) {
-                            if (value.isEmpty){
+                            if (value.isEmpty) {
                               return "Senha inválida (vazio)";
                             }
-                            if (value.length < 6){
+                            if (value.length < 6) {
                               return "Senha com pouco caracteres (Min.6)";
-                            }}),
+                            }
+                          }),
 
                     ],
                   ),
@@ -88,7 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   onTap: () {},
                   child: Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     child: Text(
                       "Esqueci a senha",
                       textAlign: TextAlign.left,
@@ -99,13 +115,33 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Utils.spaceBigHeight,
-                Button_Login(_formKey, email, password),
+                Buttons_myclass.Button1(context, text: "Entrar",
+                    colorbackground: Colors_myclass.black,
+                    function: () async {
+                      _formKey.currentState.save();
+
+                      final valido = _formKey.currentState.validate();
+                      if (!valido) {
+                        return false;
+                      }
+
+                      final error = await AuthController()
+                          .signWithEmailAndPassword(context, email, password);
+
+                      if (error != null){
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error)));
+                      }
+
+
+                    }),
                 Utils.spaceSmallHeight,
                 Container(
-                  width: 300,
-                  child: GoogleAuthButton(
-                    onPressed: (){ AuthController().signWithGoogle(context);},
-                  )
+                    width: 300,
+                    child: GoogleAuthButton(
+                      onPressed: () {
+                        AuthController().signWithGoogle(context);
+                      },
+                    )
                 ),
                 Utils.spaceBigHeight,
                 InkWell(
@@ -128,31 +164,6 @@ class _LoginPageState extends State<LoginPage> {
         )
       ],
     );
-  }
-}
-
-class Button_Login extends StatelessWidget {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  String email;
-  String password;
-
-  Button_Login(this.formKey, this.email, this.password);
-
-  @override
-  Widget build(BuildContext context) {
-    return Buttons_myclass.Button1(context, text: "Entrar", colorbackground: Colors_myclass.black,function: () async{
-
-      formKey.currentState.save();
-      final valido = formKey.currentState.validate();
-      if (!valido) {
-        return false;
-      }
-
-      final error = await AuthController().signWithEmailAndPassword(context, email, password);
-
-      Utils.showSnackbar(context,error);
-
-    });
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -8,13 +9,20 @@ import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class AddActivity extends StatefulWidget {
+  Turma turma;
+
+  AddActivity(this.turma);
+
   @override
   _AddActivityState createState() => _AddActivityState();
 }
 
 class _AddActivityState extends State<AddActivity> {
+  Turma get turma => widget.turma;
+
   final _formKey = GlobalKey<FormState>();
-  Turma turma;
+
+  bool exist = false;
   String titulo;
   String orientacao;
   String prazo_dia;
@@ -39,7 +47,6 @@ class _AddActivityState extends State<AddActivity> {
   }
 
   _formAddActivity() {
-    turma = Nav.getRouteArgs(context);
     return Container(
         padding: EdgeInsets.all(16),
         child: Form(
@@ -51,7 +58,10 @@ class _AddActivityState extends State<AddActivity> {
                 labelmensage: "Título *",
                 maxLength: 60,
                 validator: (String value) {
-                  return (value == "") | (value.length > 60) ? "Título inválido" : null;
+                  if (exist){
+                    return "Esse titulo já existe na turma";
+                  }
+                  return  (value == "") | (value.length > 60) ? "Título inválido" : null;
                 },
                 onsaved: (value) => titulo = value,
               ),
@@ -176,9 +186,12 @@ class _AddActivityState extends State<AddActivity> {
               ),
               Utils.spaceBigHeight,
               Buttons_myclass.Button1(context, colorbackground: Colors_myclass.black,
-                  text: "Adicionar atividade", function: () {
+                  text: "Adicionar atividade", function: () async {
                     _formKey.currentState.save();
-                    _formKey.currentState.save();
+
+                    QuerySnapshot activity = await turma.id.collection("Activity").where("titulo",isEqualTo: titulo).get();
+                    exist = activity.docs.isNotEmpty;
+
                     bool valido = _formKey.currentState.validate();
                     if (!valido) {
                       return ;

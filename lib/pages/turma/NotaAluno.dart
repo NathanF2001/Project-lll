@@ -2,20 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 
 class NotasAluno extends StatelessWidget {
   Turma turma;
-  List<QueryDocumentSnapshot> ref_atividades;
-  Aluno aluno;
   List<Activity> atividades;
+  Aluno aluno;
 
-  NotasAluno(this.turma, this.ref_atividades, this.aluno);
+  NotasAluno(this.turma, this.atividades, this.aluno);
 
   @override
   Widget build(BuildContext context) {
-    atividades = ref_atividades.map((e) => Activity.fromJson(e.data())).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -73,6 +72,7 @@ class NotasAluno extends StatelessWidget {
               ),
             ),
             Container(
+              width: MediaQuery.of(context).size.width,
               child: DataTable(
                 columns: [
                   DataColumn(label: Text(
@@ -84,12 +84,16 @@ class NotasAluno extends StatelessWidget {
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
                   )),
                 ],
-                rows: atividades.map((atividade) => DataRow(
-                  cells: [
-                    DataCell(Text(atividade.titulo)),
-                    DataCell(Text(aluno.atividades["${atividade.titulo}_nota"] == "" ? "Sem nota" : aluno.atividades["${atividade.titulo}_nota"],))
-                  ]
-                )).toList(),
+                rows: atividades.map((atividade) {
+                  ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+
+                  return DataRow(
+                      cells: [
+                        DataCell(Text(atividade.titulo)),
+                        DataCell(Text(atividade_aluno.nota == "" ? "Sem nota" : atividade_aluno.nota,))
+                      ]
+                  );
+                }).toList(),
               )
             )
           ],

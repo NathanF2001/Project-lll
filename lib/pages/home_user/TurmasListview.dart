@@ -1,16 +1,21 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/controller/TurmaController.dart';
+import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/home_user/TurmasTemplate.dart';
+import 'package:myclass/pages/turma/TurmaPage.dart';
 
 class TurmasListView extends StatefulWidget {
   Pessoa user;
@@ -35,14 +40,15 @@ class _TurmasListViewState extends State<TurmasListView> {
     StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection("Turmas")
-            .where("id", whereIn: user.Turmas_reference)
+            .where("codigo", whereIn: user.Turmas_reference)
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
           // Enquanto não encontra os dados
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+            ),
             );
           }
 
@@ -107,16 +113,14 @@ class _TurmasListViewState extends State<TurmasListView> {
               child: InkWell(
                 child: TurmasTemplate(turma),
                 onTap: () async {
-                  final alunos = await AlunoController().getAllAlunos(turma.id);
+                  ActivityController controller = ActivityController(turma.id.collection("Activity"));
+                  List<QueryDocumentSnapshot> atividades = await controller.getAllActivities();
+                  List<Activity> atvs = await controller.fromJsonList(atividades);
 
-                  Nav.pushname(context, "/turma-page",
-                      arguments: [
-                        id_user,
-                        turma,
-                        json_turma["Professor"],
-                        alunos,
-                        user
-                      ]);
+                  List<Aluno> alunos = await AlunoController().getAllAlunos(turma.id,atvs);
+
+
+                  Nav.push(context, TurmaPage(turma,atvs, alunos, user,id_user));
                 },
               ));
         });

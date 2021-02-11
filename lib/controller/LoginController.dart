@@ -36,7 +36,7 @@ class AuthController{
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
 
-      Nav.pushname(context, "/home",arguments: [pessoa,id],replace: true);
+      Nav.push(context, UserPage(pessoa, id),replace: true);
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "wrong-password":
@@ -73,7 +73,7 @@ class AuthController{
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
-      Nav.pushname(context, "/home",arguments: [pessoa,id],replace: true);
+      Nav.push(context, UserPage(pessoa, id),replace: true);
 
       return "Ok";
     }on FirebaseAuthException catch(error){

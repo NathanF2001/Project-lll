@@ -173,8 +173,8 @@ class _MensagePageState extends State<MensagePage> {
                             icon: Icon(Icons.send_sharp), onPressed: () {
                           _formKey.currentState.save();
 
-                          ChatController().add_mensage(ref_chat, send_mensage, user.id,
-                          log_mensage.isEmpty ? 0 : priority);
+                          /*ChatController().add_mensage(ref_chat, send_mensage, ,
+                          log_mensage.isEmpty ? 0 : priority);*/
                           _formKey.currentState.reset();
                         }))
                   ],

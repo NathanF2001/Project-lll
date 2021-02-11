@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 
@@ -10,22 +12,24 @@ class AlunoController{
 
 
 
-  send(DocumentReference referenceAluno,name_activity,status_send,links) async{
+  send(DocumentReference referencepessoa,DocumentReference ref_turma,name_activity,status_send,links) async{
     /**
      * Método quando Aluno envia alguma atividade, com seus respectivos links
      */
     // Atualiza o status se mandou a atividade
 
+    DocumentReference referenceAluno = await get_ref(ref_turma, referencepessoa);
+
 
     await referenceAluno.update({
-      name_activity: status_send
+      "${name_activity}_enviado": status_send
     });
 
     referenceAluno.set({"${name_activity}_links": links},SetOptions(merge: true));
   }
 
-  Future<QueryDocumentSnapshot> get_ref(DocumentReference id_turma,id_user) async {
-    return await id_turma.collection("Alunos").where("aluno", isEqualTo: id_user).get().then((value) => value.docs.first);
+  Future<DocumentReference> get_ref(DocumentReference id_turma,id_user) async {
+    return await id_turma.collection("Alunos").where("aluno", isEqualTo: id_user).get().then((value) => value.docs.first.reference);
   }
 
   set_nota(id_turma,id_user,name_activity,nota) async {
@@ -33,7 +37,7 @@ class AlunoController{
       Método que muda a nota do Aluno
      **/
 
-    QueryDocumentSnapshot doc = await get_ref(id_turma, id_user);
+    QueryDocumentSnapshot doc = await getbyref(id_turma, id_user);
     doc.reference.update({
         "${name_activity}_nota": nota
       });
@@ -42,52 +46,50 @@ class AlunoController{
   
   getbyref(DocumentReference ref_turma,DocumentReference ref_pessoa) async{
     /**
-     * Método que retorna os dados do Aluno dando sua referência de Users
+     * Método que retorna os DocumentSnapshot do aluno
      */
-    return ref_turma.collection("Alunos").where("aluno",isEqualTo: ref_pessoa).get().then((value) => value.docs.first.data());
+    return ref_turma.collection("Alunos").where("aluno",isEqualTo: ref_pessoa).get().then((value) => value.docs.first);
   }
 
-  Future<Aluno> fromJson(DocumentReference ref_turma,DocumentReference ref_pessoa,Pessoa user) async{
-    final info_aluno = await getbyref(ref_turma, ref_pessoa);
-    Aluno aluno = Aluno.fromJson({"atividades": info_aluno});
-    aluno.info = user;
+  Future<Aluno> fromJson( DocumentSnapshot snapshot,List<Activity> atividades) async{
+    final json_aluno = snapshot.data();
+
+    Map<String,ActivityAluno> map_atividade = {};
+
+    atividades.forEach((atividade) {
+      ActivityAluno atividade_do_aluno = ActivityAluno.fromJson(json_aluno,atividade.titulo);
+      map_atividade[atividade.titulo] = atividade_do_aluno;
+    });
+
+
+    Aluno aluno = Aluno.fromJson({"atividades": map_atividade,"aluno":snapshot.reference});
+    Pessoa pessoa = await PessoaController().get_user(snapshot.data()["aluno"]);
+    aluno.info = pessoa;
 
     return aluno;
   }
 
-   getAllAlunos(DocumentReference ref)async{
+   getAllAlunos(DocumentReference ref_turma,List<Activity> atividades)async{
     /**
       Método que retorna uma lista com todos alunos da turma
      **/
 
+
      // Fazendo requisição ao banco pegar todos os alunos
-     List<Future<Aluno>> alunos = await ref.collection("Alunos").get()
-         .then((document)async => await document.docs.map((element) async {
-       final data = element.data();
-       Aluno aluno = Aluno.fromJson({
-         "atividades": data,
-       });
-       
-
-       DocumentSnapshot ref_pessoa = await data["aluno"].get();
-       Pessoa pessoa = Pessoa.fromJson(ref_pessoa.data());
-
-       aluno.info = pessoa;
-
+     final documents = await ref_turma.collection("Alunos").get();
+     List<Future<Aluno>> future_alunos = documents.docs.map((snapshot) async {
+       Aluno aluno = await fromJson(snapshot, atividades);
        return aluno;
-     }).toList());
+     }).toList();
 
-    //Tranformando todos alunos que estão em Future<Aluno> para Aluno
-    List<Aluno> alunos_da_turma = [];
+    List<Aluno> alunos = await  Future.wait(future_alunos);
 
-    await alunos.forEach((element) {
-      element.then((value) => alunos_da_turma.add(value));
-    });
 
-    return alunos_da_turma;
+    return alunos;
   }
 
-  Map<String,Pessoa> MappingAlunos(alunos){
+
+  Map<String,Pessoa> MappingAlunos(DocumentReference ref_turma){
     /**
      * Método  map do Objeto Pessoa de cada aluno, ele serve para que não precise fazer uma chamada nas informações dos alunos
      * pois estas já foram declaradas
@@ -95,9 +97,8 @@ class AlunoController{
 
     final map_aluno = {};
 
-    alunos.forEach((aluno) {
-      map_aluno[aluno.atividades["aluno"].id]= aluno.info;
-    });
+    ref_turma.collection("Alunos").get().then((value) =>
+    value.docs);
 
     return map_aluno;
   }
