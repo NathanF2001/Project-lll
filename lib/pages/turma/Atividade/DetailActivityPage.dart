@@ -13,22 +13,24 @@ import 'package:myclass/pages/turma/Atividade/listviewAlunos.dart';
 
 
 class DetailActivityPage extends StatefulWidget {
+  Activity atividade;
+  Turma turma;
+  List<Aluno> alunos;
+
+
+  DetailActivityPage(this.atividade, this.turma, this.alunos);
+
   @override
   _DetailActivityPageState createState() => _DetailActivityPageState();
 }
 
 class _DetailActivityPageState extends State<DetailActivityPage> {
-  Turma turma;
-  Activity atividade;
-  bool send;
-  List<Aluno> alunos;
+  Turma get turma => widget.turma;
+  Activity get atividade => widget.atividade;
+  List<Aluno> get alunos => widget.alunos;
 
   @override
   Widget build(BuildContext context) {
-    List values = Nav.getRouteArgs(context);
-    atividade = values[0];
-    turma = values[1];
-    alunos = values[2];
 
     return Scaffold(
       appBar: AppBar(
@@ -112,9 +114,8 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                 text: "Ver atividades dos alunos",
                 function: () {
 
-                  Map<String,Pessoa> map_aluno = AlunoController().MappingAlunos(alunos);
 
-                  Nav.push(context, ListAlunos(atividade,map_aluno,turma));
+                  Nav.push(context, ListAlunos(atividade,alunos,turma));
                 },
                 fontsize: 20.0),
           ],

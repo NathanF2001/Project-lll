@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myclass/models/Activity.dart';
 
 class ActivityController{
 
@@ -22,11 +23,11 @@ class ActivityController{
     return true;
   }
 
-  add_send(ref,number){
+  add_send(ref,number) async{
     /**
      * Método que atualiza o número de alunos que mandaram a atividade
      */
-    ref.update({
+    await ref.update({
       "enviados": FieldValue.increment(number)
     });
   }
@@ -36,15 +37,16 @@ class ActivityController{
      * Método que adiciona nova atividade a todos os alunos da turma
      */
     colref.get().then((value) => value.docs.forEach((element) {
-      addActivityAluno(colref.doc(element.id), titulo);
+      addActivityAluno(element.reference, titulo);
     }));
   }
 
-  addActivityAluno(DocumentReference refAluno,titulo){
+  addActivityAluno(DocumentReference refAluno,titulo) async{
     /**
      * Método para adicionar atividade ao Aluno
      */
-    refAluno.set({titulo: false,"${titulo}_links": [],"${titulo}_nota": ""},SetOptions(merge: true));
+
+    refAluno.set({"${titulo}_titulo": titulo,"${titulo}_links": [],"${titulo}_nota": "","${titulo}_enviado": false},SetOptions(merge: true));
   }
 
   addAllActitiviesAluno( DocumentReference refAluno) async{
@@ -64,6 +66,12 @@ class ActivityController{
 
     return _content.get().then((value) => value.docs);
   }
+
+  List<Activity> fromJsonList(List<DocumentSnapshot> docs){
+    List<Activity> atividades = docs.map((e) => Activity.fromJson(e.data())).toList();
+    return atividades;
+  }
+
 
 
 }

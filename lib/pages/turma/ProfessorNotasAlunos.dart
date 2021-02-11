@@ -3,20 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 
 class ProfessorNotasAlunos extends StatelessWidget {
   Turma turma;
-  List<QueryDocumentSnapshot> ref_atividades;
-  List<Aluno> alunos;
   List<Activity> atividades;
+  List<Aluno> alunos;
 
-  ProfessorNotasAlunos(this.turma, this.ref_atividades, this.alunos);
+
+  ProfessorNotasAlunos(this.turma, this.atividades, this.alunos);
 
   @override
   Widget build(BuildContext context) {
-    atividades = ref_atividades.map((e) => Activity.fromJson(e.data())).toList();
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -83,6 +83,7 @@ class ProfessorNotasAlunos extends StatelessWidget {
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width,
                     child: DataTable(
                   columns: [
                     DataColumn(
@@ -96,14 +97,16 @@ class ProfessorNotasAlunos extends StatelessWidget {
                                 fontSize: 24, fontWeight: FontWeight.bold))),
                   ],
                   rows: atividades
-                      .map((atividade) => DataRow(cells: [
-                            DataCell(Text(atividade.titulo)),
-                            DataCell(Text(
-                              aluno.atividades["${atividade.titulo}_nota"] == ""
-                                  ? "Sem nota"
-                                  : aluno.atividades["${atividade.titulo}_nota"],
-                            ))
-                          ]))
+                      .map((atividade) {
+                    ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+
+                    return DataRow(
+                        cells: [
+                          DataCell(Text(atividade.titulo)),
+                          DataCell(Text(atividade_aluno.nota == "" ? "Sem nota" : atividade_aluno.nota,))
+                        ]
+                    );
+                  })
                       .toList(),
                 ))
               ],

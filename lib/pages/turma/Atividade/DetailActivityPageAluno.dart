@@ -7,17 +7,19 @@ import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/ActivityAluno.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class DetailActivityPageAluno extends StatefulWidget {
   Turma turma;
   Activity atividade;
-  QueryDocumentSnapshot aluno;
-  DocumentReference ref_atividade;
+  Aluno aluno;
+
 
   DetailActivityPageAluno(
-      this.turma, this.atividade, this.aluno, this.ref_atividade);
+      this.turma, this.atividade, this.aluno);
 
   @override
   _DetailActivityAlunoPageState createState() =>
@@ -29,9 +31,8 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
 
   Activity get atividade => widget.atividade;
 
-  QueryDocumentSnapshot get aluno => widget.aluno;
+  Aluno get aluno => widget.aluno;
 
-  DocumentReference get ref_atividade => widget.ref_atividade;
   bool send;
   List<dynamic> links;
 
@@ -39,8 +40,9 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    send = aluno.data()["${atividade.titulo}"];
-    links = aluno.data()["${atividade.titulo}_links"];
+    ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+    send = atividade_aluno.send;
+    links = atividade_aluno.links;
   }
 
   @override
@@ -158,16 +160,20 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
               Utils.spaceSmallHeight,
               Buttons_myclass.Button1(context,
                   colorbackground: Colors_myclass.black,
-                  text: send ? "Cancelar envio" : "Enviar", function: () {
+                  text: send ? "Cancelar envio" : "Enviar", function: () async{
 
                 ActivityController controller =
                     ActivityController(turma.id.collection("Activity"));
 
+                DocumentReference ref_atividade = await turma.id.collection("Activity")
+                    .where("titulo",isEqualTo: atividade.titulo).get().then((value) => value.docs.first.reference);
+
                 if (!send) {
                   controller.add_send(ref_atividade, 1);
                   // Mandar as informações
+                  print(aluno.ref_pessoa);
                   AlunoController()
-                      .send(aluno.reference, atividade.titulo, !send, links);
+                      .send(aluno.ref_pessoa,turma.id, atividade.titulo, !send, links);
                 } else {
                   controller.add_send(ref_atividade, -1);
                 }

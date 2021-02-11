@@ -7,23 +7,22 @@ import 'package:myclass/models/Chat.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Chat/AddChat.dart';
+import 'package:myclass/pages/turma/Chat/TalkPageProf.dart';
 
 class ChatPage extends StatefulWidget {
-  DocumentReference user;
-  DocumentReference professor;
+  Pessoa user;
   List<Aluno> alunos;
   Turma turma;
 
-  ChatPage(this.user, this.professor, this.alunos, this.turma);
+  ChatPage(this.user, this.alunos, this.turma);
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  DocumentReference get user => widget.user;
-
-  DocumentReference get prof => widget.professor;
+  Pessoa get user => widget.user;
 
   List<Aluno> get alunos => widget.alunos;
 
@@ -38,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    IsProfessor = user.id == prof.id;
+    IsProfessor = user.email == turma.Professor.email;
     print(IsProfessor);
   }
 
@@ -66,8 +65,7 @@ class _ChatPageState extends State<ChatPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ),
-                onTap: () => Nav.pushname(context, "/add-chat",
-                    arguments: [turma, alunos]),
+                onTap: () => Nav.push(context, AddChat(turma, alunos)),
               ),
             ) :
             Container();
@@ -89,8 +87,7 @@ class _ChatPageState extends State<ChatPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey),
                       ),
-                      onTap: () => Nav.pushname(context, "/add-chat",
-                          arguments: [turma, alunos]),
+                      onTap: () => Nav.push(context, AddChat(turma, alunos)),
                     );
                   } else {
                     return Container();
@@ -104,26 +101,19 @@ class _ChatPageState extends State<ChatPage> {
                 if (!IsProfessor & !ref_alunos.contains(user)){
                   return null;
                 }
+                
+                List<Pessoa> alunos_turma = alunos.where((element) => ref_alunos.contains(element.info.email)).map((e) => e.info).toList();
+                alunos_turma.add(turma.Professor);
 
-                // Fazer um ponteiro para um objeto Pessoa para cada referencia de Aluno (Refatorar)
-                Map<String,Pessoa> alunos_chat = {};
-                alunos.forEach((e) {
-                  if (ref_alunos.contains(e.atividades["aluno"])){
-                    alunos_chat[e.atividades["aluno"].id] = e.info;
-                  };
-                });
-                alunos_chat["professor"] = turma.Professor;
+
 
 
                 // Ultima mensagem
                 List<dynamic> mensage = chat["last_mensage"];
-                if (mensage.isNotEmpty){
-                  mensage[1] = alunos_chat[mensage[1]].nome;
-                }
 
 
                 Chat chat_config = Chat.fromJson({
-                  "alunos": alunos_chat,
+                  "alunos": alunos_turma,
                   "last_mensage": mensage,
                   "nome": chat["nome"]
                 });
@@ -149,7 +139,7 @@ class _ChatPageState extends State<ChatPage> {
                       style: TextStyle(color: Colors_myclass.white,fontSize: 16),),
                     onTap: () =>
                     IsProfessor ?
-                    Nav.pushname(context, "/mensage-prof-page", arguments: [chat_config,chats[index].reference,user])
+                    Nav.push(context, MensageProfPage(chat_config,chats[index].reference,user))
                         :
                     Nav.pushname(context, "/mensage-page", arguments: [chat_config,chats[index].reference,user]),
                   ),

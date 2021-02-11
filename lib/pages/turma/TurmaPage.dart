@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
+import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
@@ -16,25 +17,27 @@ import 'package:myclass/pages/turma/NotaAluno.dart';
 import 'package:myclass/pages/turma/ProfessorNotasAlunos.dart';
 
 class TurmaPage extends StatefulWidget {
+  Turma turma;
+  List<Activity> atividades;
+  List<Aluno> alunos;
+  Pessoa user;
+  DocumentReference id_user;
+
+  TurmaPage(this.turma,this.atividades, this.alunos, this.user,this.id_user);
+
   @override
   _TurmaPageState createState() => _TurmaPageState();
 }
 
 class _TurmaPageState extends State<TurmaPage> {
-  DocumentReference id_user;
-  DocumentReference id_professor;
-  Turma turma;
-  List<Aluno> alunos;
-  Pessoa user;
+  Turma get turma => widget.turma;
+  List<Aluno> get alunos => widget.alunos;
+  List<Activity> get atividades => widget.atividades;
+  Pessoa get user => widget.user;
+  DocumentReference get id_user => widget.id_user;
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> values = Nav.getRouteArgs(context);
-    id_user = values[0];
-    turma = values[1];
-    id_professor = values[2];
-    alunos = values[3];
-    user = values[4];
 
     return DefaultTabController(
       length: 3,
@@ -70,17 +73,16 @@ class _TurmaPageState extends State<TurmaPage> {
                       Nav.push(context, ListPessoa(alunos, turma));
                     }else if (value == "Notas"){
                       // Pegar todas as atividades
-                      ActivityController controller = ActivityController(turma.id.collection("Activity"));
-                      List<QueryDocumentSnapshot> atividades = await controller.getAllActivities();
 
-                      if (id_professor == id_user) {
+
+                      if (user.email == turma.Professor.email) {
                         //Se for professor
                         Nav.push(context, ProfessorNotasAlunos(turma, atividades, alunos));
 
                       } else {
                         //Se for aluno
-                        Aluno aluno = await AlunoController().fromJson(turma.id, id_user, user);
-                        Nav.push(context,NotasAluno(turma, atividades, aluno));
+                        Aluno aluno = alunos.where((element) => element.info.email == user.email).first;
+                        Nav.push(context,NotasAluno(turma,atividades, aluno));
 
                       }
                     }else{
@@ -107,9 +109,9 @@ class _TurmaPageState extends State<TurmaPage> {
           ),
           body: TabBarView(
             children: [
-              ContentPage(id_user, turma, id_professor),
-              ActivityPage(id_user, turma, id_professor, alunos),
-              ChatPage(id_user, id_professor, alunos, turma),
+              ContentPage(user, turma),
+              ActivityPage(user, turma, alunos),
+              ChatPage(user, alunos, turma),
             ],
           )
       ),

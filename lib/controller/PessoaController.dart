@@ -40,13 +40,19 @@ class PessoaController{
     return await ref.get().then((value) => Pessoa.fromJson(value.data()));
   }
 
-  update_Turmas(id_turma,id_pessoa,Pessoa pessoa){
+  getref (String email) async{
+
+    return await _user.collection("Users").where("email",isEqualTo: email).get().then((value) => value.docs.first.reference);
+
+  }
+
+  update_Turmas(cod_turma,id_pessoa,Pessoa pessoa){
     /**
      * Método que atualiza quantidade de turmas do usuário
      */
-    pessoa.add_turma(id_turma);
+    pessoa.add_turma(cod_turma);
     id_pessoa.update({
-      "Turmas_reference": FieldValue.arrayUnion([id_turma])
+      "Turmas_reference": FieldValue.arrayUnion([cod_turma])
     });
     return pessoa;
   }

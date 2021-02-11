@@ -32,8 +32,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: _buildThemeData(),
     color: Colors.white,
-    initialRoute: "/",
-    routes: _builderRoutes(),);
+    home: LoginPage(),);
   }
 
   ThemeData _buildThemeData() {
@@ -70,21 +69,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  _builderRoutes() {
-    return {
-      "/" : (context) => LoginPage(),
-      "/register": (context) => RegisterPage(),
-      "/home": (context) => UserPage(),
-      "/create-turma": (context) => CreateTurma(),
-      "/turma-page": (context) => TurmaPage(),
-      "/add-content": (context) => AddContent(),
-      "/add-activity": (context) => AddActivity(),
-      "/add-chat": (context) => AddChat(),
-      "/mensage-page": (context) => MensagePage(),
-      "/mensage-prof-page": (context) => MensageProfPage(),
-      "/detail-activity-professor": (context) => DetailActivityPage(),
-    };
-  }
+
 }
 
 

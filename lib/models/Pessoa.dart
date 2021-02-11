@@ -32,7 +32,7 @@ class Pessoa{
     "Turmas_reference": Turmas_reference
   };
 
-  add_turma(DocumentReference turma){
+  add_turma(turma){
     Turmas_reference.add(turma);
   }
 }

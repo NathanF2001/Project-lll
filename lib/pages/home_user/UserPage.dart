@@ -9,18 +9,26 @@ import 'package:myclass/controller/TurmaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/home_user/CreateTurma.dart';
 import 'package:myclass/pages/home_user/ProfilePage.dart';
 import 'package:myclass/pages/home_user/TurmasListview.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
+  Pessoa user;
+  DocumentReference id ;
+
+  UserPage(this.user, this.id);
+
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  Pessoa user;
-  DocumentReference id;
+  Pessoa get  user => widget.user;
+  void set user(newvalue) => widget.user = newvalue;
+
+  DocumentReference get id => widget.id;
   int index_atual = 0;
   String code;
   String search_string = '';
@@ -28,9 +36,6 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> values = Nav.getRouteArgs(context);
-    user = values[0];
-    id = values[1];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -120,7 +125,7 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.add_circle_outline),
             onTap: () {
-              Nav.pushname(context, "/create-turma", arguments: [user, id]);
+              Nav.push(context, CreateTurma(user, id));
             },
           ),
           Spacer(),
@@ -200,15 +205,16 @@ class _UserPageState extends State<UserPage> {
                 DocumentReference ref_aluno = await TurmaController().addAlunoTurma(id_turma, id);
 
                 // Atualizar a lista de turma do aluno
-                final info_user =
-                    await PessoaController().update_Turmas(id_turma, id, user);
+                user =
+                    await PessoaController().update_Turmas(code, id, user);
 
                 // Adicionar todas as atividades existentes na turma como pendente ao aluno
                 ActivityController atividade = ActivityController(id_turma.collection("Activity"));
                 atividade.addAllActitiviesAluno(ref_aluno);
 
+
                 setState(() {
-                  user = info_user;
+
                 });
 
                 Nav.pop(context);

@@ -53,7 +53,7 @@ class _AddContentState extends State<AddContent> {
                       labelmensage: "Título *",
                       maxLength: 60,
                       validator: (String value) {
-                        return (value == "") | (value.length > 60) ? "Título inválido" : null;
+                        (value.isEmpty) | (value.length > 60) ? "Título inválido" : null;
                       },
                       onsaved: (value) => titulo = value,
                     ),

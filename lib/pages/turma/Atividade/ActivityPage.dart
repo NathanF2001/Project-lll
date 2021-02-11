@@ -3,35 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/AlunoController.dart';
-import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Atividade/AddActivity.dart';
+import 'package:myclass/pages/turma/Atividade/DetailActivityPage.dart';
 import 'package:myclass/pages/turma/Atividade/DetailActivityPageAluno.dart';
 
 class ActivityPage extends StatefulWidget {
-  DocumentReference id_user;
-  DocumentReference id_professor;
+  Pessoa user;
   Turma turma;
   List<Aluno> alunos;
 
-  ActivityPage(this.id_user, this.turma, this.id_professor,this.alunos);
+  ActivityPage(this.user, this.turma, this.alunos);
 
   @override
   _ActivityPageState createState() => _ActivityPageState();
 }
 
 class _ActivityPageState extends State<ActivityPage> {
-  DocumentReference get id_user => widget.id_user;
-
-  DocumentReference get id_prof => widget.id_professor;
+  Pessoa get user => widget.user;
+  List<Aluno> get alunos => widget.alunos;
 
   Turma get turma => widget.turma;
-
-  List<Aluno> get alunos => widget.alunos;
 
   bool IsProfessor;
   Pessoa professor;
@@ -40,7 +37,7 @@ class _ActivityPageState extends State<ActivityPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    IsProfessor = id_user.id == id_prof.id;
+    IsProfessor = user.email == turma.Professor.email;
     professor = turma.Professor;
   }
 
@@ -60,8 +57,7 @@ class _ActivityPageState extends State<ActivityPage> {
         color: Colors_myclass.black,
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
-          onPressed: () =>
-              Nav.pushname(context, "/add-activity", arguments: turma),
+          onPressed: () => Nav.push(context, AddActivity(turma)),
           textColor: Colors.grey,
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -107,7 +103,6 @@ class _ActivityPageState extends State<ActivityPage> {
               return ListView.builder(
                   itemCount: atividades.length,
                   itemBuilder: (context, index) {
-
                     final snapshot_atividade = atividades[index];
                     Activity atividade =
                         Activity.fromJson(snapshot_atividade.data());
@@ -143,18 +138,20 @@ class _ActivityPageState extends State<ActivityPage> {
                                   ),
                                   professor.UrlFoto == ""
                                       ? Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.all(Radius.circular(100))),
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                      size: 40,
-                                    ),
-                                  )
+                                          decoration: BoxDecoration(
+                                              color: Colors.grey[200],
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(100))),
+                                          child: Icon(
+                                            Icons.person,
+                                            color: Colors.grey,
+                                            size: 40,
+                                          ),
+                                        )
                                       : CircleAvatar(
-                                    backgroundImage: NetworkImage(professor.UrlFoto),
-                                  ),
+                                          backgroundImage:
+                                              NetworkImage(professor.UrlFoto),
+                                        ),
                                   SizedBox(
                                     width: 8,
                                   ),
@@ -207,15 +204,12 @@ class _ActivityPageState extends State<ActivityPage> {
                                   child: FlatButton(
                                     onPressed: () async {
                                       if (IsProfessor) {
-                                        Nav.pushname(context, "/detail-activity-professor",
-                                            arguments: [atividade, turma, alunos]);
+                                        Nav.push(context, DetailActivityPage(atividade, turma, alunos));
                                       } else {
-                                        QueryDocumentSnapshot document = await AlunoController().get_ref(turma.id, id_user);
+                                        Aluno aluno = alunos.where((element) => element.info.email == user.email).first;
 
-                                        Nav.push(
-                                            context,
-                                            DetailActivityPageAluno(turma, atividade, document,snapshot_atividade.reference)
-                                        );
+
+                                        Nav.push(context,DetailActivityPageAluno(turma, atividade, aluno));
                                       }
                                     },
                                     child: Text(

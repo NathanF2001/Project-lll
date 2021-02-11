@@ -5,27 +5,31 @@ import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/models/Chat.dart';
 import 'package:myclass/models/Mensage.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/nav.dart';
 
 class MensageProfPage extends StatefulWidget {
+  Chat chat;
+  DocumentReference ref_chat;
+  Pessoa user;
+
+  MensageProfPage(this.chat, this.ref_chat,this.user);
+
   @override
   _MensageProfPageState createState() => _MensageProfPageState();
 }
 
 class _MensageProfPageState extends State<MensageProfPage> {
-  DocumentReference user;
-  Chat chat;
-  DocumentReference ref_chat;
+  Chat get chat => widget.chat;
+  DocumentReference get ref_chat => widget.ref_chat;
+  Pessoa get user => widget.user;
+
   String send_mensage;
   int priority;
   final _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
-    List<dynamic> values = Nav.getRouteArgs(context);
-    chat = values[0];
-    ref_chat = values[1];
-    user = values[2];
+  Widget build(BuildContext context) {;
 
     return Scaffold(
       appBar: AppBar(
@@ -65,16 +69,17 @@ class _MensageProfPageState extends State<MensageProfPage> {
 
 
                       final mensage_map = log_mensage[index].data();
-                      final pessoa = chat.alunos[mensage_map["pessoa"]];
+                      print(mensage_map);
+                      final pessoa = mensage_map["pessoa"];
                       final mensagem = mensage_map["mensagem"];
                       final data = mensage_map["data"];
                       if (index == 0){
                         priority = mensage_map["priority"];
                       }
-
-
+                      print(chat.alunos);
+                      print(pessoa);
                       Mensage mensage = Mensage.fromJson({
-                        "pessoa": pessoa,
+                        "pessoa": chat.alunos.where((element) => element.email == pessoa).first,
                         "mensagem": mensagem,
                         "data": data.toDate(),
                         "destaque": mensage_map["destaque"],
@@ -83,7 +88,7 @@ class _MensageProfPageState extends State<MensageProfPage> {
 
                       return Container(
                           width: MediaQuery.of(context).size.width,
-                          child: (mensage_map["pessoa"] == "professor")
+                          child: (mensage.pessoa.email == user.email)
                               ? Container(
                               alignment: Alignment.centerRight,
                               margin: EdgeInsets.only(top: 8, bottom: 8, left: 80),
@@ -195,7 +200,7 @@ class _MensageProfPageState extends State<MensageProfPage> {
                             icon: Icon(Icons.send_sharp), onPressed: () {
                           _formKey.currentState.save();
 
-                          ChatController().add_mensage(ref_chat, send_mensage, "professor",
+                          ChatController().add_mensage(ref_chat, send_mensage, user,
                               log_mensage.isEmpty ? 0 : priority);
                           _formKey.currentState.reset();
                         }))

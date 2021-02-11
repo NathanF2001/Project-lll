@@ -1,35 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ChatController.dart';
+import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 
 import '../../../nav.dart';
 
 class AddChat extends StatefulWidget {
+  Turma turma;
+  List<Aluno> alunos;
+
+  AddChat(this.turma, this.alunos);
+
   @override
   _AddChatState createState() => _AddChatState();
 }
 
 class _AddChatState extends State<AddChat> {
   final _formKey = GlobalKey<FormState>();
-  List<Aluno> alunos;
-  Turma turma;
+  List<Aluno> get alunos => widget.alunos;
+  Turma get turma => widget.turma;
   Aluno current_aluno;
   String nomeChat;
 
   List<Aluno> Wrap_alunos = [];
 
 
-
-
   @override
   Widget build(BuildContext context) {
-    List<dynamic> values = Nav.getRouteArgs(context);
-    turma = values[0];
-    alunos = values[1];
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -87,11 +89,8 @@ class _AddChatState extends State<AddChat> {
                       );
                     }).toList(),
                     value: current_aluno,
-                    onChanged: (value) {
+                    onChanged: (Aluno value) {
                       current_aluno = value;
-                    },
-                    onSaved: (newValue) {
-
                     },
                   ),
                 ),
@@ -103,7 +102,6 @@ class _AddChatState extends State<AddChat> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        print(current_aluno);
                         Wrap_alunos.add(current_aluno);
                       });
                     },
@@ -155,7 +153,10 @@ class _AddChatState extends State<AddChat> {
                     return ;
                   }
 
-                  ChatController().add(turma.id,nomeChat,Wrap_alunos);
+                  List<String> emails_participantes = Wrap_alunos.map((e) => e.info.email).toList();
+                  emails_participantes.add(turma.Professor.email);
+
+                  ChatController().add(turma.id,nomeChat,emails_participantes);
                   Nav.pop(context);
                 },
                 colorbackground: Colors_myclass.black)
