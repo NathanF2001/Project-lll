@@ -182,15 +182,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 color: Colors_myclass.black),
                           ),
                         ),
-                        IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () async{
-                              Pessoa new_value = await Utils.showUpdateInfo(
-                                  context, "Email", pessoa.email, pessoa,id_user);
-                              setState(() {
-                                pessoa.email = new_value.email;
-                              });
-                            })
                       ],
                     )
                 ),

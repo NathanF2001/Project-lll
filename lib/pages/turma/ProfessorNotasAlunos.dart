@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/Utils.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
@@ -76,6 +77,13 @@ class ProfessorNotasAlunos extends StatelessWidget {
                           Text(
                             aluno.info.email,
                             style: TextStyle(color: Colors_myclass.white),
+                          ),
+                          Utils.spaceSmallHeight,
+                          Text(
+                            "Destaques: ${aluno.destaques}",
+                            style: TextStyle(
+                              color: Colors_myclass.white,
+                            ),
                           )
                         ],
                       )
@@ -98,7 +106,7 @@ class ProfessorNotasAlunos extends StatelessWidget {
                   ],
                   rows: atividades
                       .map((atividade) {
-                    ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+                    ActivityAluno atividade_aluno = atividade.atividades_alunos[aluno.ref_pessoa.id];
 
                     return DataRow(
                         cells: [

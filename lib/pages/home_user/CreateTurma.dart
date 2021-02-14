@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -27,12 +28,11 @@ class _CreateTurmaState extends State<CreateTurma> {
   Pessoa get user => widget.user;
 
   set user(value){
-    user=  value;
+    widget.user=  value;
   }
 
   DocumentReference get id => widget.id;
   final _formKey = GlobalKey<FormState>();
-  List<String> Modalidades = ["", "Teste1", "Teste2", "Teste3"];
   Map<String, dynamic> turma_config = {};
 
   @override
@@ -53,11 +53,11 @@ class _CreateTurmaState extends State<CreateTurma> {
   }
 
   _formTurma() {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+    return Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16),
             child: Column(
               children: [
                 Utils.spaceSmallHeight,
@@ -74,36 +74,16 @@ class _CreateTurmaState extends State<CreateTurma> {
                 ),
                 Utils.spaceSmallHeight,
                 Utils.Text_input(
-                  hintmensage: "Descrição da turma",
-                  labelmensage: "Descrição",
-                  onsaved: (newValue) {
-                    turma_config["Descricao"] = newValue;
-                  },
+                    hintmensage: "Descrição da turma",
+                    labelmensage: "Descrição",
+                    onsaved: (newValue) {
+                      turma_config["Descricao"] = newValue;
+                    },
                     validator: (String value) => (value == "") ? "Descrição inválida" : null,
 
-                  key_type: TextInputType.multiline
+                    key_type: TextInputType.multiline
                 ),
-                Utils.spaceSmallHeight,
-                DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Modalidade*',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16))),
-                  ),
-                  items:
-                      Modalidades.map<DropdownMenuItem<String>>((modalidade) {
-                    return DropdownMenuItem<String>(
-                      value: modalidade,
-                      child: Text(modalidade),
-                    );
-                  }).toList(),
-                  value: "",
-                  onChanged: (value) {},
-                  onSaved: (newValue) {
-                    turma_config["Modalidade"] = newValue;
-                  },
-                ),
-                Utils.spaceSmallHeight,
+                Utils.spaceBigHeight,
                 Buttons_myclass.Button1(context, text: "Criar", colorbackground: Colors_myclass.black,function: () async{
 
                   _formKey.currentState.save();
@@ -113,12 +93,13 @@ class _CreateTurmaState extends State<CreateTurma> {
                   }
                   user = await TurmaController().create_turma(turma_config,user,id);
 
-                  Nav.push(context, UserPage(user,id));
+                  Nav.pop(context);
                 }),
                 Utils.spaceBigHeight,
               ],
             ),
-          )),
+          )
+        ),
     );
   }
 }

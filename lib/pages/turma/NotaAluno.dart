@@ -85,7 +85,7 @@ class NotasAluno extends StatelessWidget {
                   )),
                 ],
                 rows: atividades.map((atividade) {
-                  ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+                  ActivityAluno atividade_aluno = atividade.atividades_alunos[aluno.ref_pessoa.id];
 
                   return DataRow(
                       cells: [

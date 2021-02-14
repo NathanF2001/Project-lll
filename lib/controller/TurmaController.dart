@@ -17,13 +17,13 @@ class TurmaController {
     json["Alunos"] = [];
     json["number_Aluno"] = 0;
 
-    List<dynamic> turmas = pessoa.Turmas_reference;
 
     DocumentReference ref = await _user.collection("Turmas").add({});
-    pessoa.add_turma(ref);
+
 
     json["id"] = ref;
     json["codigo"] = Utils.generate_key(6);
+    pessoa.add_turma(json["codigo"]);
 
     _user.collection("Turmas").doc(ref.id).set(json);
 

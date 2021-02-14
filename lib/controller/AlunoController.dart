@@ -7,39 +7,39 @@ import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/SocialEconomico.dart';
 
 class AlunoController{
 
 
 
-  send(DocumentReference referencepessoa,DocumentReference ref_turma,name_activity,status_send,links) async{
+  send(DocumentReference activityref,DocumentReference refaluno,status_send,links) async{
     /**
      * Método quando Aluno envia alguma atividade, com seus respectivos links
      */
     // Atualiza o status se mandou a atividade
 
-    DocumentReference referenceAluno = await get_ref(ref_turma, referencepessoa);
+    DocumentReference ref_acitivtyaluno = await activityref.collection("Atividade alunos").where("aluno",isEqualTo: refaluno).get().then((value) => value.docs.first.reference);
 
-
-    await referenceAluno.update({
-      "${name_activity}_enviado": status_send
+    await ref_acitivtyaluno.update({
+      "enviado": status_send,
+      "links": links,
     });
 
-    referenceAluno.set({"${name_activity}_links": links},SetOptions(merge: true));
   }
 
   Future<DocumentReference> get_ref(DocumentReference id_turma,id_user) async {
     return await id_turma.collection("Alunos").where("aluno", isEqualTo: id_user).get().then((value) => value.docs.first.reference);
   }
 
-  set_nota(id_turma,id_user,name_activity,nota) async {
+  set_nota(DocumentReference ref_activity,nota) async {
     /**
       Método que muda a nota do Aluno
      **/
 
-    QueryDocumentSnapshot doc = await getbyref(id_turma, id_user);
-    doc.reference.update({
-        "${name_activity}_nota": nota
+
+    ref_activity.update({
+        "nota": nota
       });
     return true;
   }
@@ -58,17 +58,11 @@ class AlunoController{
   Future<Aluno> fromJson( DocumentSnapshot snapshot,List<Activity> atividades) async{
     final json_aluno = snapshot.data();
 
-    Map<String,ActivityAluno> map_atividade = {};
 
-    atividades.forEach((atividade) {
-      ActivityAluno atividade_do_aluno = ActivityAluno.fromJson(json_aluno,atividade.titulo);
-      map_atividade[atividade.titulo] = atividade_do_aluno;
-    });
-
-
-    Aluno aluno = Aluno.fromJson({"atividades": map_atividade,"aluno":snapshot.reference});
+    Aluno aluno = Aluno.fromJson({"aluno":snapshot.reference});
     Pessoa pessoa = await PessoaController().get_user(snapshot.data()["aluno"]);
     aluno.info = pessoa;
+    aluno.destaques = snapshot.data()["destaques"];
 
     return aluno;
   }
@@ -92,9 +86,6 @@ class AlunoController{
     return alunos;
   }
 
-  RemoveAluno(DocumentReference ref_aluno) async{
-    await ref_aluno.delete();
-  }
 
   Map<String,Pessoa> MappingAlunos(DocumentReference ref_turma){
     /**

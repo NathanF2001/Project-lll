@@ -184,13 +184,15 @@ class _ContentPageState extends State<ContentPage> {
                                     bottomLeft: Radius.circular(16))),
                             padding: EdgeInsets.all(16),
                             alignment: Alignment.topLeft,
-                            height: 250,
+                            height: 300,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   conteudo.titulo,
                                   style: Theme.of(context).textTheme.headline6,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
                                 Utils.spaceBigHeight,
                                 Container(
@@ -198,6 +200,8 @@ class _ContentPageState extends State<ContentPage> {
                                   child: Text(
                                     conteudo.orientacao,
                                     style: Theme.of(context).textTheme.bodyText2,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 5,
                                   ),
                                 ),
                                 Spacer(),

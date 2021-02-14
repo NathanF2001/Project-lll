@@ -40,6 +40,7 @@ class _InfoTurmaState extends State<InfoTurma> {
           style: TextStyle(color: Colors.white),
         ),
       ),
+      backgroundColor: Colors_myclass.white,
       body: Container(
           child: SingleChildScrollView(
         child: Column(

@@ -5,13 +5,16 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
+import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
 class AddActivity extends StatefulWidget {
   Turma turma;
+  List<Aluno> alunos;
 
-  AddActivity(this.turma);
+  AddActivity(this.turma,this.alunos);
 
   @override
   _AddActivityState createState() => _AddActivityState();
@@ -19,6 +22,7 @@ class AddActivity extends StatefulWidget {
 
 class _AddActivityState extends State<AddActivity> {
   Turma get turma => widget.turma;
+  List<Aluno> get alunos => widget.alunos;
   GlobalKey<ScaffoldState> _scaffoldKeyActivity = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
 
@@ -204,11 +208,11 @@ class _AddActivityState extends State<AddActivity> {
 
 
                     // Adicionar atividade na turma
-                    ActivityController atividade = ActivityController(turma.id.collection("Activity"));
-                    atividade.add_activity(titulo, orientacao, links,prazo_dia,prazo_hora);
+                    ActivityController atividade_controller = ActivityController(turma.id.collection("Activity"));
+                    DocumentReference ref_atividade = await atividade_controller.add_activity(titulo, orientacao, links,prazo_dia,prazo_hora);
 
                     // Adiciona atividade para cada aluno
-                    atividade.addActivitiestoAlunos(turma.id.collection("Alunos"),titulo);
+                    atividade_controller.addActivitiestoAlunos(ref_atividade,titulo,alunos);
                     Nav.pop(context);
                   })
             ],

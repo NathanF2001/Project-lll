@@ -211,13 +211,12 @@ class _UpdateActivityState extends State<UpdateActivity> {
                       return null;
                     }
 
-
                     // Adicionar atividade na turma
                     ActivityController atividade_controller = ActivityController(turma.id.collection("Activity"));
                     DocumentSnapshot snapshot_atividade = await atividade_controller.getActivity(old_titulo);
                     await atividade_controller.updateActivity(snapshot_atividade.reference, atividade);
 
-                    Nav.pop(context);
+                    Nav.pop(context,result: atividade);
                   })
             ],
           ),

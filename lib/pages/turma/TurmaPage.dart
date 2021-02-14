@@ -38,7 +38,6 @@ class _TurmaPageState extends State<TurmaPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(

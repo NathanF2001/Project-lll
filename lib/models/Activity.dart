@@ -1,3 +1,5 @@
+import 'package:myclass/models/ActivityAluno.dart';
+
 class Activity{
   String titulo;
   String orientacao;
@@ -5,6 +7,7 @@ class Activity{
   String prazo_dia;
   String prazo_hora;
   int enviados;
+  Map<String,ActivityAluno> atividades_alunos;
 
   Activity.fromJson(Map<String,dynamic> json){
     if (json == null) return;
