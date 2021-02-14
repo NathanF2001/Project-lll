@@ -3,6 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myclass/controller/PessoaController.dart';
+import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/nav.dart';
 
 
 class Utils {
@@ -49,7 +52,7 @@ class Utils {
 
   static Widget Text_input(
       {@required hintmensage, @required labelmensage, bool show = false,validator, TextInputType key_type = TextInputType.text,
-      onsaved,maxLength, double width}) {
+      onsaved,maxLength, double width,initialvalue}) {
     return Container(
       width: width,
       constraints: BoxConstraints(maxHeight: 200),
@@ -57,6 +60,7 @@ class Utils {
           style: TextStyle(
             fontSize: 20,
           ),
+          initialValue: initialvalue,
           obscureText: show,
           keyboardType: key_type,
           maxLines: (key_type == TextInputType.multiline) ? null : 1,
@@ -77,6 +81,62 @@ class Utils {
               labelText: labelmensage,
               labelStyle: TextStyle(fontSize: 24, color: Colors.black))
       ),
+    );
+  }
+
+  static showUpdateInfo(
+      context,
+      String campo,
+      value,
+      Pessoa pessoa,
+      id_user
+      ) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final _formKey = GlobalKey<FormState>();
+        return AlertDialog(
+          scrollable: true,
+          titlePadding: EdgeInsets.all(16),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          title: Text(
+            "Mudar ${campo.toLowerCase()} usuário",
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          content: Form(
+              key: _formKey,
+              child: Utils.Text_input(
+                  hintmensage: "Insira seu ${campo}",
+                  labelmensage: "${campo} usuário",
+                  onsaved: (value) {
+                    switch (campo) {
+                      case "Nome":
+                        pessoa.nome = value;
+                        break;
+                      case "Email":
+                        pessoa.email = value;
+                        break;
+                      case "Descrição":
+                        pessoa.descricao = value;
+                        break;
+                    }
+                  },
+                  initialvalue: value
+              )),
+          actions: [
+            FlatButton(
+              onPressed: () async {
+                _formKey.currentState.save();
+
+                await PessoaController().updateUser(pessoa, id_user.id);
+                Nav.pop(context,result: pessoa);
+              },
+              child: Text("Mudar"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
     );
   }
 

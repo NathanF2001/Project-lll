@@ -8,6 +8,7 @@ import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/turma/Chat/AddChat.dart';
+import 'package:myclass/pages/turma/Chat/TalkPage.dart';
 import 'package:myclass/pages/turma/Chat/TalkPageProf.dart';
 
 class ChatPage extends StatefulWidget {
@@ -38,7 +39,6 @@ class _ChatPageState extends State<ChatPage> {
     // TODO: implement initState
     super.initState();
     IsProfessor = user.email == turma.Professor.email;
-    print(IsProfessor);
   }
 
   @override
@@ -98,14 +98,12 @@ class _ChatPageState extends State<ChatPage> {
                 ref_alunos = chat["alunos"];
 
                 // Caso o aluno não pertence a turma
-                if (!IsProfessor & !ref_alunos.contains(user)){
+                if (!IsProfessor & !ref_alunos.contains(user.email)){
                   return null;
                 }
                 
                 List<Pessoa> alunos_turma = alunos.where((element) => ref_alunos.contains(element.info.email)).map((e) => e.info).toList();
                 alunos_turma.add(turma.Professor);
-
-
 
 
                 // Ultima mensagem
@@ -117,7 +115,6 @@ class _ChatPageState extends State<ChatPage> {
                   "last_mensage": mensage,
                   "nome": chat["nome"]
                 });
-
 
 
                 return Container(
@@ -139,9 +136,9 @@ class _ChatPageState extends State<ChatPage> {
                       style: TextStyle(color: Colors_myclass.white,fontSize: 16),),
                     onTap: () =>
                     IsProfessor ?
-                    Nav.push(context, MensageProfPage(chat_config,chats[index].reference,user))
+                    Nav.push(context, MensageProfPage(chat_config,chats[index].reference,user,turma,alunos))
                         :
-                    Nav.pushname(context, "/mensage-page", arguments: [chat_config,chats[index].reference,user]),
+                    Nav.push(context, MensagePage(chat_config,chats[index].reference,user)),
                   ),
                 );
               });

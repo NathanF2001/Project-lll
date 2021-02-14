@@ -18,6 +18,10 @@ class PessoaController{
     return [pessoa,ref];
   }
 
+  Future<void> updateUser(Pessoa pessoa,id){
+    _user.collection("Users").doc(id).update(pessoa.ToJson());
+  }
+
   getInfo_user(fuser)async{
     /**
      * Método que retorna informações do usuário de acordo com Authetication

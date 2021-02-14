@@ -7,6 +7,7 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/user_auth/RegisterPage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -145,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Utils.spaceBigHeight,
                 InkWell(
-                  onTap: () => Nav.pushname(context, "/register"),
+                  onTap: () => Nav.push(context, RegisterPage()),
                   child: Container(
                     child: Text(
                       "Registre-se",

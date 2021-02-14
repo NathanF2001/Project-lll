@@ -43,6 +43,10 @@ class AlunoController{
       });
     return true;
   }
+
+  set_destaque(DocumentReference ref_aluno,value) async{
+  ref_aluno.update({"destaques": FieldValue.increment(value)});
+  }
   
   getbyref(DocumentReference ref_turma,DocumentReference ref_pessoa) async{
     /**
@@ -88,6 +92,9 @@ class AlunoController{
     return alunos;
   }
 
+  RemoveAluno(DocumentReference ref_aluno) async{
+    await ref_aluno.delete();
+  }
 
   Map<String,Pessoa> MappingAlunos(DocumentReference ref_turma){
     /**

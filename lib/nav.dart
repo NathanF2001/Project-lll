@@ -27,7 +27,7 @@ class _Nav{
     return ModalRoute.of(context).settings.arguments;
   }
 
-  void pop(BuildContext context) {
-    Navigator.pop(context);
+  void pop(BuildContext context,{result}) {
+    Navigator.pop(context,result);
   }
 }

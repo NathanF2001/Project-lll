@@ -3,17 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/controller/ChatController.dart';
+import 'package:myclass/controller/PessoaController.dart';
+import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Chat.dart';
 import 'package:myclass/models/Mensage.dart';
 import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Chat/AddMoreAlunos.dart';
 
 class MensageProfPage extends StatefulWidget {
   Chat chat;
   DocumentReference ref_chat;
   Pessoa user;
+  Turma turma;
+  List<Aluno> alunos;
 
-  MensageProfPage(this.chat, this.ref_chat,this.user);
+  MensageProfPage(this.chat, this.ref_chat,this.user,this.turma,this.alunos);
 
   @override
   _MensageProfPageState createState() => _MensageProfPageState();
@@ -23,6 +29,8 @@ class _MensageProfPageState extends State<MensageProfPage> {
   Chat get chat => widget.chat;
   DocumentReference get ref_chat => widget.ref_chat;
   Pessoa get user => widget.user;
+  Turma get turma => widget.turma;
+  List<Aluno> get alunos => widget.alunos;
 
   String send_mensage;
   int priority;
@@ -40,7 +48,40 @@ class _MensageProfPageState extends State<MensageProfPage> {
           chat.nome,
           style: TextStyle(color: Colors.white),
         ),
+        actions: [
+          Container(
+            padding: EdgeInsets.all(8),
+            child: PopupMenuButton(
+              onSelected: (value) async{
+                if (value == "Adicionar aluno") {
+                  List<Aluno> alunos_chat = await Nav.push(context, AddMoreAlunos(alunos,chat,turma));
+                  if(alunos_chat != null){
+                    chat.alunos = alunos_chat.map((e) => e.info).toList();
+                    chat.alunos.add(turma.Professor);
+                    List<String> emails_participantes = chat.alunos.map((e) => e.email).toList();
+                    ChatController().UpdateParticipantes(ref_chat, emails_participantes);
+                    setState(() {});
+                  }
+                }else{
+                  //Listar as informações da turma
+                  _showAlertDialog();
+                }
+              },
+              itemBuilder: (context) =>
+              [
+                PopupMenuItem(
+                    value: "Adicionar aluno",
+                    child: Text("Adicionar aluno")),
+                PopupMenuItem(
+                    value: "Mudar nome do chat",
+                    child: Text("Mudar nome do chat")),
+              ],
+              child: Icon(Icons.more_vert),
+            ),
+          )
+        ],
       ),
+
       body: _Mensage(),
     );
   }
@@ -69,15 +110,13 @@ class _MensageProfPageState extends State<MensageProfPage> {
 
 
                       final mensage_map = log_mensage[index].data();
-                      print(mensage_map);
+
                       final pessoa = mensage_map["pessoa"];
                       final mensagem = mensage_map["mensagem"];
                       final data = mensage_map["data"];
                       if (index == 0){
                         priority = mensage_map["priority"];
                       }
-                      print(chat.alunos);
-                      print(pessoa);
                       Mensage mensage = Mensage.fromJson({
                         "pessoa": chat.alunos.where((element) => element.email == pessoa).first,
                         "mensagem": mensagem,
@@ -157,8 +196,19 @@ class _MensageProfPageState extends State<MensageProfPage> {
                                   flex: 2,
                                   child: Padding(
                                     padding: EdgeInsets.only(top:16),
-                                    child: IconButton(icon: Icon(Icons.star,color: mensage.destaque ? Colors.yellow : Colors.black,), onPressed: (){
+                                    child: IconButton(icon: Icon(Icons.star,color: mensage.destaque ? Colors.yellow : Colors.black,), onPressed: () async{
+
+                                      // Mudar destaque na mensagem
                                       ChatController().set_destaque(log_mensage[index].reference,mensage.destaque);
+
+                                      // Pegar referencia da pessoa que foi destacada
+                                      DocumentReference ref_pessoa = await PessoaController().getref(mensage.pessoa.email);
+
+                                      // Pegar referencia aluno da pessoa destacada
+                                      DocumentReference ref_aluno = await AlunoController().get_ref(turma.id, ref_pessoa);
+
+                                      // Mudar a quantidade de destaque do aluno
+                                      await AlunoController().set_destaque(ref_aluno, !mensage.destaque == true ? 1 : -1);
 
                                     }),
                                   ))
@@ -210,5 +260,64 @@ class _MensageProfPageState extends State<MensageProfPage> {
             ],
           );
         });
+  }
+
+  _showAlertDialog() {
+    final _formKey = GlobalKey<FormState>();
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          titlePadding: EdgeInsets.all(16),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          title: Text(
+            "Nome do chat",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              initialValue: chat.nome,
+              decoration: InputDecoration(
+                  hintText: "Insira nome do chat",
+                  hintStyle: TextStyle(
+                    fontSize: 18,
+                  ),
+                  labelText: "Nome do chat",
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
+              onSaved: (String value) {
+                chat.nome = value;
+              },
+              validator: (value) => value == "" ? "Nome inválido (vazio)" : null,
+            ),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () async {
+
+                bool validate = _formKey.currentState.validate();
+                if (!validate){
+                  return ;
+                }
+                _formKey.currentState.save();
+
+                ChatController().UpdateNameChat(ref_chat, chat.nome);
+                setState(() {
+
+                });
+
+                Nav.pop(context,result: true);
+              },
+              child: Text("Entrar"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
+    );
   }
 }

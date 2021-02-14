@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myclass/models/Content.dart';
 
 class ContentController{
 
@@ -18,5 +19,17 @@ class ContentController{
     });
 
     return true;
+  }
+  
+  Future<DocumentSnapshot> get_content( titulo) async{
+    /**
+     * Método para pegar conteudo pelo titulo (ID de conteudo)
+     */
+    return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+  }
+
+  update_content(DocumentReference ref_content, Content conteudo) async{
+    await ref_content.update(conteudo.ToJson());
+
   }
 }

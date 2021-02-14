@@ -4,27 +4,32 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/models/Chat.dart';
 import 'package:myclass/models/Mensage.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/nav.dart';
 
 class MensagePage extends StatefulWidget {
+
+  Chat chat;
+  DocumentReference ref_chat;
+  Pessoa user;
+
+  MensagePage(this.chat, this.ref_chat, this.user);
+
   @override
   _MensagePageState createState() => _MensagePageState();
 }
 
 class _MensagePageState extends State<MensagePage> {
-  DocumentReference user;
-  Chat chat;
-  DocumentReference ref_chat;
+  Chat get chat => widget.chat;
+  DocumentReference get ref_chat => widget.ref_chat;
+  Pessoa get user => widget.user;
+
   String send_mensage;
   int priority;
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    List<dynamic> values = Nav.getRouteArgs(context);
-    chat = values[0];
-    ref_chat = values[1];
-    user = values[2];
 
     return Scaffold(
       appBar: AppBar(
@@ -64,22 +69,23 @@ class _MensagePageState extends State<MensagePage> {
 
 
                       final mensage_map = log_mensage[index].data();
-                      final pessoa = chat.alunos[mensage_map["pessoa"]];
+                      final pessoa = mensage_map["pessoa"];
                       final mensagem = mensage_map["mensagem"];
                       final data = mensage_map["data"];
                       if (index == 0){
                         priority = mensage_map["priority"];
                       }
 
-
                       Mensage mensage = Mensage.fromJson({
-                        "pessoa": pessoa,
+                        "pessoa": chat.alunos.where((element) => element.email == pessoa).first,
                         "mensagem": mensagem,
                         "data": data.toDate(),
                         "destaque": mensage_map["destaque"],
                       });
 
-                      return (user.id == mensage_map["pessoa"])
+                      List<String> separate_name = mensage.pessoa.nome.split(" ");
+
+                      return (mensage.pessoa.email == user.email)
                           ? Container(
                           alignment: Alignment.centerRight,
                           margin: EdgeInsets.only(top: 8, bottom: 8, left: 80),
@@ -126,9 +132,12 @@ class _MensagePageState extends State<MensagePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    mensage.pessoa.nome,
-                                    style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width*0.6,
+                                    child: Text(
+                                      "${separate_name.first} ${separate_name.length > 1 ? separate_name.last : ""}",
+                                      style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
+                                    ),
                                   ),
                                   Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
                                     style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
@@ -173,8 +182,8 @@ class _MensagePageState extends State<MensagePage> {
                             icon: Icon(Icons.send_sharp), onPressed: () {
                           _formKey.currentState.save();
 
-                          /*ChatController().add_mensage(ref_chat, send_mensage, ,
-                          log_mensage.isEmpty ? 0 : priority);*/
+                          ChatController().add_mensage(ref_chat, send_mensage, user,
+                              log_mensage.isEmpty ? 0 : priority);
                           _formKey.currentState.reset();
                         }))
                   ],
