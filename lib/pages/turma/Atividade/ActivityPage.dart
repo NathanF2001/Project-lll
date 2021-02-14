@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/models/Activity.dart';
+import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
@@ -57,7 +59,7 @@ class _ActivityPageState extends State<ActivityPage> {
         color: Colors_myclass.black,
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
-          onPressed: () => Nav.push(context, AddActivity(turma)),
+          onPressed: () => Nav.push(context, AddActivity(turma,alunos)),
           textColor: Colors.grey,
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -185,31 +187,36 @@ class _ActivityPageState extends State<ActivityPage> {
                                     bottomLeft: Radius.circular(16))),
                             padding: EdgeInsets.all(16),
                             alignment: Alignment.topLeft,
-                            height: 220,
+                            height: 300,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   atividade.titulo,
                                   style: Theme.of(context).textTheme.headline6,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
                                 ),
                                 Utils.spaceBigHeight,
                                 Text(
                                   atividade.orientacao,
                                   style: Theme.of(context).textTheme.bodyText2,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 5,
                                 ),
                                 Spacer(),
                                 Container(
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
+                                      Map<String,ActivityAluno> atividade_alunos = await ActivityController(null).getAlunosActivity(snapshot_atividade.reference);
+                                      atividade.atividades_alunos = atividade_alunos;
                                       if (IsProfessor) {
-                                        Nav.push(context, DetailActivityPage(atividade, turma, alunos));
+                                        Nav.push(context, DetailActivityPage(atividade, turma, alunos,snapshot_atividade.reference));
                                       } else {
                                         Aluno aluno = alunos.where((element) => element.info.email == user.email).first;
 
-
-                                        Nav.push(context,DetailActivityPageAluno(turma, atividade, aluno));
+                                        Nav.push(context,DetailActivityPageAluno(turma, atividade, aluno,snapshot_atividade.reference));
                                       }
                                     },
                                     child: Text(

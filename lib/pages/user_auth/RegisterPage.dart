@@ -62,9 +62,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(150))),
             child: Form(
               key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Wrap(
+                runAlignment: WrapAlignment.spaceEvenly,
+                alignment: WrapAlignment.center,
                 children: [
                   Utils.spaceBigHeight,
                   Utils.Text_input(

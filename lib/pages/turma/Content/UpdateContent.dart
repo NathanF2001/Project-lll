@@ -136,7 +136,7 @@ class _UpdateContentState extends State<UpdateContent> {
               Utils.spaceBigHeight,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: () async{
+                child: Buttons_myclass.Button1(context, text: "Atualizar conteúdo", colorbackground: Colors_myclass.black,function: () async{
 
                   _formKey.currentState.save();
                   bool valido = _formKey.currentState.validate();

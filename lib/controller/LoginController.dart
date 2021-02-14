@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Pessoa.dart';
+import 'package:myclass/models/SocialEconomico.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/home_user/UserPage.dart';
 
@@ -35,8 +36,9 @@ class AuthController{
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
+      DocumentReference id_SE = result_firebase[2];
 
-      Nav.push(context, UserPage(pessoa, id),replace: true);
+      Nav.push(context, UserPage(pessoa, id, id_SE),replace: true);
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "wrong-password":
@@ -73,7 +75,8 @@ class AuthController{
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
       Pessoa pessoa = result_firebase[0]; // informações do usuario
       DocumentReference id = result_firebase[1]; // referencia do usuario
-      Nav.push(context, UserPage(pessoa, id),replace: true);
+      DocumentReference ref_SE = result_firebase[2]; // referencia SocialEconomico resultados
+      Nav.push(context, UserPage(pessoa, id,ref_SE),replace: true);
 
       return "Ok";
     }on FirebaseAuthException catch(error){
@@ -109,7 +112,9 @@ class AuthController{
 
       final fuser = result.user;
 
-      PessoaController().addUser(email, nome, "", fuser.uid);
+      DocumentReference ref_SE = await PessoaController().add_SE();
+
+      PessoaController().addUser(email, nome, "", fuser.uid,ref_SE);
 
 
       return "ok";
@@ -135,6 +140,24 @@ class AuthController{
           break;
       }
 
+    }
+  }
+  
+  sendEmailForgotPass(email) async{
+    try{
+      await _auth.sendPasswordResetEmail(email: email);
+    }on FirebaseAuthException catch(error){
+      switch (error.code){
+        case "user-not-found":
+          return "Email não cadastrado";
+          break;
+        case "invalid-email":
+          return "Insira um email válido";
+          break;
+        default:
+          return "Algum erro aconteceu, tente novamente";
+          break;
+      }
     }
   }
 

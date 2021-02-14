@@ -1,21 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListAlunos extends StatefulWidget {
   Activity atividade;
   List<Aluno> alunos;
   Turma turma;
+  DocumentReference ref_activity;
 
-  ListAlunos(this.atividade, this.alunos, this.turma);
+  ListAlunos(this.atividade, this.alunos, this.turma, this.ref_activity);
 
   @override
   _ListAlunosState createState() => _ListAlunosState();
@@ -25,6 +30,8 @@ class _ListAlunosState extends State<ListAlunos> {
   Activity get atividade => widget.atividade;
 
   List<Aluno> get alunos => widget.alunos;
+
+  DocumentReference get ref_activity => widget.ref_activity;
 
   Turma get turma => widget.turma;
 
@@ -40,17 +47,13 @@ class _ListAlunosState extends State<ListAlunos> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: ListView.builder(
-            itemCount: alunos.length,
-            itemBuilder: (context, index) {
-              final aluno = alunos[index];
+        body: SingleChildScrollView(
+          child: Wrap(
+            children: alunos.map((aluno) {
               ActivityAluno atividade_aluno =
-                  aluno.atividades[atividade.titulo];
+                  atividade.atividades_alunos[aluno.ref_pessoa.id];
 
-              print(atividade_aluno.links);
               List<dynamic> links = atividade_aluno.links;
-
-
               return Container(
                   margin: EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -100,6 +103,12 @@ class _ListAlunosState extends State<ListAlunos> {
                                       color: Colors_myclass.white,
                                     ),
                                   ),
+                                  Text(
+                                    "Destaques: ${aluno.destaques}",
+                                    style: TextStyle(
+                                      color: Colors_myclass.white,
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
@@ -121,34 +130,53 @@ class _ListAlunosState extends State<ListAlunos> {
                       Utils.spaceMediumHeight,
                       Wrap(
                         children: links
-                            .map((e) => Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 4),
-                                  margin: EdgeInsets.symmetric(vertical: 4),
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                      color: Colors_myclass.white,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(8))),
-                                  child: Text(e),
-                                ))
+                            .map(
+                              (element) => Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 4),
+                                margin: EdgeInsets.symmetric(vertical: 4),
+                                width: 300,
+                                decoration: BoxDecoration(
+                                    color: Colors_myclass.white,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8))),
+                                child: RichText(
+                                  text: TextSpan(
+                                      text: element,
+                                      style: TextStyle(
+                                          color: Colors_myclass.black,
+                                          fontSize: 20),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          String url = element;
+                                          print(url);
+                                          if (await canLaunch(url)) {
+                                            await launch(url);
+                                          } else {
+                                            print("não clicavel");
+                                          }
+                                        }),
+                                ),
+                              ),
+                            )
                             .toList(),
                       ),
                       Utils.spaceMediumHeight,
                       Buttons_myclass.Button1(context, text: "Dar nota",
                           function: () {
-                        _showAlertDialog(index);
+                        _showAlertDialog(aluno);
                       },
                           colorbackground: Colors_myclass.white,
                           textcolor: Colors_myclass.black),
                       Utils.spaceMediumHeight
                     ],
                   ));
-            }));
+            }).toList(),
+          ),
+        ));
   }
 
-  _showAlertDialog(index) {
-    Aluno aluno = alunos[index];
+  _showAlertDialog(aluno) {
     final _formKeyLink = GlobalKey<FormState>();
     String nota = "";
     return showDialog(
@@ -194,16 +222,17 @@ class _ListAlunosState extends State<ListAlunos> {
             FlatButton(
               onPressed: () async {
                 _formKeyLink.currentState.save();
+
+                DocumentReference ref_activityaluno =
+                    await ActivityController(null)
+                        .getAlunoActivity(ref_activity, aluno.ref_pessoa);
+
                 // Mudar o valor da nota
-                await AlunoController().set_nota(turma.id,
-                    aluno.atividades["aluno"], atividade.titulo, nota);
+                await AlunoController().set_nota(ref_activityaluno, nota);
 
-                alunos[index].atividades[atividade.titulo].nota = nota;
-                print(alunos[index].atividades[atividade.titulo].nota);
+                atividade.atividades_alunos[aluno.ref_pessoa.id].nota = nota;
 
-                setState(() {
-
-                });
+                setState(() {});
                 Nav.pop(context);
               },
               child: Text("Dar nota"),

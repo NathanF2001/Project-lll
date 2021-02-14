@@ -6,19 +6,22 @@ import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/controller/TurmaController.dart';
+import 'package:myclass/controller/webservice.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/home_user/CreateTurma.dart';
 import 'package:myclass/pages/home_user/ProfilePage.dart';
+import 'package:myclass/pages/home_user/SocialEconomicForm.dart';
 import 'package:myclass/pages/home_user/TurmasListview.dart';
 import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
   Pessoa user;
   DocumentReference id ;
+  DocumentReference id_SE;
 
-  UserPage(this.user, this.id);
+  UserPage(this.user, this.id,this.id_SE);
 
   @override
   _UserPageState createState() => _UserPageState();
@@ -26,9 +29,10 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   Pessoa get  user => widget.user;
-  void set user(newvalue) => widget.user = newvalue;
+  void set user(newvalue) { widget.user = newvalue;}
 
   DocumentReference get id => widget.id;
+  DocumentReference get id_SE => widget.id_SE;
   int index_atual = 0;
   String code;
   String search_string = '';
@@ -36,6 +40,7 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(user.Turmas_reference);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -125,14 +130,49 @@ class _UserPageState extends State<UserPage> {
             title: Text("Preencher dados socioeconômicos",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.accessibility),
-            onTap: () {},
+            onTap: () async {
+              Pessoa new_info_user = await Nav.push(context, SocialEconomicForm(user,id_SE));
+              if (new_info_user != null){
+                print("PIU");
+                print(new_info_user.ref_SE.iscomplete);
+                setState(() {
+                  user = new_info_user;
+                });
+              }
+              Nav.pop(context);
+            },
           ),
           ListTile(
             title: Text("Criar Turma",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.add_circle_outline),
-            onTap: () {
-              Nav.push(context, CreateTurma(user, id));
+            onTap: () async {
+              Pessoa new_info_user = await Nav.push(context, CreateTurma(user, id));
+              if (new_info_user != null){
+                setState(() {
+                  user = new_info_user;
+                });
+              }
+              Nav.pop(context);
+            },
+          ),
+          ListTile(
+            title: Text("Classificar",
+                style: TextStyle(fontWeight: FontWeight.normal)),
+            leading: Icon(Icons.whatshot),
+            onTap: () async {
+              if(user.ref_SE.iscomplete){
+                Pessoa new_user = await WebService().getClassifier("http://c9cbbfe3994f.ngrok.io/classify?", user,id);
+                if (new_user != null){
+                  user = new_user;
+                  setState(() {});
+                }else{
+                  print("DEU ALGO ERRADO");
+                }
+
+              }else{
+                _ErrorAlertDialog("Não foi possível classificar", "Seu perfil está incompleto");
+              }
             },
           ),
           Spacer(),
@@ -201,7 +241,7 @@ class _UserPageState extends State<UserPage> {
                 QueryDocumentSnapshot pointer_turma =
                     await TurmaController().get_turmabycode(code);
                 if (pointer_turma == null){
-                  return _ErrorAlertDialog();
+                  return _ErrorAlertDialog("Não foi possível acessar Turma","Não existe uma turma com esse código");
                 }
                 DocumentReference id_turma = pointer_turma.reference;
 
@@ -235,17 +275,17 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  _ErrorAlertDialog() {
+  _ErrorAlertDialog(title_text,content_text) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
-            "Não foi possível acessar Turma",
+            title_text,
             style: Theme.of(context).textTheme.headline5,
           ),
           content: Text(
-            "Não existe uma turma com esse código",
+            content_text,
             style: Theme.of(context).textTheme.bodyText2,
           ),
           actions: [

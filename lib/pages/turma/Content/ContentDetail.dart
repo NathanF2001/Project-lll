@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -7,6 +8,7 @@ import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/turma/Content/UpdateContent.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class ContentDetail extends StatefulWidget {
@@ -84,9 +86,17 @@ class _ContentDetailState extends State<ContentDetail> {
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
                 alignment: Alignment.center,
-                child: Text(element,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white, fontSize: 24)),
+                child: RichText(
+                  text: TextSpan(
+                      text: element,
+                      style: TextStyle(color: Colors.white, fontSize: 24),
+                    recognizer: TapGestureRecognizer()..onTap = () async{
+                        if (await canLaunch(element)){
+                          await launch(element);
+                        }
+                    }
+                  )
+                )
               );
             }).toList(),
           ),

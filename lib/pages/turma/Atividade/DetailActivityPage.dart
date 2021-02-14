@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -11,15 +12,16 @@ import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 import 'package:myclass/pages/turma/Atividade/UpdateActivity.dart';
 import 'package:myclass/pages/turma/Atividade/listviewAlunos.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class DetailActivityPage extends StatefulWidget {
   Activity atividade;
   Turma turma;
   List<Aluno> alunos;
+  DocumentReference ref_activity;
 
-
-  DetailActivityPage(this.atividade, this.turma, this.alunos);
+  DetailActivityPage(this.atividade, this.turma, this.alunos,this.ref_activity);
 
   @override
   _DetailActivityPageState createState() => _DetailActivityPageState();
@@ -29,7 +31,11 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
   Turma get turma => widget.turma;
   Activity get atividade => widget.atividade;
   List<Aluno> get alunos => widget.alunos;
+  DocumentReference get ref_activity => widget.ref_activity;
 
+  set atividade(Activity newvalue){
+    widget.atividade = newvalue;
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -56,10 +62,6 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
 
     return SingleChildScrollView(
       child: Container(
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(color: Colors.grey[300]),
         child: Column(
@@ -93,7 +95,7 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                 )
             ),
             Utils.spaceMediumHeight,
-            Wrap(children: atividade.anexo.map((e) {
+            Wrap(children: atividade.anexo.map((element) {
               return Container(
                 width: MediaQuery
                     .of(context)
@@ -105,8 +107,17 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
                 alignment: Alignment.center,
-                child: Text(e, overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white, fontSize: 24)),
+                child: RichText(
+                    text: TextSpan(
+                        text: element,
+                        style: TextStyle(color: Colors.white, fontSize: 24),
+                        recognizer: TapGestureRecognizer()..onTap = () async{
+                          if (await canLaunch(element)){
+                            await launch(element);
+                          }
+                        }
+                    )
+                )
               );
             }).toList(),),
 
@@ -114,16 +125,23 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
             Buttons_myclass.Button1(
                 context, colorbackground: Colors_myclass.black,
                 text: "Ver atividades dos alunos",
-                function: () {
+                function: () async {
 
 
-                  Nav.push(context, ListAlunos(atividade,alunos,turma));
+                  await Nav.push(context, ListAlunos(atividade,alunos,turma,ref_activity));
                 },
                 fontsize: 20.0),
             Utils.spaceBigHeight,
             Buttons_myclass.Button1(context, text: "Atualizar atividade",colorbackground: Colors_myclass.black,
-            function: (){
-              Nav.push(context, UpdateActivity(turma,atividade));
+            function: () async{
+              Activity new_atividade = await Nav.push(context, UpdateActivity(turma,atividade));
+              if (new_atividade == null){
+                return null;
+              }
+
+              setState(() {
+                atividade = new_atividade;
+              });
             })
           ],
         )

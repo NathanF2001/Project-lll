@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -11,15 +12,17 @@ import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailActivityPageAluno extends StatefulWidget {
   Turma turma;
   Activity atividade;
   Aluno aluno;
+  DocumentReference ref_activity;
 
 
   DetailActivityPageAluno(
-      this.turma, this.atividade, this.aluno);
+      this.turma, this.atividade, this.aluno,this.ref_activity);
 
   @override
   _DetailActivityAlunoPageState createState() =>
@@ -29,6 +32,7 @@ class DetailActivityPageAluno extends StatefulWidget {
 class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   Turma get turma => widget.turma;
 
+  DocumentReference get ref_activity => widget.ref_activity;
   Activity get atividade => widget.atividade;
 
   Aluno get aluno => widget.aluno;
@@ -40,7 +44,7 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ActivityAluno atividade_aluno = aluno.atividades[atividade.titulo];
+    ActivityAluno atividade_aluno = atividade.atividades_alunos[aluno.ref_pessoa.id];
     send = atividade_aluno.send;
     links = atividade_aluno.links;
   }
@@ -68,7 +72,6 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
   _WidgetDetail() {
     return SingleChildScrollView(
         child: Container(
-      height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.grey[300]),
       child: Column(
@@ -102,7 +105,7 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
           ),
           Utils.spaceMediumHeight,
           Wrap(
-            children: atividade.anexo.map((e) {
+            children: atividade.anexo.map((element) {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 height: 60,
@@ -110,9 +113,17 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
                 alignment: Alignment.center,
-                child: Text(e,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white, fontSize: 24)),
+                child: RichText(
+                    text: TextSpan(
+                        text: element,
+                        style: TextStyle(color: Colors.white, fontSize: 24),
+                        recognizer: TapGestureRecognizer()..onTap = () async{
+                          if (await canLaunch(element)){
+                            await launch(element);
+                          }
+                        }
+                    )
+                )
               );
             }).toList(),
           ),
@@ -165,17 +176,16 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
                 ActivityController controller =
                     ActivityController(turma.id.collection("Activity"));
 
-                DocumentReference ref_atividade = await turma.id.collection("Activity")
-                    .where("titulo",isEqualTo: atividade.titulo).get().then((value) => value.docs.first.reference);
 
                 if (!send) {
-                  controller.add_send(ref_atividade, 1);
+                  controller.add_send(ref_activity, 1);
                   // Mandar as informações
-                  print(aluno.ref_pessoa);
                   AlunoController()
-                      .send(aluno.ref_pessoa,turma.id, atividade.titulo, !send, links);
+                      .send(ref_activity,aluno.ref_pessoa, !send, links);
                 } else {
-                  controller.add_send(ref_atividade, -1);
+                  controller.add_send(ref_activity, -1);
+                  AlunoController()
+                      .send(ref_activity,aluno.ref_pessoa, !send, links);
                 }
                 setState(() {
                   send = !send;
