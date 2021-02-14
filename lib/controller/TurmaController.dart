@@ -32,6 +32,14 @@ class TurmaController {
     return pessoa;
   }
 
+  Future<void> updateTurma(Turma turma,id){
+    _user.collection("Turmas").doc(id).update(turma.ToJson());
+  }
+  
+  Future<void> updateProfessor(Turma turma,id,new_reference){
+    _user.collection("Turmas").doc(id).update({"Professor": new_reference});
+  }
+
   Future<QueryDocumentSnapshot> get_turmabycode(code) async {
     /**
         Método de um aluno recuperar referencia da turma que ele colocou codigo
@@ -51,7 +59,7 @@ class TurmaController {
         Método para adicionar um aluno na turma
      **/
     await _updateNumberAlunos(id_turma);
-    return await _addAluno(id_turma, id_pessoa);
+    return await addAluno(id_turma, id_pessoa);
   }
 
   _updateNumberAlunos(id_turma) async {
@@ -63,13 +71,13 @@ class TurmaController {
     });
   }
 
-  _addAluno(DocumentReference id_turma, id_pessoa) async {
+  addAluno(DocumentReference id_turma, id_pessoa) async {
     /**
         Método para adicionar informações do aluno na turma
      **/
     return await id_turma
         .collection("Alunos")
-        .add({"Atividades_entregues": 0, "aluno": id_pessoa});
+        .add({"destaques": 0, "aluno": id_pessoa});
   }
 
   Future<Turma> get_turma(DocumentSnapshot snapshot) async {

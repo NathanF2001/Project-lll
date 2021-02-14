@@ -102,7 +102,10 @@ class _AddChatState extends State<AddChat> {
                     icon: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        Wrap_alunos.add(current_aluno);
+                        if (!Wrap_alunos.contains(current_aluno)){
+                          Wrap_alunos.add(current_aluno);
+                        }
+
                       });
                     },
                   ),

@@ -87,7 +87,7 @@ class _TurmaPageState extends State<TurmaPage> {
                       }
                     }else{
                       //Listar as informações da turma
-                      Nav.push(context, InfoTurma(turma));
+                      Nav.push(context, InfoTurma(turma,user,alunos));
                     }
                   },
                   itemBuilder: (context) =>

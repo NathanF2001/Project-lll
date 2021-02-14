@@ -47,6 +47,7 @@ class _ListAlunosState extends State<ListAlunos> {
               ActivityAluno atividade_aluno =
                   aluno.atividades[atividade.titulo];
 
+              print(atividade_aluno.links);
               List<dynamic> links = atividade_aluno.links;
 
 

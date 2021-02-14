@@ -112,7 +112,14 @@ class _UserPageState extends State<UserPage> {
             title: Text("Alterar Perfil",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.person),
-            onTap: () => Nav.push(context, ProfilePage(user)),
+            onTap: () async{
+              Pessoa new_info_user = await Nav.push(context, ProfilePage(user,id));
+              if (new_info_user != null){
+                setState(() {
+                  user = new_info_user;
+                });
+              }
+            },
           ),
           ListTile(
             title: Text("Preencher dados socioeconômicos",
@@ -183,6 +190,7 @@ class _UserPageState extends State<UserPage> {
           actions: [
             FlatButton(
               onPressed: () async {
+
                 _formKey.currentState.save();
                 bool validate = _formKey.currentState.validate();
                 if (!validate){
@@ -193,7 +201,6 @@ class _UserPageState extends State<UserPage> {
                 QueryDocumentSnapshot pointer_turma =
                     await TurmaController().get_turmabycode(code);
                 if (pointer_turma == null){
-                  print("PIU");
                   return _ErrorAlertDialog();
                 }
                 DocumentReference id_turma = pointer_turma.reference;
@@ -217,7 +224,7 @@ class _UserPageState extends State<UserPage> {
 
                 });
 
-                Nav.pop(context);
+                Nav.pop(context,result: true);
               },
               child: Text("Entrar"),
               textColor: Colors.black87,

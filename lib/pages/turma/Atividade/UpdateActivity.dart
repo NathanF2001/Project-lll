@@ -5,29 +5,36 @@ import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
 import 'package:myclass/controller/AlunoController.dart';
+import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
-class AddActivity extends StatefulWidget {
+class UpdateActivity extends StatefulWidget {
   Turma turma;
+  Activity atividade;
 
-  AddActivity(this.turma);
+  UpdateActivity(this.turma,this.atividade);
 
   @override
-  _AddActivityState createState() => _AddActivityState();
+  _UpdateActivityState createState() => _UpdateActivityState();
 }
 
-class _AddActivityState extends State<AddActivity> {
+class _UpdateActivityState extends State<UpdateActivity> {
   Turma get turma => widget.turma;
+  Activity get atividade => widget.atividade;
+
   GlobalKey<ScaffoldState> _scaffoldKeyActivity = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  String old_titulo;
 
   bool exist = false;
-  String titulo;
-  String orientacao;
-  String prazo_dia = "";
-  String prazo_hora = "";
-  List<String> links = [];
+
+  @override
+  void initState() {
+
+    super.initState();
+    old_titulo = atividade.titulo;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,20 +65,22 @@ class _AddActivityState extends State<AddActivity> {
                 hintmensage: "Insira o título da atividade",
                 labelmensage: "Título *",
                 maxLength: 60,
+                initialvalue: atividade.titulo,
                 validator: (String value) {
                   if (exist){
                     return "Esse titulo já existe na turma";
                   }
                   return  (value == "") | (value.length > 60) ? "Título inválido" : null;
                 },
-                onsaved: (value) => titulo = value,
+                onsaved: (value) => atividade.titulo = value,
               ),
               Utils.Text_input(
                 hintmensage: "Insira a orientação da atividade",
                 labelmensage: "Orientação *",
+                initialvalue: atividade.orientacao,
                 validator: (String value) => value.isEmpty ? "Orientação inválida" : null,
                 key_type: TextInputType.multiline,
-                onsaved: (value) => orientacao = value,
+                onsaved: (value) => atividade.orientacao = value,
               ),
               Utils.spaceMediumHeight,
               Row(
@@ -82,67 +91,67 @@ class _AddActivityState extends State<AddActivity> {
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 60,
                     child: Container(
-                      child: InkWell(
-                        onTap: (){
-                          showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2021), lastDate: DateTime(2022))
-                              .then((value) {
+                        child: InkWell(
+                          onTap: (){
+                            showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2021), lastDate: DateTime(2022))
+                                .then((value) {
                               setState(() {
-                                prazo_dia = "${value.day.toString().padLeft(2,'0')}/${value.month.toString().padLeft(2,'0')}/${value.year}";
+                                atividade.prazo_dia = "${value.day.toString().padLeft(2,'0')}/${value.month.toString().padLeft(2,'0')}/${value.year}";
                               });
-                          },);
-                              },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Prazo",style: TextStyle(fontSize: 24),),
-                            Text(
-                              prazo_dia == ""? "dd/mm/aaaa":
-                                  prazo_dia,
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                      )
+                            },);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Prazo",style: TextStyle(fontSize: 24),),
+                              Text(
+                                atividade.prazo_dia == ""? "dd/mm/aaaa":
+                                atividade.prazo_dia,
+                                style: TextStyle(color: Colors.grey),
+                              )
+                            ],
+                          ),
+                        )
                     ),
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 60,
                     child: Container(
-                      child: InkWell(
-                        onTap: (){
-                          showTimePicker(context: context, initialTime: TimeOfDay(hour: 0, minute: 0))
-                              .then((value){
-                                setState(() {
-                                  prazo_hora = "${value.hour.toString().padLeft(2,'0')}: ${value.minute.toString().padLeft(2,'0')}";
-                                });
-                          });
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Horário",style: TextStyle(fontSize: 24),),
-                            Text(
-                              prazo_hora == ""? "hh:mm":
-                              prazo_hora,
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        ),
-                      )
+                        child: InkWell(
+                          onTap: (){
+                            showTimePicker(context: context, initialTime: TimeOfDay(hour: 0, minute: 0))
+                                .then((value){
+                              setState(() {
+                                atividade.prazo_hora = "${value.hour.toString().padLeft(2,'0')}: ${value.minute.toString().padLeft(2,'0')}";
+                              });
+                            });
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Horário",style: TextStyle(fontSize: 24),),
+                              Text(
+                                atividade.prazo_hora == ""? "hh:mm":
+                                atividade.prazo_hora,
+                                style: TextStyle(color: Colors.grey),
+                              )
+                            ],
+                          ),
+                        )
                     ),
                   ),
                 ],
               ),
               Utils.spaceBigHeight,
               Wrap(
-                children: links.map((value) {
+                children: atividade.anexo.map((value) {
                   return Dismissible(
                     key: UniqueKey(),
                     onDismissed: (direction) {
-                      links.remove(value);
+                      atividade.anexo.remove(value);
                     },
                     child: Container(
                       padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
@@ -186,16 +195,16 @@ class _AddActivityState extends State<AddActivity> {
               ),
               Utils.spaceBigHeight,
               Buttons_myclass.Button1(context, colorbackground: Colors_myclass.black,
-                  text: "Adicionar atividade", function: () async {
+                  text: "Atualizar atividade", function: () async {
                     _formKey.currentState.save();
 
-                    if((prazo_hora == "") | (prazo_dia == "")){
+                    if((atividade.prazo_hora == "") | (atividade.prazo_dia == "")){
                       _scaffoldKeyActivity.currentState.showSnackBar(SnackBar(content: Text("Prazo inválido")));
                       return null;
                     }
 
-                    QuerySnapshot activity = await turma.id.collection("Activity").where("titulo",isEqualTo: titulo).get();
-                    exist = activity.docs.isNotEmpty;
+                    QuerySnapshot activity = await turma.id.collection("Activity").where("titulo",isEqualTo: atividade.titulo).get();
+                    exist = (activity.docs.isNotEmpty) & (old_titulo != atividade.titulo);
 
                     bool valido = _formKey.currentState.validate();
                     if (!valido) {
@@ -204,11 +213,10 @@ class _AddActivityState extends State<AddActivity> {
 
 
                     // Adicionar atividade na turma
-                    ActivityController atividade = ActivityController(turma.id.collection("Activity"));
-                    atividade.add_activity(titulo, orientacao, links,prazo_dia,prazo_hora);
+                    ActivityController atividade_controller = ActivityController(turma.id.collection("Activity"));
+                    DocumentSnapshot snapshot_atividade = await atividade_controller.getActivity(old_titulo);
+                    await atividade_controller.updateActivity(snapshot_atividade.reference, atividade);
 
-                    // Adiciona atividade para cada aluno
-                    atividade.addActivitiestoAlunos(turma.id.collection("Alunos"),titulo);
                     Nav.pop(context);
                   })
             ],
@@ -260,7 +268,7 @@ class _AddActivityState extends State<AddActivity> {
                 }
 
                 setState(() {
-                  links.add(link);
+                  atividade.anexo.add(link);
                 });
 
                 Nav.pop(context);

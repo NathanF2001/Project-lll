@@ -9,6 +9,7 @@ import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Atividade/UpdateActivity.dart';
 import 'package:myclass/pages/turma/Atividade/listviewAlunos.dart';
 
 
@@ -99,6 +100,7 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                     .size
                     .width,
                 height: 60,
+                margin: EdgeInsets.symmetric(vertical: 4),
                 decoration: BoxDecoration(
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
@@ -118,6 +120,11 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                   Nav.push(context, ListAlunos(atividade,alunos,turma));
                 },
                 fontsize: 20.0),
+            Utils.spaceBigHeight,
+            Buttons_myclass.Button1(context, text: "Atualizar atividade",colorbackground: Colors_myclass.black,
+            function: (){
+              Nav.push(context, UpdateActivity(turma,atividade));
+            })
           ],
         )
       ),

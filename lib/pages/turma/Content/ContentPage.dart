@@ -8,6 +8,7 @@ import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Content/AddContent.dart';
 import 'package:myclass/pages/turma/Content/ContentDetail.dart';
 
 class ContentPage extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ContentPageState extends State<ContentPage> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           onPressed: () =>
-              Nav.pushname(context, "/add-content", arguments: turma),
+              Nav.push(context, AddContent(turma)),
           textColor: Colors.grey,
           color: Colors.white,
           shape: RoundedRectangleBorder(
@@ -204,7 +205,7 @@ class _ContentPageState extends State<ContentPage> {
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
-                                      Nav.push(context, ContentDetail(turma,conteudo));
+                                      Nav.push(context, ContentDetail(turma,conteudo,user));
                                     },
                                     child: Text(
                                       "Ver mais >>",

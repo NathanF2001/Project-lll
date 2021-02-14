@@ -46,4 +46,12 @@ class ChatController{
       "destaque": !status,
     });
   }
+  
+  UpdateParticipantes(DocumentReference ref_chat,list_participantes) async{
+    await ref_chat.update({"alunos": list_participantes});
+  }
+  
+  UpdateNameChat(DocumentReference ref_chat,name) async{
+    await ref_chat.update({"nome": name});
+  }
 }

@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/models/Content.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
+import 'package:myclass/nav.dart';
+import 'package:myclass/pages/turma/Content/UpdateContent.dart';
 
-class ContentDetail extends StatelessWidget {
+
+class ContentDetail extends StatefulWidget {
   Turma turma;
   Content conteudo;
+  Pessoa user;
 
-  ContentDetail(this.turma, this.conteudo);
+  ContentDetail(this.turma, this.conteudo,this.user);
+
+  @override
+  _ContentDetailState createState() => _ContentDetailState();
+}
+
+class _ContentDetailState extends State<ContentDetail> {
+  Turma get turma => widget.turma;
+  Content  get conteudo => widget.conteudo;
+  Pessoa get user => widget.user;
+
+  set conteudo(new_value){
+    widget.conteudo = new_value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,32 +74,43 @@ class ContentDetail extends StatelessWidget {
           ),
         ),
         Container(
-          width: 100,
-          decoration: BoxDecoration(
-            color: Colors_myclass.black
+          padding: EdgeInsets.all(16),
+          child:  Wrap(
+            children: conteudo.anexo.map((element) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                alignment: Alignment.center,
+                child: Text(element,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white, fontSize: 24)),
+              );
+            }).toList(),
           ),
-          child: Text("Links",
-          style: TextStyle(fontSize: 24,color: Colors_myclass.white),),
         ),
+        Utils.spaceBigHeight,
+        turma.Professor.email == user.email ?
         Container(
-          child: Wrap(
-            children: conteudo.anexo.map((element) =>
-                Container(
-                  decoration: BoxDecoration(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Buttons_myclass.Button1(context, text: "Atualizar Conteúdo",colorbackground: Colors_myclass.black,
+              function: () async{
+                final new_conteudo = await Nav.push(context,UpdateContent(turma, conteudo));
+                if (new_conteudo == null){
+                  return null;
+                }
+                conteudo = new_conteudo;
+                setState(() {
 
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.only(bottom: 2),
-                  padding: EdgeInsets.all(16),
-              child: Text(
-                element,
-                style: TextStyle(color: Colors.grey,decoration: TextDecoration.underline),
-              ),
-            )).toList(),
-          ),
-        ),
-        Utils.spaceBigHeight
+                });
+
+              }),
+        ):
+        Container()
       ],
     );
   }
 }
+

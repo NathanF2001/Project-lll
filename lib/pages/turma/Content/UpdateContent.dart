@@ -1,29 +1,37 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ContentController.dart';
+import 'package:myclass/models/Content.dart';
 import 'package:myclass/models/Turma.dart';
 import 'package:myclass/nav.dart';
 
-class AddContent extends StatefulWidget {
+class UpdateContent extends StatefulWidget {
   Turma turma;
+  Content conteudo;
 
 
-  AddContent(this.turma);
+  UpdateContent(this.turma,this.conteudo);
 
   @override
-  _AddContentState createState() => _AddContentState();
+  _UpdateContentState createState() => _UpdateContentState();
 }
 
-class _AddContentState extends State<AddContent> {
+class _UpdateContentState extends State<UpdateContent> {
   final _formKey = GlobalKey<FormState>();
   Turma get turma => widget.turma;
-  String titulo;
-  String orientacao;
-  List<String> links = [];
+  Content get conteudo => widget.conteudo;
+  String old_titulo;
+
+  @override
+  void initState() {
+    super.initState();
+    old_titulo = conteudo.titulo;
+  }
 
 
   @override
@@ -53,31 +61,33 @@ class _AddContentState extends State<AddContent> {
                 child: Column(
                   children: [
                     Utils.Text_input(
-                      hintmensage: "Insira o título do conteúdo",
+                      hintmensage: "Atualizar o título do conteúdo",
                       labelmensage: "Título *",
+                      initialvalue: conteudo.titulo,
                       maxLength: 60,
                       validator: (String value) {
                         (value.isEmpty) | (value.length > 60) ? "Título inválido" : null;
                       },
-                      onsaved: (value) => titulo = value,
+                      onsaved: (value) => conteudo.titulo = value,
                     ),
                     Utils.Text_input(
-                      hintmensage: "Insira o assunto",
+                      hintmensage: "Atualizar o assunto",
                       labelmensage: "Assunto *",
+                      initialvalue: conteudo.orientacao,
                       key_type: TextInputType.multiline,
                       validator: (String value) => value.isEmpty ? "Descrição inválida" : null,
-                      onsaved: (value) => orientacao = value,
+                      onsaved: (value) => conteudo.orientacao = value,
                     ),
                   ],
                 ),
               ),
               Utils.spaceBigHeight,
               Wrap(
-                children: links.map((value) {
+                children: conteudo.anexo.map((value) {
                   return Dismissible(
                     key: UniqueKey(),
                     onDismissed: (direction) {
-                      links.remove(value);
+                      conteudo.anexo.remove(value);
                     },
                     child: Container(
                       padding: EdgeInsets.only(left: 16,top: 8,bottom: 8),
@@ -88,7 +98,7 @@ class _AddContentState extends State<AddContent> {
                         value,
                         style: TextStyle(
                             color: Colors_myclass.white,
-                          decoration: TextDecoration.underline
+                            decoration: TextDecoration.underline
                         ),
                       ),
                     ),
@@ -115,7 +125,7 @@ class _AddContentState extends State<AddContent> {
                   child: Text(
                     "Adicionar link",
                     style: TextStyle(
-                      color: Colors.grey
+                        color: Colors.grey
                     ),
                   ),
                   onTap: () {
@@ -126,7 +136,7 @@ class _AddContentState extends State<AddContent> {
               Utils.spaceBigHeight,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: (){
+                child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: () async{
 
                   _formKey.currentState.save();
                   bool valido = _formKey.currentState.validate();
@@ -134,11 +144,13 @@ class _AddContentState extends State<AddContent> {
                     return ;
                   }
 
-                  ContentController conteudo = ContentController(turma.id.collection("Content"));
+                  ContentController conteudo_controller = ContentController(turma.id.collection("Content"));
                   // Adicionar conteudo na turma
-                  conteudo.add_content(titulo, orientacao, links);
+                  DocumentSnapshot snapshot_conteudo = await conteudo_controller.get_content(old_titulo);
+                  DocumentReference ref_conteudo = snapshot_conteudo.reference;
+                  await conteudo_controller.update_content(ref_conteudo, conteudo);
 
-                  Nav.pop(context);
+                  Nav.pop(context,result: conteudo);
                 }),
               )
             ],
@@ -189,8 +201,7 @@ class _AddContentState extends State<AddContent> {
                   return ;
                 }
                 setState(() {
-                  links.add(link);
-                  print(links);
+                  conteudo.anexo.add(link);
                 });
 
                 Nav.pop(context);

@@ -58,6 +58,14 @@ class ActivityController{
     atividades.forEach((element) {
       addActivityAluno(refAluno,element["titulo"]);});
   }
+  
+  Future<DocumentSnapshot> getActivity(titulo) async{
+    return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+  }
+  
+  updateActivity(ref_atividade,Activity atividade) async{
+    await ref_atividade.update(atividade.ToJson());
+  }
 
   getAllActivities()async{
     /**
