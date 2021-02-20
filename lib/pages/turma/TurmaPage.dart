@@ -99,7 +99,6 @@ class _TurmaPageState extends State<TurmaPage> {
                     }else {
                       String status = await Nav.push(context, CreateGrupos(turma, alunos,widget.link_webservice));
                       if (status == "ok"){
-                        print("A");
                         Utils().statusAlertDialog(context, "Sucesso", "Grupos criados com sucesso");
                       }
 
