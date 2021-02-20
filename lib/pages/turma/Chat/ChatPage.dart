@@ -45,14 +45,15 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: turma.id.collection("Chat").snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if ((!snapshot.hasData) | (snapshot.connectionState == ConnectionState.waiting)) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          List<dynamic> chats = snapshot.data.docs;
+
+          List<DocumentSnapshot> chats = snapshot.data.docs;
 
 
           if (chats.isEmpty){
@@ -74,10 +75,9 @@ class _ChatPageState extends State<ChatPage> {
           // Opção para adicionar botão de adicionar bate-papo
           chats.add(chats.last);
 
-
           return ListView.builder(
               itemCount: chats.length,
-              itemBuilder: (BuildContext context, int index) {
+              itemBuilder: (context, index) {
                 // Botão do professor de adicionar turma
                 if (index == (chats.length - 1)) {
                   if (IsProfessor) {
@@ -99,7 +99,8 @@ class _ChatPageState extends State<ChatPage> {
 
                 // Caso o aluno não pertence a turma
                 if (!IsProfessor & !ref_alunos.contains(user.email)){
-                  return null;
+
+                  return Container();
                 }
                 
                 List<Pessoa> alunos_turma = alunos.where((element) => ref_alunos.contains(element.info.email)).map((e) => e.info).toList();

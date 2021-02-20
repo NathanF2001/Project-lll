@@ -39,22 +39,10 @@ class _AddMoreAlunosState extends State<AddMoreAlunos> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          "Alunos",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddChat(),
-    );
-    ;
+    return Utils().Scaffold_myclass(title: "Alunos", body: _formUpdateChat());
   }
 
-  _formAddChat() {
+  _formUpdateChat() {
     return Padding(
       padding: EdgeInsets.all(16),
         child: Form(

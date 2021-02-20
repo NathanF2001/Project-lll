@@ -39,18 +39,7 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          atividade.titulo,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _buildActivityInfo(context),
-    );
+    return Utils().Scaffold_myclass(title: atividade.titulo, body: _buildActivityInfo(context));
   }
 
   _buildActivityInfo(context) {
@@ -101,8 +90,8 @@ class _DetailActivityPageState extends State<DetailActivityPage> {
                     .of(context)
                     .size
                     .width,
-                height: 60,
-                margin: EdgeInsets.symmetric(vertical: 4),
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),

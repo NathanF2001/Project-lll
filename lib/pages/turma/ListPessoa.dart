@@ -22,48 +22,48 @@ class ListPessoa extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.all(16),
-        child: Wrap(
-          children: alunos
-              .map((aluno) => Container(
-            padding: EdgeInsets.symmetric(vertical: 16),
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        aluno.info.UrlFoto == ""
-                            ? Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(100))),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.grey,
-                                  size: 50.0,
-                                ),
-                              )
-                            : CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(aluno.info.UrlFoto),
-                              ),
-                        Container(
-                          padding: EdgeInsets.only(left: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                aluno.info.nome,
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              Text(aluno.info.email)
-                            ],
-                          ),
-                        ),
-                      ],
+        child: ListView.builder(
+          itemCount: alunos.length,
+            itemBuilder: (context,index){
+            Aluno aluno = alunos[index];
+              return Container(
+                padding: EdgeInsets.all(16),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  children: [
+                    aluno.info.UrlFoto == ""
+                        ? Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(100))),
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.grey,
+                        size: 50.0,
+                      ),
+                    )
+                        : CircleAvatar(
+                      backgroundImage:
+                      NetworkImage(aluno.info.UrlFoto),
                     ),
-                  ))
-              .toList(),
-        ),
+                    Container(
+                      padding: EdgeInsets.only(left: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            aluno.info.nome,
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          Text(aluno.info.email)
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+        })
       ),
     );
   }

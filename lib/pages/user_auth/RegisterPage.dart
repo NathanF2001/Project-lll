@@ -11,6 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String email;
   String nome;
@@ -20,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors_myclass.app_color, body: _formRegister());
+        backgroundColor: Colors_myclass.app_color, body: _formRegister(),key: _scaffoldKey,);
   }
 
   _formRegister() {
@@ -125,10 +126,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     if (!valido) {
                       return false;
                     }
+
                     String ok = await AuthController()
                         .cadastrar(context, nome, email, senha);
                     if (ok == "ok") {
                       _showAlertDialog();
+                    }else{
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(ok)));
                     }
                   }),
                 ],

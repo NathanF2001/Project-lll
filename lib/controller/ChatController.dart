@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myclass/models/Alunos.dart';
 import 'package:myclass/models/Pessoa.dart';
@@ -16,6 +17,15 @@ class ChatController{
       }
     );
   }
+
+  Future<DocumentReference>getchat(name_chat,DocumentReference ref_turma)async {
+    return await ref_turma.collection("Chat").where("nome",isEqualTo: name_chat).get().then((value) => value.docs.first.reference);
+  }
+
+  addParticipante(DocumentReference ref_chat,participante_email) async{
+    return await ref_chat.update({"alunos": FieldValue.arrayUnion([participante_email])});
+  }
+
   add_mensage(DocumentReference ref, String mensage,Pessoa pessoa,priority) async{
     /**
      * Método que adiciona uma mensagem a um Chat

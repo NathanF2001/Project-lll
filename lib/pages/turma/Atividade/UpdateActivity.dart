@@ -38,23 +38,10 @@ class _UpdateActivityState extends State<UpdateActivity> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKeyActivity,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddActivity(),
-    );
-    ;
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _formUpdateActivity(),key_scaffold: _scaffoldKeyActivity);
   }
 
-  _formAddActivity() {
+  _formUpdateActivity() {
     return Container(
         padding: EdgeInsets.all(16),
         child: Form(
@@ -203,15 +190,16 @@ class _UpdateActivityState extends State<UpdateActivity> {
                       return null;
                     }
 
-                    QuerySnapshot activity = await turma.id.collection("Activity").where("titulo",isEqualTo: atividade.titulo).get();
-                    exist = (activity.docs.isNotEmpty) & (old_titulo != atividade.titulo);
+                    DocumentSnapshot new_activity = await ActivityController(turma.id.collection("Activity")).getActivity(atividade.titulo);
+
+                    exist = (new_activity != null) & (old_titulo != atividade.titulo);
 
                     bool valido = _formKey.currentState.validate();
                     if (!valido) {
                       return null;
                     }
 
-                    // Adicionar atividade na turma
+                    // Atualizar dados da atividade na turma
                     ActivityController atividade_controller = ActivityController(turma.id.collection("Activity"));
                     DocumentSnapshot snapshot_atividade = await atividade_controller.getActivity(old_titulo);
                     await atividade_controller.updateActivity(snapshot_atividade.reference, atividade);

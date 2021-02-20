@@ -60,17 +60,21 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         Buttons_myclass.Button1(context,
             text: "Enviar código",
             colorbackground: Colors_myclass.black, function: () async {
+
           _formKey.currentState.save();
+
           final valido = _formKey.currentState.validate();
           if (!valido) {
             return false;
           }
 
+
+          // Mandar Email para recuperar a senha
           final status = await AuthController().sendEmailForgotPass(email);
-          if (status != null){
+
+          if (status != "Ok"){
             _showAlertDialog("Error", status);
           }else{
-            print("Piu");
             await _showAlertDialog("Email Enviado", "Cheque seu e-mail e redefina sua senha");
           }
         })

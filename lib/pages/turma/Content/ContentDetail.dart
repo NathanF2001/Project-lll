@@ -33,19 +33,7 @@ class _ContentDetailState extends State<ContentDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _buildDetail(context),
-    );
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _buildDetail(context));
   }
 
   _buildDetail(context) {
@@ -81,7 +69,8 @@ class _ContentDetailState extends State<ContentDetail> {
             children: conteudo.anexo.map((element) {
               return Container(
                 width: MediaQuery.of(context).size.width,
-                height: 60,
+                margin: EdgeInsets.symmetric(vertical: 8),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     color: Colors.grey,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
@@ -118,7 +107,8 @@ class _ContentDetailState extends State<ContentDetail> {
 
               }),
         ):
-        Container()
+        Container(),
+        Utils.spaceBigHeight
       ],
     );
   }

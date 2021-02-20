@@ -47,22 +47,15 @@ class AlunoController{
   set_destaque(DocumentReference ref_aluno,value) async{
   ref_aluno.update({"destaques": FieldValue.increment(value)});
   }
-  
-  getbyref(DocumentReference ref_turma,DocumentReference ref_pessoa) async{
-    /**
-     * Método que retorna os DocumentSnapshot do aluno
-     */
-    return ref_turma.collection("Alunos").where("aluno",isEqualTo: ref_pessoa).get().then((value) => value.docs.first);
-  }
 
   Future<Aluno> fromJson( DocumentSnapshot snapshot,List<Activity> atividades) async{
     final json_aluno = snapshot.data();
 
 
     Aluno aluno = Aluno.fromJson({"aluno":snapshot.reference});
-    Pessoa pessoa = await PessoaController().get_user(snapshot.data()["aluno"]);
+    Pessoa pessoa = await PessoaController().get_user(json_aluno["aluno"]);
     aluno.info = pessoa;
-    aluno.destaques = snapshot.data()["destaques"];
+    aluno.destaques = json_aluno["destaques"];
 
     return aluno;
   }
@@ -84,21 +77,6 @@ class AlunoController{
 
 
     return alunos;
-  }
-
-
-  Map<String,Pessoa> MappingAlunos(DocumentReference ref_turma){
-    /**
-     * Método  map do Objeto Pessoa de cada aluno, ele serve para que não precise fazer uma chamada nas informações dos alunos
-     * pois estas já foram declaradas
-     */
-
-    final map_aluno = {};
-
-    ref_turma.collection("Alunos").get().then((value) =>
-    value.docs);
-
-    return map_aluno;
   }
 
 

@@ -10,7 +10,7 @@ class Pessoa{
   String UrlFoto;
   List<dynamic> Turmas_reference;
   SocialEconomico ref_SE;
-  String classificacao;
+  int classificacao;
 
   Pessoa(this.email, this.nome, this.instituicao, this.descricao, this.UrlFoto,this.Turmas_reference,this.ref_SE,this.classificacao);
 
