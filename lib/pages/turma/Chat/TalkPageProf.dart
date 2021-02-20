@@ -49,36 +49,38 @@ class _MensageProfPageState extends State<MensageProfPage> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          Container(
-            padding: EdgeInsets.all(8),
-            child: PopupMenuButton(
-              onSelected: (value) async{
-                if (value == "Adicionar aluno") {
-                  List<Aluno> alunos_chat = await Nav.push(context, AddMoreAlunos(alunos,chat,turma));
-                  if(alunos_chat != null){
-                    chat.alunos = alunos_chat.map((e) => e.info).toList();
-                    chat.alunos.add(turma.Professor);
-                    List<String> emails_participantes = chat.alunos.map((e) => e.email).toList();
-                    ChatController().UpdateParticipantes(ref_chat, emails_participantes);
-                    setState(() {});
+          chat.nome != "Geral" ?
+            Container(
+              padding: EdgeInsets.all(8),
+              child: PopupMenuButton(
+                onSelected: (value) async{
+                  if (value == "Adicionar aluno") {
+                    List<Aluno> alunos_chat = await Nav.push(context, AddMoreAlunos(alunos,chat,turma));
+                    if(alunos_chat != null){
+                      chat.alunos = alunos_chat.map((e) => e.info).toList();
+                      chat.alunos.add(turma.Professor);
+                      List<String> emails_participantes = chat.alunos.map((e) => e.email).toList();
+                      ChatController().UpdateParticipantes(ref_chat, emails_participantes);
+                      setState(() {});
+                    }
+                  }else{
+                    //Listar as informações da turma
+                    _showAlertDialog();
                   }
-                }else{
-                  //Listar as informações da turma
-                  _showAlertDialog();
-                }
-              },
-              itemBuilder: (context) =>
-              [
-                PopupMenuItem(
-                    value: "Adicionar aluno",
-                    child: Text("Adicionar aluno")),
-                PopupMenuItem(
-                    value: "Mudar nome do chat",
-                    child: Text("Mudar nome do chat")),
-              ],
-              child: Icon(Icons.more_vert),
-            ),
-          )
+                },
+                itemBuilder: (context) =>
+                [
+                  PopupMenuItem(
+                      value: "Adicionar aluno",
+                      child: Text("Adicionar aluno")),
+                  PopupMenuItem(
+                      value: "Mudar nome do chat",
+                      child: Text("Mudar nome do chat")),
+                ],
+                child: Icon(Icons.more_vert),
+              ),
+            )
+          : Container()
         ],
       ),
 
@@ -240,10 +242,6 @@ class _MensageProfPageState extends State<MensageProfPage> {
                             ),
                           )
                       ),
-                    ),
-                    Expanded(
-                      child:
-                      IconButton(icon: Icon(Icons.attach_file), onPressed: () {}),
                     ),
                     Expanded(
                         child: IconButton(

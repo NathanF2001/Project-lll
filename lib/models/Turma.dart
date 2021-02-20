@@ -23,7 +23,6 @@ class Turma{
     UrlTurma = json["UrlTurma"];
     number_Aluno = json["number_Aluno"];
     codigo = json["codigo"];
-    id = json["id"];
   }
 
   Map<String, dynamic> ToJson() => {
@@ -32,7 +31,6 @@ class Turma{
   "CodTurma": CodTurma,
   "UrlTurma": UrlTurma,
     "number_Aluno": number_Aluno,
-    "id": id,
     "codigo": codigo,
   };
 

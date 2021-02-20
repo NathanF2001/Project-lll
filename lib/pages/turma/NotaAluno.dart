@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/Utils.dart';
 import 'package:myclass/models/Activity.dart';
 import 'package:myclass/models/ActivityAluno.dart';
 import 'package:myclass/models/Alunos.dart';
@@ -16,17 +17,7 @@ class NotasAluno extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-        appBar: AppBar(
-      iconTheme: IconThemeData(
-        color: Colors.white,
-      ),
-      title: Text(
-        turma.Nome,
-        style: TextStyle(color: Colors.white),
-      ),
-    ),
-    body: _buildNotaAluno(context),);
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _buildNotaAluno(context));
   }
 
   _buildNotaAluno(context) {

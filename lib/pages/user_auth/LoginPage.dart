@@ -1,4 +1,5 @@
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,7 +7,9 @@ import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/LoginController.dart';
+import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/nav.dart';
+import 'package:myclass/pages/home_user/UserPage.dart';
 import 'package:myclass/pages/user_auth/ForgotPassword.dart';
 import 'package:myclass/pages/user_auth/RegisterPage.dart';
 
@@ -128,12 +131,25 @@ class _LoginPageState extends State<LoginPage> {
                       return false;
                     }
 
-                    final error = await AuthController()
+                    Future<Map<String,dynamic>> future_response = AuthController()
                         .signWithEmailAndPassword(context, email, password);
+                    //
+                    _loading();
+                    Map<String,dynamic> response = await future_response.then((value) => value);
 
-                    if (error != null){
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(error)));
+                    if (response["status"] == "Error"){
+                      Nav.pop(context);
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(response["body"])));
+                    }else{
+
+                      List<dynamic> result = response["body"];
+                      Pessoa info_user = result[0];
+                      DocumentReference ref_user = result[1];
+                      DocumentReference ref_SE = result[2];
+
+                      Nav.push(context, UserPage(info_user, ref_user,ref_SE),replace: true);
                     }
+
 
 
                   }),
@@ -141,8 +157,29 @@ class _LoginPageState extends State<LoginPage> {
               Container(
                   width: 300,
                   child: GoogleAuthButton(
-                    onPressed: () {
-                      AuthController().signWithGoogle(context);
+                    onPressed: () async{
+
+                      GoogleSignInAccount googleUser = await AuthController().getcredentials();
+                      if (googleUser  == null){
+                        return null;
+                      }
+                      _loading();
+
+                      Future<Map<String,dynamic>> future_response = AuthController().signWithGoogle(context,googleUser );
+
+
+                      Map<String,dynamic> response = await future_response.then((value) => value);
+
+                      if (response["status"] == "Error"){
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(response["body"])));
+                      }else{
+                        List<dynamic> result = response["body"];
+                        Pessoa info_user = result[0];
+                        DocumentReference ref_user = result[1];
+                        DocumentReference ref_SE = result[2];
+
+                        Nav.push(context, UserPage(info_user, ref_user,ref_SE),replace: true);
+                      }
                     },
                   )
               ),
@@ -161,11 +198,53 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
       ],
+    );
+  }
+
+  _loading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors_myclass.app_color,
+              borderRadius: BorderRadius.all(Radius.circular(16))
+            ),
+            child: Text(
+              "MyClass",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: "Roboto",
+                  fontSize: 50,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white,
+                  decoration: TextDecoration.none),
+            ),
+          ),
+          content: Container(
+            height: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text("Conectando a conta",
+                style: TextStyle(
+                  fontSize: 24,
+                    fontFamily: "Roboto",
+                  color: Colors_myclass.black
+                ),),
+                LinearProgressIndicator(backgroundColor: Colors_myclass.black,)
+              ],
+            ),
+          )
+
+        );
+      },
     );
   }
 }

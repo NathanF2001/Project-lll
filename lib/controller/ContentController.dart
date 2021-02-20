@@ -25,7 +25,15 @@ class ContentController{
     /**
      * Método para pegar conteudo pelo titulo (ID de conteudo)
      */
-    return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+    try{
+      return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+    } catch(e){
+      if (e.toString() =="Bad state: No element" ){
+        return null;
+      }
+      throw Exception("Ocorreu um erro: ${e}");
+
+    }
   }
 
   update_content(DocumentReference ref_content, Content conteudo) async{

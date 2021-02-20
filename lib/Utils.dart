@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:myclass/Colors.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/nav.dart';
@@ -59,6 +60,7 @@ class Utils {
       child: TextFormField(
           style: TextStyle(
             fontSize: 20,
+            fontFamily: "Roboto",
           ),
           initialValue: initialvalue,
           obscureText: show,
@@ -76,10 +78,11 @@ class Utils {
               ),
               hintText: hintmensage,
               hintStyle: TextStyle(
+                fontFamily: "Roboto",
                 fontSize: 24,
               ),
               labelText: labelmensage,
-              labelStyle: TextStyle(fontSize: 24, color: Colors.black))
+              labelStyle: TextStyle(fontSize: 24, color: Colors.black,fontFamily: "Roboto",))
       ),
     );
   }
@@ -132,6 +135,140 @@ class Utils {
                 Nav.pop(context,result: pessoa);
               },
               child: Text("Mudar"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  infoTemplate(context,text_title, text_label, {function, button = false}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          width: MediaQuery.of(context).size.width * 0.75,
+          decoration: BoxDecoration(
+              color: Colors_myclass.black,
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(32),
+                  bottomRight: Radius.circular(32))),
+          child: Text(
+            text_title,
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: Colors_myclass.white),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(16),
+          child:
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: Text(
+                text_label,
+                style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w400,
+                    color: Colors_myclass.black),
+              ),
+            ),
+            button == true
+                ? IconButton(icon: Icon(Icons.edit), onPressed: function)
+                : Container()
+          ]),
+        )
+      ],
+    );
+  }
+
+  Scaffold_myclass({@required  String title,@required body,Widget bottom_appbar , Widget drawer,float,List<Widget> actions,leading,key_scaffold,
+  resize = false}){
+    return Scaffold(
+      resizeToAvoidBottomInset: resize,
+      key: key_scaffold,
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        bottom: bottom_appbar,
+        leading: leading,
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: actions,
+      ),
+      drawer: drawer,
+      floatingActionButton: float,
+      body: body,
+    );
+  }
+
+  statusAlertDialog(context,title_text, content_text) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title_text,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+          content: Text(
+            content_text,
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Nav.pop(context),
+              child: Text("OK"),
+              textColor: Colors.black87,
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  InputAlertDialog(context,title,initial_value, hinttext,labeltext,onsaved,function,GlobalKey<FormState> formkey) {
+    final _formKey = formkey;
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          scrollable: true,
+          titlePadding: EdgeInsets.all(16),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          content: Form(
+            key: _formKey,
+            child: TextFormField(
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              initialValue: initial_value,
+              decoration: InputDecoration(
+                  hintText: hinttext,
+                  hintStyle: TextStyle(
+                    fontSize: 18,
+                  ),
+                  labelText: labeltext,
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.black)),
+              onSaved: onsaved,
+              validator: (value) => value == "" ? "Entrada inválido (vazio)" : null,
+            ),
+          ),
+          actions: [
+            FlatButton(
+              onPressed: function,
+              child: Text("Atualizar"),
               textColor: Colors.black87,
             )
           ],

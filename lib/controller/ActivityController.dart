@@ -69,11 +69,20 @@ class ActivityController{
   }
   
   Future<DocumentSnapshot> getActivity(titulo) async{
-    return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+    try{
+      return await _content.where("titulo",isEqualTo: titulo).get().then((value) => value.docs.first);
+    } catch(e){
+      if (e.toString() =="Bad state: No element" ){
+        return null;
+      }
+      throw Exception("Ocorreu um erro: ${e}");
+
+    }
+
   }
 
-  Future<DocumentReference> getAlunoActivity(DocumentReference ref_activity,ref_aluno) async{
-    return await ref_activity.collection("Atividade alunos").where("aluno",isEqualTo: ref_aluno).get().then((value) => value.docs.first.reference);
+  Future<DocumentReference> getAlunoActivity(ref_aluno) async{
+    return await _content.where("aluno",isEqualTo: ref_aluno).get().then((value) => value.docs.first.reference);
   }
   
   updateActivity(ref_atividade,Activity atividade) async{
@@ -88,8 +97,8 @@ class ActivityController{
     return await _content.get().then((value) => value.docs);
   }
 
-  Future<Map<String,ActivityAluno>> getAlunosActivity(ref_atividade) async {
-    return await ref_atividade.collection("Atividade alunos").get().then((value){
+  Future<Map<String,ActivityAluno>> getAlunosActivity() async {
+    return await _content.get().then((value){
       Map<String,ActivityAluno> atividade_aluno = {};
       value.docs.forEach((aluno_atividade) {
         Map<String,dynamic> json_ativides = aluno_atividade.data();
@@ -102,7 +111,8 @@ class ActivityController{
 
 
     List<Future<Activity>> future_atividades = docs.map((e) async{
-      Map<String,ActivityAluno> atividade_alunos = await getAlunosActivity(e.reference);
+      _content = e.reference.collection("Atividade alunos");
+      Map<String,ActivityAluno> atividade_alunos = await getAlunosActivity();
       Activity atividades = Activity.fromJson(e.data());
       atividades.atividades_alunos = atividade_alunos;
 

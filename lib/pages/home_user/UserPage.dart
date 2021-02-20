@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ActivityController.dart';
+import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/controller/LoginController.dart';
 import 'package:myclass/controller/PessoaController.dart';
 import 'package:myclass/controller/TurmaController.dart';
@@ -18,54 +19,59 @@ import 'package:myclass/pages/user_auth/LoginPage.dart';
 
 class UserPage extends StatefulWidget {
   Pessoa user;
-  DocumentReference id ;
+  DocumentReference id;
+
   DocumentReference id_SE;
 
-  UserPage(this.user, this.id,this.id_SE);
+  UserPage(this.user, this.id, this.id_SE);
 
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  Pessoa get  user => widget.user;
-  void set user(newvalue) { widget.user = newvalue;}
+  Pessoa get user => widget.user;
+
+  void set user(newvalue) {
+    widget.user = newvalue;
+  }
 
   DocumentReference get id => widget.id;
+
   DocumentReference get id_SE => widget.id_SE;
   int index_atual = 0;
   String code;
   String search_string = '';
-
+  String link_webservice = '';
 
   @override
   Widget build(BuildContext context) {
-    print(user.Turmas_reference);
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        bottom: PreferredSize(
-          child: _SearchView(),
-          preferredSize: Size(1, 80),
-        ),
-        title: Text(
-          "MyClass",
-          style: TextStyle(color: Colors.white),
-        ),
+    return Utils().Scaffold_myclass(
+      title: "Myclass",
+      body: _listviewTurmas(),
+      bottom_appbar: PreferredSize(
+        child: _SearchView(),
+        preferredSize: Size(1, 80),
       ),
       drawer: _DrawerUser(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async{
+      float: FloatingActionButton(
+        onPressed: () async {
           _showAlertDialog();
         },
         backgroundColor: Colors_myclass.app_color,
         child: Icon(Icons.add),
       ),
-      body: _listviewTurmas(),
+      actions: [
+        IconButton(icon: Icon(Icons.link), onPressed: (){
+          final formkey = GlobalKey<FormState>();
+          Utils().InputAlertDialog(context, "Link web service", link_webservice,
+            "Insira link", "Link", (value){setState(() {
+              link_webservice = value;
+            });}, (){
+                formkey.currentState.save();
+                Nav.pop(context);
+            },formkey);})
+        ]
     );
   }
 
@@ -117,9 +123,11 @@ class _UserPageState extends State<UserPage> {
             title: Text("Alterar Perfil",
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.person),
-            onTap: () async{
-              Pessoa new_info_user = await Nav.push(context, ProfilePage(user,id));
-              if (new_info_user != null){
+            onTap: () async {
+              Pessoa new_info_user =
+                  await Nav.push(context, ProfilePage(user, id));
+
+              if (new_info_user != null) {
                 setState(() {
                   user = new_info_user;
                 });
@@ -131,10 +139,9 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.accessibility),
             onTap: () async {
-              Pessoa new_info_user = await Nav.push(context, SocialEconomicForm(user,id_SE));
-              if (new_info_user != null){
-                print("PIU");
-                print(new_info_user.ref_SE.iscomplete);
+              Pessoa new_info_user =
+                  await Nav.push(context, SocialEconomicForm(user, id_SE));
+              if (new_info_user != null) {
                 setState(() {
                   user = new_info_user;
                 });
@@ -147,8 +154,9 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.add_circle_outline),
             onTap: () async {
-              Pessoa new_info_user = await Nav.push(context, CreateTurma(user, id));
-              if (new_info_user != null){
+              Pessoa new_info_user =
+                  await Nav.push(context, CreateTurma(user, id));
+              if (new_info_user != null) {
                 setState(() {
                   user = new_info_user;
                 });
@@ -161,17 +169,21 @@ class _UserPageState extends State<UserPage> {
                 style: TextStyle(fontWeight: FontWeight.normal)),
             leading: Icon(Icons.whatshot),
             onTap: () async {
-              if(user.ref_SE.iscomplete){
-                Pessoa new_user = await WebService().getClassifier("http://c9cbbfe3994f.ngrok.io/classify?", user,id);
-                if (new_user != null){
-                  user = new_user;
-                  setState(() {});
-                }else{
-                  print("DEU ALGO ERRADO");
-                }
 
-              }else{
-                _ErrorAlertDialog("Não foi possível classificar", "Seu perfil está incompleto");
+
+              if (user.ref_SE.iscomplete) {
+                int classificacao = await WebService().getClassifier(
+                    "${link_webservice}/classify?", user, id);
+                if (classificacao != null) {
+                  user.classificacao = classificacao;
+                  setState(() {});
+                  _statusAlertDialog("Perfil classificado","Sua classificação é: ${user.classificacao}");
+                } else {
+                  _statusAlertDialog("Error Web Service", "Verifique o link");
+                }
+              } else {
+                _statusAlertDialog("Não foi possível classificar",
+                    "Seu perfil está incompleto");
               }
             },
           ),
@@ -183,7 +195,7 @@ class _UserPageState extends State<UserPage> {
             leading: Icon(Icons.logout),
             onTap: () {
               AuthController().logout();
-              Nav.push(context, LoginPage(),replace: true);
+              Nav.push(context, LoginPage(), replace: true);
             },
           ),
         ],
@@ -192,7 +204,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   _listviewTurmas() {
-    return TurmasListView(user,id,search_string);
+    return TurmasListView(user, id, search_string,link_webservice);
   }
 
   _showAlertDialog() {
@@ -224,24 +236,25 @@ class _UserPageState extends State<UserPage> {
               onSaved: (String value) {
                 code = value;
               },
-              validator: (value) => value.length != 6 ? "Código inválido (6 caracteres)" : null,
+              validator: (value) =>
+                  value.length != 6 ? "Código inválido (6 caracteres)" : null,
             ),
           ),
           actions: [
             FlatButton(
               onPressed: () async {
-
                 _formKey.currentState.save();
                 bool validate = _formKey.currentState.validate();
-                if (!validate){
-                  return ;
+                if (!validate) {
+                  return;
                 }
 
                 // Get referencia da turma
                 QueryDocumentSnapshot pointer_turma =
                     await TurmaController().get_turmabycode(code);
-                if (pointer_turma == null){
-                  return _ErrorAlertDialog("Não foi possível acessar Turma","Não existe uma turma com esse código");
+                if (pointer_turma == null) {
+                  return _statusAlertDialog("Não foi possível acessar Turma",
+                      "Não existe uma turma com esse código");
                 }
                 DocumentReference id_turma = pointer_turma.reference;
 
@@ -249,22 +262,24 @@ class _UserPageState extends State<UserPage> {
                 Turma turma = await TurmaController().get_turma(pointer_turma);
 
                 // Adicionar aluno na Turma
-                DocumentReference ref_aluno = await TurmaController().addAlunoTurma(id_turma, id);
+                DocumentReference ref_aluno =
+                    await TurmaController().addAlunoTurma(id_turma, id);
 
                 // Atualizar a lista de turma do aluno
-                user =
-                    await PessoaController().update_Turmas(code, id, user);
+                user = await PessoaController().update_Turmas(code, id, user);
 
                 // Adicionar todas as atividades existentes na turma como pendente ao aluno
-                ActivityController atividade = ActivityController(id_turma.collection("Activity"));
+                ActivityController atividade =
+                    ActivityController(id_turma.collection("Activity"));
                 atividade.addAllActitiviesAluno(ref_aluno);
 
+                // Adicionar o aluno no chat geral
+                DocumentReference ref_chat = await ChatController().getchat("Geral", id_turma);
+                ChatController().addParticipante(ref_chat, user.email);
 
-                setState(() {
+                setState(() {});
 
-                });
-
-                Nav.pop(context,result: true);
+                Nav.pop(context, result: true);
               },
               child: Text("Entrar"),
               textColor: Colors.black87,
@@ -275,7 +290,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  _ErrorAlertDialog(title_text,content_text) {
+  _statusAlertDialog(title_text, content_text) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

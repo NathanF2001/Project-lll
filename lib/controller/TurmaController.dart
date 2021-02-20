@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/PessoaController.dart';
+import 'package:myclass/controller/StorageRepo.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
 
 class TurmaController {
   final _user = FirebaseFirestore.instance;
 
-  create_turma(json, Pessoa pessoa, id_professor) async {
+  Future<DocumentReference> create_turma(json, Pessoa pessoa, id_professor) async {
     /**
         Método para criar turma
      **/
@@ -25,20 +29,34 @@ class TurmaController {
     json["codigo"] = Utils.generate_key(6);
     pessoa.add_turma(json["codigo"]);
 
-    _user.collection("Turmas").doc(ref.id).set(json);
+    ref.set(json);
 
     id_professor.update({"Turmas_reference": pessoa.Turmas_reference});
 
-    return pessoa;
+    return ref;
+  }
+
+  Future<String> updateUrlFoto(turma)async{
+    /**
+     * Método para atualizar foto da turma
+     */
+    PickedFile image = await ImagePicker()
+        .getImage(source: ImageSource.gallery);
+    File file = File(image.path);
+
+    String url = await StorageRepo()
+        .uploadFile(file, "Turma/${turma.codigo}.jpg");
+
+    return url;
   }
 
   Future<void> updateTurma(Turma turma,id){
+    /**
+     * Atualiza dados da turma
+     */
     _user.collection("Turmas").doc(id).update(turma.ToJson());
   }
-  
-  Future<void> updateProfessor(Turma turma,id,new_reference){
-    _user.collection("Turmas").doc(id).update({"Professor": new_reference});
-  }
+
 
   Future<QueryDocumentSnapshot> get_turmabycode(code) async {
     /**

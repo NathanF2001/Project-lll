@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
 import 'package:myclass/Utils.dart';
+import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/controller/TurmaController.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/Turma.dart';
@@ -91,7 +92,9 @@ class _CreateTurmaState extends State<CreateTurma> {
                   if (!valido){
                     return ;
                   }
-                  user = await TurmaController().create_turma(turma_config,user,id);
+                  DocumentReference ref_turma = await TurmaController().create_turma(turma_config,user,id);
+
+                  ChatController().add(ref_turma,"Geral",[user.email]);
 
                   Nav.pop(context);
                 }),

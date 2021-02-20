@@ -70,23 +70,21 @@ class _InfoTurmaState extends State<InfoTurma> {
                 turma.Professor.email == user.email
                     ? FlatButton(
                         onPressed: () async {
-                          PickedFile image = await ImagePicker()
-                              .getImage(source: ImageSource.gallery);
-                          File file = File(image.path);
 
-                          String url = await StorageRepo()
-                              .uploadFile(file, "Turma/${turma.codigo}.jpg");
+                          String url = await TurmaController().updateUrlFoto(turma);
                           if (url == null) {
                             return;
                           }
                           turma.UrlTurma = url;
                           setState(() {});
 
+                          //Procurando referencia da turma pelo codigo da turma
                           QueryDocumentSnapshot doc_turma =
                               await TurmaController()
                                   .get_turmabycode(turma.codigo);
                           String ref_turma = doc_turma.id;
 
+                          //Atualizando informações da turma (foto)
                           await TurmaController().updateTurma(turma, ref_turma);
                         },
                         child: Text(
@@ -128,111 +126,17 @@ class _InfoTurmaState extends State<InfoTurma> {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  color: Colors_myclass.white,
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    turma.Descricao,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                  ),
-                ),
-                turma.Professor.email == user.email
-                    ? IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () async {
-                          await _showUpdateTurma(context, "Descrição",
-                              turma.Descricao, turma.id.id);
-                          setState(() {});
-                        })
-                    : Container()
-              ],
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors_myclass.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    decoration: BoxDecoration(
-                        color: Colors_myclass.black,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(32),
-                            bottomRight: Radius.circular(32))),
-                    child: Text(
-                      "Nome professor",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Colors_myclass.white),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                      turma.Professor.nome,
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  Utils.spaceSmallHeight,
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    decoration: BoxDecoration(
-                        color: Colors_myclass.black,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(32),
-                            bottomRight: Radius.circular(32))),
-                    child: Text(
-                      "Contato",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Colors_myclass.white),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                      turma.Professor.email,
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  Utils.spaceSmallHeight,
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    decoration: BoxDecoration(
-                        color: Colors_myclass.black,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(32),
-                            bottomRight: Radius.circular(32))),
-                    child: Text(
-                      "Código da turma",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          color: Colors_myclass.white),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                      turma.codigo,
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
-                  Utils.spaceBigHeight
-                ],
-              ),
-            )
+            Utils.spaceBigHeight,
+            Utils().infoTemplate(context, "Descrição", turma.Descricao,button: turma.Professor.email == user.email,
+                function: () async {
+                  await _showUpdateTurma(context, "Descrição",
+                      turma.Descricao, turma.id.id);
+                  setState(() {});
+                }),
+            Utils().infoTemplate(context, "Nome professor", turma.Professor.nome),
+            Utils().infoTemplate(context, "Contato", turma.Professor.email),
+            Utils().infoTemplate(context, "Código da turma", turma.codigo)
+
           ],
         ),
       )),

@@ -26,6 +26,7 @@ class _UpdateContentState extends State<UpdateContent> {
   Turma get turma => widget.turma;
   Content get conteudo => widget.conteudo;
   String old_titulo;
+  bool exist;
 
   @override
   void initState() {
@@ -36,21 +37,10 @@ class _UpdateContentState extends State<UpdateContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddContent(),
-    );
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _formUpdateContent());
   }
 
-  _formAddContent() {
+  _formUpdateContent() {
     return Container(
         child: Form(
           key: _formKey,
@@ -66,6 +56,9 @@ class _UpdateContentState extends State<UpdateContent> {
                       initialvalue: conteudo.titulo,
                       maxLength: 60,
                       validator: (String value) {
+                        if (exist){
+                          return "Esse titulo já existe na turma";
+                        }
                         (value.isEmpty) | (value.length > 60) ? "Título inválido" : null;
                       },
                       onsaved: (value) => conteudo.titulo = value,
@@ -137,15 +130,19 @@ class _UpdateContentState extends State<UpdateContent> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Buttons_myclass.Button1(context, text: "Atualizar conteúdo", colorbackground: Colors_myclass.black,function: () async{
-
                   _formKey.currentState.save();
+
+                  DocumentSnapshot content = await ContentController(turma.id.collection("Content")).get_content(conteudo.titulo);
+                  exist = content != null;
+
+
                   bool valido = _formKey.currentState.validate();
                   if (!valido) {
                     return ;
                   }
 
                   ContentController conteudo_controller = ContentController(turma.id.collection("Content"));
-                  // Adicionar conteudo na turma
+                  // Atualizar conteudo na turma
                   DocumentSnapshot snapshot_conteudo = await conteudo_controller.get_content(old_titulo);
                   DocumentReference ref_conteudo = snapshot_conteudo.reference;
                   await conteudo_controller.update_content(ref_conteudo, conteudo);

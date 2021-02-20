@@ -18,18 +18,8 @@ class ProfessorNotasAlunos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _buildNotasAluno(context),
-    );
+
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _buildNotasAluno(context));
   }
 
   _buildNotasAluno(BuildContext context) {
@@ -107,7 +97,6 @@ class ProfessorNotasAlunos extends StatelessWidget {
                   rows: atividades
                       .map((atividade) {
                     ActivityAluno atividade_aluno = atividade.atividades_alunos[aluno.ref_pessoa.id];
-
                     return DataRow(
                         cells: [
                           DataCell(Text(atividade.titulo)),

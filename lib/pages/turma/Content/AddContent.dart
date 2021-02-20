@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Button.dart';
 import 'package:myclass/Colors.dart';
@@ -24,22 +25,12 @@ class _AddContentState extends State<AddContent> {
   String titulo;
   String orientacao;
   List<String> links = [];
+  bool exist;
 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddContent(),
-    );
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _formAddContent());
   }
 
   _formAddContent() {
@@ -57,6 +48,9 @@ class _AddContentState extends State<AddContent> {
                       labelmensage: "Título *",
                       maxLength: 60,
                       validator: (String value) {
+                        if (exist){
+                          return "Esse titulo já existe na turma";
+                        }
                         (value.isEmpty) | (value.length > 60) ? "Título inválido" : null;
                       },
                       onsaved: (value) => titulo = value,
@@ -126,9 +120,13 @@ class _AddContentState extends State<AddContent> {
               Utils.spaceBigHeight,
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: (){
-
+                child: Buttons_myclass.Button1(context, text: "Adicionar conteúdo", colorbackground: Colors_myclass.black,function: () async{
                   _formKey.currentState.save();
+
+                  DocumentSnapshot content = await ContentController(turma.id.collection("Content")).get_content(titulo);
+                  exist = content != null;
+
+
                   bool valido = _formKey.currentState.validate();
                   if (!valido) {
                     return ;

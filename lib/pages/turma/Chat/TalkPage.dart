@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myclass/Colors.dart';
+import 'package:myclass/Utils.dart';
 import 'package:myclass/controller/ChatController.dart';
 import 'package:myclass/models/Chat.dart';
 import 'package:myclass/models/Mensage.dart';
@@ -31,18 +32,7 @@ class _MensagePageState extends State<MensagePage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          chat.nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _Mensage(),
-    );
+    return Utils().Scaffold_myclass(title: chat.nome, body: _Mensage(),resize: true);
   }
 
   _Mensage() {
@@ -85,68 +75,71 @@ class _MensagePageState extends State<MensagePage> {
 
                       List<String> separate_name = mensage.pessoa.nome.split(" ");
 
-                      return (mensage.pessoa.email == user.email)
-                          ? Container(
-                          alignment: Alignment.centerRight,
-                          margin: EdgeInsets.only(top: 8, bottom: 8, left: 80),
-                          padding: EdgeInsets.only(right: 16,bottom: 16,left: 8),
-                          decoration: BoxDecoration(
-                            color: Color(0xC8383D3B),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              bottomLeft: Radius.circular(16),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
-                                    style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
-                                  Text(
-                                    "Você",
-                                    style: TextStyle(color: Colors_myclass.white,fontSize: 20,fontWeight: FontWeight.w500),
-                                  ),
-                                ],
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: (mensage.pessoa.email == user.email)
+                            ? Container(
+                            alignment: Alignment.centerRight,
+                            margin: EdgeInsets.only(top: 8, bottom: 8, left: 80),
+                            padding: EdgeInsets.only(right: 16,bottom: 16,left: 8),
+                            decoration: BoxDecoration(
+                              color: Color(0xC8383D3B),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                bottomLeft: Radius.circular(16),
                               ),
-                              Text(mensage.mensagem,
-                                style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
-                            ],
-                          ))
-                          : Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(top: 8, bottom: 8, right: 80),
-                          padding: EdgeInsets.only(left: 8,bottom: 16,right: 8),
-                          decoration: BoxDecoration(
-                            color: Colors_myclass.black,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(16),
-                              bottomRight: Radius.circular(16),
                             ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width*0.6,
-                                    child: Text(
-                                      "${separate_name.first} ${separate_name.length > 1 ? separate_name.last : ""}",
-                                      style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
+                                      style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
+                                    Text(
+                                      "Você",
+                                      style: TextStyle(color: Colors_myclass.white,fontSize: 20,fontWeight: FontWeight.w500),
                                     ),
-                                  ),
-                                  Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
-                                    style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
-                                ],
+                                  ],
+                                ),
+                                Text(mensage.mensagem,
+                                  style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
+                              ],
+                            ))
+                            : Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(top: 8, bottom: 8, right: 80),
+                            padding: EdgeInsets.only(left: 8,bottom: 16,right: 8),
+                            decoration: BoxDecoration(
+                              color: Colors_myclass.black,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
                               ),
-                              Text(mensage.mensagem,
-                                style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
-                            ],
-                          ));
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width*0.6,
+                                      child: Text(
+                                        "${separate_name.first} ${separate_name.length > 1 ? separate_name.last : ""}",
+                                        style: TextStyle(color: Colors_myclass.white,fontSize: 24,fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    Text("${mensage.data.hour.toString().padLeft(2,"0")}:${mensage.data.minute.toString().padLeft(2,"0")}",
+                                      style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w200),),
+                                  ],
+                                ),
+                                Text(mensage.mensagem,
+                                  style: TextStyle(color: Colors_myclass.white,fontSize: 18,fontWeight: FontWeight.w300),)
+                              ],
+                            )),
+                      );
                     }),
               ),
               Container(
@@ -172,10 +165,6 @@ class _MensagePageState extends State<MensagePage> {
                           ),
                         )
                       ),
-                    ),
-                    Expanded(
-                      child:
-                      IconButton(icon: Icon(Icons.attach_file), onPressed: () {}),
                     ),
                     Expanded(
                         child: IconButton(

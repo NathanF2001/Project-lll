@@ -209,8 +209,11 @@ class _ActivityPageState extends State<ActivityPage> {
                                   alignment: Alignment.bottomRight,
                                   child: FlatButton(
                                     onPressed: () async {
-                                      Map<String,ActivityAluno> atividade_alunos = await ActivityController(null).getAlunosActivity(snapshot_atividade.reference);
+                                      Map<String,ActivityAluno> atividade_alunos =
+                                      await ActivityController(snapshot_atividade.reference.collection("Atividade alunos"))
+                                          .getAlunosActivity();
                                       atividade.atividades_alunos = atividade_alunos;
+
                                       if (IsProfessor) {
                                         Nav.push(context, DetailActivityPage(atividade, turma, alunos,snapshot_atividade.reference));
                                       } else {

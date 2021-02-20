@@ -1,66 +1,81 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:myclass/controller/StorageRepo.dart';
 import 'package:myclass/models/Pessoa.dart';
 import 'package:myclass/models/SocialEconomico.dart';
 
-class PessoaController{
-
+class PessoaController {
   final _user = FirebaseFirestore.instance;
 
-  Future<List<dynamic>> addUser(email,nome,foto,id,ref_SE) async {
+  Future<List<dynamic>> addUser(email, nome, foto, id, ref_SE) async {
     /**
      * Método que adiciona usuário no Firestore
      */
-    final pessoa = Pessoa(email, nome, "", "", foto,[],null,null);
+    final pessoa = Pessoa(email, nome, "", "", foto, [], null, null);
 
     await _user.collection("Users").doc(id).set({
-      "email":email,
-      "nome":nome,
-      "instituicao":"",
-      "descricao":"",
-      "UrlFoto":foto,
+      "email": email,
+      "nome": nome,
+      "instituicao": "",
+      "descricao": "",
+      "UrlFoto": foto,
       "Turmas_reference": [],
       "ref_SE": ref_SE,
       "classificação": null
     });
     DocumentReference ref = _user.collection("Users").doc(id);
 
-
-    return [pessoa,ref];
+    return [pessoa, ref];
   }
 
-  Future<void> updateUser(Pessoa pessoa,id){
+  Future<void> updateUser(Pessoa pessoa, id) {
+    /**
+     * Método que atualiza informações do usuário
+     */
     _user.collection("Users").doc(id).update(pessoa.ToJson());
   }
 
-  getInfo_user(fuser)async{
+  Future<List<dynamic>> getInfo_user(fuser) async {
     /**
      * Método que retorna informações do usuário de acordo com Authetication
      */
-    return await _user.collection("Users").doc(fuser.uid).get().then((DocumentSnapshot documentsnapshot) async{
-
-
-      if (!documentsnapshot.exists){
+    return await _user
+        .collection("Users")
+        .doc(fuser.uid)
+        .get()
+        .then((DocumentSnapshot documentsnapshot) async {
+      if (!documentsnapshot.exists) {
         // Caso que a conta está sendo criada pelo Google sign in
         DocumentReference ref_SE = await add_SE();
         SocialEconomico SE_user = await get_SE(ref_SE);
-        List<dynamic> result = await addUser(fuser.email, fuser.displayName, fuser.photoURL, fuser.uid,ref_SE);
+        List<dynamic> result = await addUser(
+            fuser.email, fuser.displayName, fuser.photoURL, fuser.uid, ref_SE);
         Pessoa pessoa = result[0];
         DocumentReference ref_pessoa = result[1];
         pessoa.ref_SE = SE_user;
 
-        return [pessoa,ref_pessoa,ref_SE];
-      }
-      else{
+        return [pessoa, ref_pessoa, ref_SE];
+      } else {
         final pessoa = Pessoa.fromJson(documentsnapshot.data());
-        SocialEconomico SE_user = await get_SE(documentsnapshot.data()["ref_SE"]);
+        SocialEconomico SE_user =
+            await get_SE(documentsnapshot.data()["ref_SE"]);
         pessoa.ref_SE = SE_user;
-        return [pessoa,documentsnapshot.reference,documentsnapshot.data()["ref_SE"]];
+        return [
+          pessoa,
+          documentsnapshot.reference,
+          documentsnapshot.data()["ref_SE"]
+        ];
       }
     });
   }
 
   Future<Pessoa> get_user(DocumentReference ref) async {
-    return await ref.get().then((value) async{
+    /**
+     * Método que retorna entidade Pessoa por uma referencia de usuário
+     */
+    return await ref.get().then((value) async {
       Pessoa user = Pessoa.fromJson(value.data());
       SocialEconomico SE_user = await get_SE(value.data()["ref_SE"]);
       user.ref_SE = SE_user;
@@ -68,8 +83,12 @@ class PessoaController{
     });
   }
 
-  add_SE() async{
-    return await _user.collection("Socialeconomico").add( {
+  Future<DocumentReference> add_SE() async {
+    /**
+     * Adiciona informações socioeconomicas
+     */
+
+    return await _user.collection("Socialeconomico").add({
       "Idade_intervalos": "",
       "Estado_civil": "",
       "Raça_cor": "",
@@ -89,32 +108,60 @@ class PessoaController{
     });
   }
 
-  Future<SocialEconomico> get_SE(DocumentReference ref_SE) async{
-    return await ref_SE.get().then((value) => SocialEconomico.fromJson(value.data()));
+  Future<SocialEconomico> get_SE(DocumentReference ref_SE) async {
+    /**
+     * Método que retorna dados de uma refência de dados socioeconomicos
+     */
+    return await ref_SE
+        .get()
+        .then((value) => SocialEconomico.fromJson(value.data()));
   }
 
-  update_SE(json,DocumentReference ref_SE) async{
-    print(ref_SE);
-    print(json);
+  Future<void> update_SE(json, DocumentReference ref_SE) async {
+    /**
+     * Atualiza informações de dados socioeconômicos
+     */
     await ref_SE.update(json);
   }
 
-  update_classifier(ref_user,classifier) async{
+  Future<void> update_classifier(ref_user, classifier) async {
+    /**
+     * Método que atualiza o status de classificação do ML
+     */
     await ref_user.update({"classificação": classifier});
   }
 
-  getref (String email) async{
-
-    return await _user.collection("Users").where("email",isEqualTo: email).get().then((value) => value.docs.first.reference);
-
+  Future<DocumentReference> getref(String email) async {
+    /**
+     * Método que retorna referência do usuário pelo email
+     */
+    return await _user
+        .collection("Users")
+        .where("email", isEqualTo: email)
+        .get()
+        .then((value) => value.docs.first.reference);
   }
 
-  update_Turmas(cod_turma,id_pessoa,Pessoa pessoa){
+  Future<String> update_UrlFoto(Pessoa pessoa) async {
+    /**
+     * Método que atualiza foto do usuário
+     */
+    PickedFile image =
+        await ImagePicker().getImage(source: ImageSource.gallery);
+    File file = File(image.path);
+
+    String url =
+        await StorageRepo().uploadFile(file, "User/${pessoa.email}.jpg");
+
+    return url;
+  }
+
+  Future<Pessoa> update_Turmas(cod_turma, id_pessoa, Pessoa pessoa) async {
     /**
      * Método que atualiza quantidade de turmas do usuário
      */
     pessoa.add_turma(cod_turma);
-    id_pessoa.update({
+    await id_pessoa.update({
       "Turmas_reference": FieldValue.arrayUnion([cod_turma])
     });
     return pessoa;

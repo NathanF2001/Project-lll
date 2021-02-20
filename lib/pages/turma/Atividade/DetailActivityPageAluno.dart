@@ -51,18 +51,7 @@ class _DetailActivityAlunoPageState extends State<DetailActivityPageAluno> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          atividade.titulo,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _buildActivityInfo(context),
-    );
+    return Utils().Scaffold_myclass(title: atividade.titulo, body: _buildActivityInfo(context));
   }
 
   _buildActivityInfo(context) {

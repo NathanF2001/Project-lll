@@ -32,19 +32,7 @@ class _AddChatState extends State<AddChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma != null ? turma.Nome : "",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddChat(),
-    );
-    ;
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _formAddChat());
   }
 
   _formAddChat() {

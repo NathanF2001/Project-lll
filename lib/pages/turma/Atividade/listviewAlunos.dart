@@ -37,143 +37,137 @@ class _ListAlunosState extends State<ListAlunos> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.white,
-          ),
-          title: Text(
-            atividade.titulo,
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Wrap(
-            children: alunos.map((aluno) {
-              ActivityAluno atividade_aluno =
-                  atividade.atividades_alunos[aluno.ref_pessoa.id];
+    return Utils().Scaffold_myclass(title: atividade.titulo, body: _buildlistAluno());
+  }
 
-              List<dynamic> links = atividade_aluno.links;
-              return Container(
-                  margin: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                      color: Colors_myclass.black,
-                      borderRadius: BorderRadius.all(Radius.circular(16))),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            aluno.info.UrlFoto == ""
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(100))),
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                      size: 50.0,
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundImage:
-                                        NetworkImage(aluno.info.UrlFoto),
-                                  ),
-                            SizedBox(
-                              width: 16,
-                            ),
-                            Container(
-                              width: 180,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    aluno.info.nome,
-                                    style: TextStyle(
-                                      color: Colors_myclass.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24,
-                                    ),
-                                  ),
-                                  Text(
-                                    aluno.info.email,
-                                    style: TextStyle(
-                                      color: Colors_myclass.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Destaques: ${aluno.destaques}",
-                                    style: TextStyle(
-                                      color: Colors_myclass.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.only(left: 16),
-                        child: Text(
-                          atividade_aluno.nota == ""
-                              ? "Nota: Não definido"
-                              : "Nota: ${atividade_aluno.nota}/10",
-                          style: TextStyle(
-                            color: Colors_myclass.white,
+  _buildlistAluno(){
+    return SingleChildScrollView(
+      child: Wrap(
+        children: alunos.map((aluno) {
+          ActivityAluno atividade_aluno =
+          atividade.atividades_alunos[aluno.ref_pessoa.id];
+
+          List<dynamic> links = atividade_aluno.links;
+          return Container(
+              margin: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  color: Colors_myclass.black,
+                  borderRadius: BorderRadius.all(Radius.circular(16))),
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        aluno.info.UrlFoto == ""
+                            ? Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(100))),
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.grey,
+                            size: 50.0,
                           ),
+                        )
+                            : CircleAvatar(
+                          backgroundImage:
+                          NetworkImage(aluno.info.UrlFoto),
                         ),
-                      ),
-                      Utils.spaceMediumHeight,
-                      Wrap(
-                        children: links
-                            .map(
-                              (element) => Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 4),
-                                margin: EdgeInsets.symmetric(vertical: 4),
-                                width: 300,
-                                decoration: BoxDecoration(
-                                    color: Colors_myclass.white,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: element,
-                                      style: TextStyle(
-                                          color: Colors_myclass.black,
-                                          fontSize: 20),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          String url = element;
-                                          print(url);
-                                          if (await canLaunch(url)) {
-                                            await launch(url);
-                                          } else {
-                                            print("não clicavel");
-                                          }
-                                        }),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Container(
+                          width: 180,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                aluno.info.nome,
+                                style: TextStyle(
+                                  color: Colors_myclass.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
                                 ),
                               ),
-                            )
-                            .toList(),
+                              Text(
+                                aluno.info.email,
+                                style: TextStyle(
+                                  color: Colors_myclass.white,
+                                ),
+                              ),
+                              Text(
+                                "Destaques: ${aluno.destaques}",
+                                style: TextStyle(
+                                  color: Colors_myclass.white,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.only(left: 16),
+                    child: Text(
+                      atividade_aluno.nota == ""
+                          ? "Nota: Não definido"
+                          : "Nota: ${atividade_aluno.nota}/10",
+                      style: TextStyle(
+                        color: Colors_myclass.white,
                       ),
-                      Utils.spaceMediumHeight,
-                      Buttons_myclass.Button1(context, text: "Dar nota",
-                          function: () {
+                    ),
+                  ),
+                  Utils.spaceMediumHeight,
+                  Wrap(
+                    children: links
+                        .map(
+                          (element) => Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        margin: EdgeInsets.symmetric(vertical: 4),
+                        width: 300,
+                        decoration: BoxDecoration(
+                            color: Colors_myclass.white,
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(8))),
+                        child: RichText(
+                          text: TextSpan(
+                              text: element,
+                              style: TextStyle(
+                                  color: Colors_myclass.black,
+                                  fontSize: 20),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () async {
+                                  String url = element;
+                                  print(url);
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  } else {
+                                    print("não clicavel");
+                                  }
+                                }),
+                        ),
+                      ),
+                    )
+                        .toList(),
+                  ),
+                  Utils.spaceMediumHeight,
+                  Buttons_myclass.Button1(context, text: "Dar nota",
+                      function: () {
                         _showAlertDialog(aluno);
                       },
-                          colorbackground: Colors_myclass.white,
-                          textcolor: Colors_myclass.black),
-                      Utils.spaceMediumHeight
-                    ],
-                  ));
-            }).toList(),
-          ),
-        ));
+                      colorbackground: Colors_myclass.white,
+                      textcolor: Colors_myclass.black),
+                  Utils.spaceMediumHeight
+                ],
+              ));
+        }).toList(),
+      ),
+    );
   }
 
   _showAlertDialog(aluno) {
@@ -224,8 +218,8 @@ class _ListAlunosState extends State<ListAlunos> {
                 _formKeyLink.currentState.save();
 
                 DocumentReference ref_activityaluno =
-                    await ActivityController(null)
-                        .getAlunoActivity(ref_activity, aluno.ref_pessoa);
+                    await ActivityController(ref_activity.collection("Atividade alunos"))
+                        .getAlunoActivity(aluno.ref_pessoa);
 
                 // Mudar o valor da nota
                 await AlunoController().set_nota(ref_activityaluno, nota);

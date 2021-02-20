@@ -21,8 +21,9 @@ class TurmasListView extends StatefulWidget {
   Pessoa user;
   DocumentReference id_user;
   String search_string;
+  String link_webservice;
 
-  TurmasListView(this.user, this.id_user, this.search_string);
+  TurmasListView(this.user, this.id_user, this.search_string,this.link_webservice);
 
 
   @override
@@ -113,14 +114,18 @@ class _TurmasListViewState extends State<TurmasListView> {
               child: InkWell(
                 child: TurmasTemplate(turma),
                 onTap: () async {
-                  ActivityController controller = ActivityController(turma.id.collection("Activity"));
+
+                  DocumentReference ref_turma = await TurmaController().get_turmabycode(turma.codigo).then((value) => value.reference);
+
+                  ActivityController controller = ActivityController(ref_turma.collection("Activity"));
                   List<QueryDocumentSnapshot> atividades = await controller.getAllActivities();
                   List<Activity> atvs = await controller.fromJsonList(atividades);
 
-                  List<Aluno> alunos = await AlunoController().getAllAlunos(turma.id,atvs);
+                  List<Aluno> alunos = await AlunoController().getAllAlunos(ref_turma,atvs);
 
 
-                  Nav.push(context, TurmaPage(turma,atvs, alunos, user,id_user));
+                  turma.id = ref_turma;
+                  Nav.push(context, TurmaPage(turma,atvs, alunos, user,id_user,widget.link_webservice));
                 },
               ));
         });

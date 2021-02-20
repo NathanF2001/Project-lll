@@ -35,20 +35,7 @@ class _AddActivityState extends State<AddActivity> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKeyActivity,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        title: Text(
-          turma.Nome,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: _formAddActivity(),
-    );
-    ;
+    return Utils().Scaffold_myclass(title: turma.Nome, body: _formAddActivity(),key_scaffold: _scaffoldKeyActivity);
   }
 
   _formAddActivity() {
@@ -198,14 +185,14 @@ class _AddActivityState extends State<AddActivity> {
                       return null;
                     }
 
-                    QuerySnapshot activity = await turma.id.collection("Activity").where("titulo",isEqualTo: titulo).get();
-                    exist = activity.docs.isNotEmpty;
+                    DocumentSnapshot activity = await ActivityController(turma.id.collection("Activity")).getActivity(titulo);
+
+                    exist = activity != null;
 
                     bool valido = _formKey.currentState.validate();
                     if (!valido) {
                       return null;
                     }
-
 
                     // Adicionar atividade na turma
                     ActivityController atividade_controller = ActivityController(turma.id.collection("Activity"));

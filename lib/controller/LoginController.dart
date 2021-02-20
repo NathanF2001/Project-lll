@@ -12,16 +12,23 @@ class AuthController{
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
 
-  signWithGoogle(context) async{
+  Future<GoogleSignInAccount> getcredentials () async{
+
+    // Selecionar a conta
+    final GoogleSignInAccount googleUser = await _googleSignin.signIn();
+
+
+    return googleUser;
+  }
+
+  Future<Map<String,dynamic>> signWithGoogle(context,googleUser) async{
     /**
      * Logar com Google
      */
     try{
-      final GoogleSignInAccount googleUser = await _googleSignin.signIn();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
 
       // Create a new credential
       final GoogleAuthCredential credential = GoogleAuthProvider.credential(
@@ -34,36 +41,42 @@ class AuthController{
       final fuser = result.user;
 
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
-      Pessoa pessoa = result_firebase[0]; // informações do usuario
-      DocumentReference id = result_firebase[1]; // referencia do usuario
-      DocumentReference id_SE = result_firebase[2];
 
-      Nav.push(context, UserPage(pessoa, id, id_SE),replace: true);
+      Pessoa pessoa = result_firebase[0]; // informações do usuario
+
+      DocumentReference id = result_firebase[1]; // referencia do usuario
+
+      DocumentReference id_SE = result_firebase[2];// referencia SocialEconomico resultados
+
+
+      return {"status": "Ok", "body": [pessoa,id,id_SE]};
+
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "wrong-password":
-          return "Senha incorreta";
+          return {"status":"Error","body": "Senha incorreta"};
           break;
         case "user-not-found":
-          return "Email não cadastrado";
+          return {"status":"Error","body": "Email não cadastrado"};
           break;
         case "email-already-in-use":
-          return "Conta está logada";
+          return {"status":"Error","body": "Conta está logada"};
           break;
         case "invalid-email":
-          return "Insira um email válido";
+          return {"status":"Error","body": "Email não cadastrado"};
           break;
         case "too-many-requests":
-
+          return {"status":"Error","body": "Você fez muita requições, tente mais tarde"};
+          break;
         default:
-          return "Login falhou, tente novamente";
+          return {"status":"Error","body": "Login falhou, tente novamente"};
           break;
       }
 
     }
   }
 
-  signWithEmailAndPassword(context,String email,String password)async{
+  Future<Map<String,dynamic>> signWithEmailAndPassword(context,String email,String password)async{
     /**
      * Logar com Email e Password
      */
@@ -73,37 +86,42 @@ class AuthController{
       final fuser = result.user;
 
       List<dynamic> result_firebase = await PessoaController().getInfo_user(fuser);
-      Pessoa pessoa = result_firebase[0]; // informações do usuario
-      DocumentReference id = result_firebase[1]; // referencia do usuario
-      DocumentReference ref_SE = result_firebase[2]; // referencia SocialEconomico resultados
-      Nav.push(context, UserPage(pessoa, id,ref_SE),replace: true);
 
-      return "Ok";
+      Pessoa pessoa = result_firebase[0]; // informações do usuario
+
+      DocumentReference id = result_firebase[1]; // referencia do usuario
+
+      DocumentReference ref_SE = result_firebase[2]; // referencia SocialEconomico resultados
+
+
+
+      return {"status": "Ok", "body": [pessoa,id,ref_SE]};
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "wrong-password":
-          return "Senha incorreta";
+          return {"status":"Error","body": "Senha incorreta"};
           break;
         case "user-not-found":
-          return "Email não cadastrado";
+          return {"status":"Error","body": "Email não cadastrado"};
           break;
         case "email-already-in-use":
-          return "Conta está logada";
+          return {"status":"Error","body": "Conta está logada"};
           break;
         case "invalid-email":
-          return "Insira um email válido";
+          return {"status":"Error","body": "Email não cadastrado"};
           break;
         case "too-many-requests":
-
+          return {"status":"Error","body": "Você fez muita requições, tente mais tarde"};
+          break;
         default:
-          return "Login falhou, tente novamente";
+          return {"status":"Error","body": "Login falhou, tente novamente"};
           break;
       }
 
     }
   }
 
-  cadastrar(context,String nome,String email,String senha)async{
+  Future<String> cadastrar(context,String nome,String email,String senha)async{
     /**
      * Método de cadastrar por email
      */
@@ -112,8 +130,10 @@ class AuthController{
 
       final fuser = result.user;
 
+      // Adicionar documento que tem as informações socioeconomicas
       DocumentReference ref_SE = await PessoaController().add_SE();
 
+      // Adicionar documento informações do usuario
       PessoaController().addUser(email, nome, "", fuser.uid,ref_SE);
 
 
@@ -143,9 +163,14 @@ class AuthController{
     }
   }
   
-  sendEmailForgotPass(email) async{
+  Future<String> sendEmailForgotPass(email) async{
+    /**
+     * Método que envia e-mail
+     */
     try{
       await _auth.sendPasswordResetEmail(email: email);
+
+      return "Ok";
     }on FirebaseAuthException catch(error){
       switch (error.code){
         case "user-not-found":
