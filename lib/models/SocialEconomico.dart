@@ -59,7 +59,7 @@ class SocialEconomico{
     "Raça_cor": raca_cor,
     "Escolaridade_pai": escolaridade_pai,
     "Escolaridade_mae": escolaridade_mae,
-    "Renda_familie": renda_familia,
+    "Renda_familia": renda_familia,
     "Situacao_financeira": situacao_financeira,
     "Situacao_trabalho": situacao_trabalho,
     "Bolsa_estudo": bolsa_estudo,
