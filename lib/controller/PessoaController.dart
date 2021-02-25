@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:myclass/controller/StorageRepo.dart';
 import 'package:myclass/models/Pessoa.dart';
@@ -83,6 +84,20 @@ class PessoaController {
     });
   }
 
+  Future<void> delete_user(DocumentReference ref_user) async{
+    /**
+     * Método que deleta informações do usuário
+     */
+    await ref_user.delete();
+  }
+
+  Future<void> delete_auth_user(User auth_user) async{
+    /**
+     * Método que deleta auth do usuário
+     */
+    await auth_user.delete();
+  }
+
   Future<DocumentReference> add_SE() async {
     /**
      * Adiciona informações socioeconomicas
@@ -122,6 +137,13 @@ class PessoaController {
      * Atualiza informações de dados socioeconômicos
      */
     await ref_SE.update(json);
+  }
+
+  Future<void> delete_SE(DocumentReference ref_SE) async{
+    /**
+     * Método que deleta informações da dados socioeconomicos
+     */
+    await ref_SE.delete();
   }
 
   Future<void> update_classifier(ref_user, classifier) async {

@@ -72,20 +72,30 @@ class TurmaController {
     return null;
   }
 
-  addAlunoTurma(DocumentReference id_turma, id_pessoa) async {
+  getAllRefTurma(codigo_turmas)async{
+    List<String> codigo_turmasString = codigo_turmas.cast<String>();
+
+    List<Future<DocumentReference>> future_ref = codigo_turmasString
+        .map((codigo) async => await get_turmabycode(codigo).then((value) => value.reference)).toList();
+    List<DocumentReference> ref_turmas = await Future.wait(future_ref);
+
+    return ref_turmas;
+  }
+
+  addAlunoTurma(DocumentReference id_turma, id_pessoa,number) async {
     /**
         Método para adicionar um aluno na turma
      **/
-    await _updateNumberAlunos(id_turma);
+    await updateNumberAlunos(id_turma,number);
     return await addAluno(id_turma, id_pessoa);
   }
 
-  _updateNumberAlunos(id_turma) async {
+  updateNumberAlunos(id_turma,number) async {
     /**
         Método para atualizar o número de alunos da turma
      **/
     await id_turma.update({
-      "number_Aluno": FieldValue.increment(1),
+      "number_Aluno": FieldValue.increment(number),
     });
   }
 

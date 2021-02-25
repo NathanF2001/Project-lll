@@ -48,6 +48,13 @@ class AlunoController{
   ref_aluno.update({"destaques": FieldValue.increment(value)});
   }
 
+  deleteAluno(DocumentReference ref_turma,ref_pessoa) async{
+    DocumentReference ref_aluno = await ref_turma.collection("Alunos").where("aluno",isEqualTo: ref_pessoa).get().then((value) => value.docs.first.reference);
+
+    ref_aluno.delete();
+    return ref_aluno;
+  }
+
   Future<Aluno> fromJson( DocumentSnapshot snapshot,List<Activity> atividades) async{
     final json_aluno = snapshot.data();
 

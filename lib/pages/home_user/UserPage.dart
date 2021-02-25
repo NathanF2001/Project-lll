@@ -125,7 +125,7 @@ class _UserPageState extends State<UserPage> {
             leading: Icon(Icons.person),
             onTap: () async {
               Pessoa new_info_user =
-                  await Nav.push(context, ProfilePage(user, id));
+                  await Nav.push(context, ProfilePage(user, id,id_SE));
 
               if (new_info_user != null) {
                 setState(() {
@@ -263,7 +263,7 @@ class _UserPageState extends State<UserPage> {
 
                 // Adicionar aluno na Turma
                 DocumentReference ref_aluno =
-                    await TurmaController().addAlunoTurma(id_turma, id);
+                    await TurmaController().addAlunoTurma(id_turma, id,1);
 
                 // Atualizar a lista de turma do aluno
                 user = await PessoaController().update_Turmas(code, id, user);

@@ -107,6 +107,14 @@ class ActivityController{
       return atividade_aluno;});
   }
 
+  deleteAlunoActivities(ref_aluno) async{
+    List<DocumentSnapshot> atividades = await getAllActivities();
+    Future.forEach(atividades, (DocumentSnapshot atividade) {
+      atividade.reference.collection("Atividade alunos").where("aluno",isEqualTo: ref_aluno).get()
+          .then((value) => value.docs.first.reference.delete());
+    });
+  }
+
   Future<List<Activity>> fromJsonList(List<DocumentSnapshot> docs) async{
 
 
