@@ -18,7 +18,8 @@ MyClass é um aplicativo desenvolvido e planejado em conjunto às disciplina de 
   - Por meio do _dataset_ disponibilizado pelo INEP do ENADE 2019 foi desenvolvido o modelo apresentado no projeto. As entradas e saídas do aplicativo foram consequência do trabalho da análise e treinamento do modelo dos dados de acordo com as características socioeconômicas dos alunos - via Questionário do Aluno - e, partindo da hipótese de que variáveis sociais e econômicas influenciam no desempenho dos estudantes, fazer análise preditiva classificatória.
  
  # Apresentação
-  - Link para apresentação do aplicativo: https://drive.google.com/file/d/1THtj5C_wBM1DJAjAqv25-NsajgF9UGyS/view?usp=sharing
+  - Link para apresentação do aplicativo: https://drive.google.com/file/d/1J22Gppxynbq4cSI_6YLPynad8SQ-SMib/view?usp=sharing
+  - Link de apresentação de todas funcionalidades do aplicativo detalhadamente: https://drive.google.com/file/d/1THtj5C_wBM1DJAjAqv25-NsajgF9UGyS/view?usp=sharing
  # Configuração de Ambiente
   Para o funcionamento correto do aplicativo é necessário seguir as recomendações:
  
